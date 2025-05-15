@@ -1,4 +1,4 @@
-package com.construsoft.login;
+package com.construsoft.login.model;
 
 public class Usuario {
     private String username;

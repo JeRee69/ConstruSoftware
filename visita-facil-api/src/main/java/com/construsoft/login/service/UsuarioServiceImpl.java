@@ -1,9 +1,11 @@
-package com.construsoft.login;
+package com.construsoft.login.service;
 
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.construsoft.login.model.*;
+import com.construsoft.login.repository.*;;
 
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
