@@ -117,12 +117,27 @@ const Login = () => {
     setError('');
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (email === 'corredor@propiedades.com' && password === 'agenda123') {
+      const response = await fetch('http://localhost:8081/account/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        const accountId = data.accountId;
+
+        // Puedes guardar el accountId en localStorage si lo necesitas
+        // localStorage.setItem('accountId', accountId);
+
+        // Redirigir al dashboard o agenda
         navigate('/agenda');
-      } else {
+      } else if (response.status === 401) {
         setError('Credenciales incorrectas. Por favor, intente nuevamente.');
+      } else {
+        setError('Error inesperado. Intente más tarde.');
       }
     } catch (err) {
       setError('Ocurrió un error al iniciar sesión. Por favor, intente más tarde.');
@@ -147,7 +162,7 @@ const Login = () => {
               placeholder="corredor@propiedades.com"
             />
           </InputField>
-          
+
           <InputField>
             <Label htmlFor="password">Contraseña</Label>
             <Input
@@ -159,11 +174,11 @@ const Login = () => {
               placeholder="••••••••"
             />
           </InputField>
-          
+
           <Button type="submit" disabled={isLoading}>
             {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </Button>
-          
+
           {error && <ErrorMessage>{error}</ErrorMessage>}
 
           <RegisterLink>
