@@ -1,6 +1,6 @@
 package com.construsoft.visita_facil_api.model;
 
-public abstract class Usuario {
+public class Usuario {
     protected Long id;
     protected String nombre;
     protected String correo;

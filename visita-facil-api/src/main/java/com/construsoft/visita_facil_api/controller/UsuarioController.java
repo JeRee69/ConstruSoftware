@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UsuarioController {
     @RequestMapping(value = "/api/usuario", method = RequestMethod.GET)
     public Usuario geUsuario(@RequestParam String username) {
-        return new Usuario(username, "Nome do Usuário");
+        return new Usuario(null, username, username, username);
     }
     
 }
