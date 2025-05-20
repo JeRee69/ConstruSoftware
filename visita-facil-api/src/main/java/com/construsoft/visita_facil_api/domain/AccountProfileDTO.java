@@ -4,8 +4,6 @@ public class AccountProfileDTO {
     private String email;
     private String password;
     private String name;
-    private String city;
-    private String address;
     private String phone;
 
     public AccountProfileDTO(){}
@@ -18,26 +16,7 @@ public class AccountProfileDTO {
         this.email = email;
         return this;
     }
-
-    public String getCity() {
-        return city;
-    }
-
-    public AccountProfileDTO setCity(String city) {
-        this.city = city;
-        return this;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public AccountProfileDTO setAddress(String adress) {
-        this.address = adress;
-        return this;
-    }
-
-
+    
     public String getPassword() {
         return password;
     }

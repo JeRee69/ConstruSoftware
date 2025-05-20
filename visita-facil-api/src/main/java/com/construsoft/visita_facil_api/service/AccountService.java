@@ -27,7 +27,7 @@ public class AccountService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public Account register(String email, String password, String name, String phone, String ciudad, String direccion) {
+    public Account register(String email, String password, String name, String phone) {
         Account account = new Account();
         account.setEmail(email);
         account.setPassword(passwordEncoder.encode(password));
@@ -37,8 +37,6 @@ public class AccountService {
         profile.setAccount(account);
         profile.setName(name);
         profile.setPhone(phone);
-        profile.setCity(ciudad);
-        profile.setAddress(direccion);
         profileRepository.save(profile);
 
         return account;

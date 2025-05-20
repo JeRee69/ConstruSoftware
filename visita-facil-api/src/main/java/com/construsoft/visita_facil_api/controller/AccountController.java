@@ -34,9 +34,7 @@ public class AccountController {
                 accountProfileDTO.getEmail(),
                 accountProfileDTO.getPassword(),
                 accountProfileDTO.getName(),
-                accountProfileDTO.getPhone(),
-                accountProfileDTO.getCity(),
-                accountProfileDTO.getAddress()
+                accountProfileDTO.getPhone()
         );
         return ResponseEntity.ok(savedAccount);
     }
