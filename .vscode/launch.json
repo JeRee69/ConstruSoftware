@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "VisitaFacilApplication",
+            "request": "launch",
+            "mainClass": "com.construsoft.visita_facil_api.VisitaFacilApplication",
+            "projectName": "visita-facil-api"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-ApiController<visita-facil-api>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
