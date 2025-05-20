@@ -129,11 +129,15 @@ const Login = () => {
         const data = await response.json();
         const accountId = data.accountId;
 
-        // Puedes guardar el accountId en localStorage si lo necesitas
+        // Guardar accountId si se necesita
         // localStorage.setItem('accountId', accountId);
 
-        // Redirigir al dashboard o agenda
-        navigate('/agenda');
+        // Redirigir según el tipo de correo
+        if (email.includes('@corredora')) {
+          navigate('/agenda');
+        } else {
+          navigate('/catalogo');
+        }
       } else if (response.status === 401) {
         setError('Credenciales incorrectas. Por favor, intente nuevamente.');
       } else {
@@ -159,7 +163,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="corredor@propiedades.com"
+              placeholder="correo@ejemplo.com"
             />
           </InputField>
 
