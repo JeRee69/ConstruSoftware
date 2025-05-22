@@ -1,5 +1,4 @@
 package com.construsoft.visita_facil_api.model;
-
 import java.util.Date;
 
 public class Notificacion {
@@ -12,3 +11,4 @@ public class Notificacion {
         this.leido = true;
     }
 }
+

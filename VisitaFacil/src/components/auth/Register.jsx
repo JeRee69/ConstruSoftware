@@ -131,18 +131,35 @@ const Register = () => {
     setIsLoading(true);
     setError('');
 
-    // Validaciones básicas
     if (formData.password !== formData.confirmPassword) {
       setError('Las contraseñas no coinciden');
       setIsLoading(false);
       return;
     }
 
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+      name: `${formData.nombre} ${formData.apellido}`,
+      phone: formData.telefono
+    };
+
     try {
-      // Simulación de registro (en un caso real, sería una llamada a tu API)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Redirigir al login después de registro exitoso
+      const response = await fetch('http://localhost:8081/account/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || 'Error al registrar el usuario.');
+        return;
+      }
+
+      // Registro exitoso
       navigate('/', { state: { registrationSuccess: true } });
     } catch (err) {
       setError('Ocurrió un error al registrar. Por favor, intente más tarde.');
@@ -234,11 +251,11 @@ const Register = () => {
               placeholder="••••••••"
             />
           </InputField>
-          
+
           <Button type="submit" disabled={isLoading}>
             {isLoading ? 'Registrando...' : 'Registrarse'}
           </Button>
-          
+
           {error && <ErrorMessage>{error}</ErrorMessage>}
 
           <LoginLink>

@@ -117,12 +117,31 @@ const Login = () => {
     setError('');
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      if (email === 'corredor@propiedades.com' && password === 'agenda123') {
-        navigate('/agenda');
-      } else {
+      const response = await fetch('http://localhost:8081/account/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      if (response.status === 200) {
+        const data = await response.json();
+        const accountId = data.accountId;
+
+        // Guardar accountId si se necesita
+        // localStorage.setItem('accountId', accountId);
+
+        // Redirigir según el tipo de correo
+        if (email.includes('@corredora')) {
+          navigate('/agenda');
+        } else {
+          navigate('/catalogo');
+        }
+      } else if (response.status === 401) {
         setError('Credenciales incorrectas. Por favor, intente nuevamente.');
+      } else {
+        setError('Error inesperado. Intente más tarde.');
       }
     } catch (err) {
       setError('Ocurrió un error al iniciar sesión. Por favor, intente más tarde.');
@@ -144,10 +163,10 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              placeholder="corredor@propiedades.com"
+              placeholder="correo@ejemplo.com"
             />
           </InputField>
-          
+
           <InputField>
             <Label htmlFor="password">Contraseña</Label>
             <Input
@@ -159,11 +178,11 @@ const Login = () => {
               placeholder="••••••••"
             />
           </InputField>
-          
+
           <Button type="submit" disabled={isLoading}>
             {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
           </Button>
-          
+
           {error && <ErrorMessage>{error}</ErrorMessage>}
 
           <RegisterLink>

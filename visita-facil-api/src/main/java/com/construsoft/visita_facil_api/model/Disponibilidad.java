@@ -3,7 +3,7 @@ import java.time.LocalTime;
 import java.util.Date;
 
 public class Disponibilidad {
-     private Agente agente;
+    private Agente agente;
     private Date fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
