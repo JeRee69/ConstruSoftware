@@ -1,21 +1,33 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const Container = styled.div`
-  padding: 2rem;
-  background-color: #f9f9f9;
+const PageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
   min-height: 100vh;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  width: 100vw;
+  padding: 20px;
+`;
+
+const Container = styled.div`
+  width: 100%;
+  max-width: 600px; // Reducir el ancho máximo
+  background-color: #f9f9f9;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h1`
   color: #d32f2f;
   margin-bottom: 2rem;
+  text-align: center;
 `;
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
 `;
 
@@ -76,22 +88,24 @@ const Catalogo = () => {
   ];
 
   return (
-    <Container>
-      <Title>Catálogo de Propiedades</Title>
-      <Grid>
-        {propiedades.map((propiedad) => (
-          <Card key={propiedad.id}>
-            <Image src={propiedad.imagen} alt={propiedad.titulo} />
-            <CardContent>
-              <PropertyTitle>{propiedad.titulo}</PropertyTitle>
-              <Info><strong>Precio:</strong> {propiedad.precio}</Info>
-              <Info><strong>Dirección:</strong> {propiedad.direccion}</Info>
-              <Info><strong>Habitaciones:</strong> {propiedad.habitaciones}</Info>
-            </CardContent>
-          </Card>
-        ))}
-      </Grid>
-    </Container>
+    <PageWrapper>
+      <Container>
+        <Title>Catálogo de Propiedades</Title>
+        <Grid>
+          {propiedades.map((propiedad) => (
+            <Card key={propiedad.id}>
+              <Image src={propiedad.imagen} alt={propiedad.titulo} />
+              <CardContent>
+                <PropertyTitle>{propiedad.titulo}</PropertyTitle>
+                <Info><strong>Precio:</strong> {propiedad.precio}</Info>
+                <Info><strong>Dirección:</strong> {propiedad.direccion}</Info>
+                <Info><strong>Habitaciones:</strong> {propiedad.habitaciones}</Info>
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
+      </Container>
+    </PageWrapper>
   );
 };
 
