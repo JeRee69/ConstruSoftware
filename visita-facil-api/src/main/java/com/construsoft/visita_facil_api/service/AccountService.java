@@ -1,19 +1,15 @@
 package com.construsoft.visita_facil_api.service;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.construsoft.visita_facil_api.model.Account;
 import com.construsoft.visita_facil_api.model.Profile;
 import com.construsoft.visita_facil_api.repository.AccountRepository;
 import com.construsoft.visita_facil_api.repository.ProfileRepository;
-import jakarta.persistence.EntityManager;
-
-
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AccountService {

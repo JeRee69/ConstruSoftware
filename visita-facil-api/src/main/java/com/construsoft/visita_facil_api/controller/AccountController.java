@@ -1,7 +1,5 @@
 package com.construsoft.visita_facil_api.controller;
 
-
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -19,8 +17,6 @@ import com.construsoft.visita_facil_api.model.Account;
 import com.construsoft.visita_facil_api.domain.AccountProfileDTO;
 import com.construsoft.visita_facil_api.service.AccountService;
 
-
-
 @RestController
 @RequestMapping("/account")
 public class AccountController {
@@ -36,6 +32,7 @@ public class AccountController {
                 accountProfileDTO.getName(),
                 accountProfileDTO.getPhone()
         );
+
         return ResponseEntity.ok(savedAccount);
     }
 
@@ -53,5 +50,5 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-}
 
+}

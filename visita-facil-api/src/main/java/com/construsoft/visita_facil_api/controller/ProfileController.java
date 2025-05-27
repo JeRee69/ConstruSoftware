@@ -1,10 +1,7 @@
 package com.construsoft.visita_facil_api.controller;
 
-
-
 import com.construsoft.visita_facil_api.model.Profile;
 import com.construsoft.visita_facil_api.service.ProfileService;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,5 +25,5 @@ public class ProfileController {
             return ResponseEntity.notFound().build();
         }
     }
-}
 
+}
