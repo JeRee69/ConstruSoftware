@@ -9,7 +9,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-
 @SpringBootApplication
 public class VisitaFacilApplication {
 
@@ -26,17 +25,12 @@ public class VisitaFacilApplication {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests((authz) ->
-                        authz.anyRequest().permitAll()
-                )
+                .authorizeHttpRequests((authz) -> authz.anyRequest().permitAll())
                 .httpBasic(withDefaults())
-                .formLogin((form) ->
-                        form.loginPage("/login").permitAll()
-                )
+                .formLogin((form) -> form.loginPage("/login").permitAll())
                 .logout((logout) -> logout.permitAll());
 
         return http.build();
     }
 
 }
-
