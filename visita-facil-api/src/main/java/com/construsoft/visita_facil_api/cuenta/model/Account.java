@@ -1,4 +1,4 @@
-package com.construsoft.visita_facil_api.model;
+package com.construsoft.visita_facil_api.cuenta.model;
 
 import jakarta.persistence.*;
 
@@ -14,7 +14,8 @@ public class Account {
     @Column(nullable = false)
     private String password;
 
-    public Account() {}
+    public Account() {
+    }
 
     public Account(Long id, String email, String password) {
         this.id = id;

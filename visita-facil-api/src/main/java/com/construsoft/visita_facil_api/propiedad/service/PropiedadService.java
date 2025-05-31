@@ -1,7 +1,7 @@
-package com.construsoft.visita_facil_api.service;
+package com.construsoft.visita_facil_api.propiedad.service;
 
-import com.construsoft.visita_facil_api.model.Propiedad;
-import com.construsoft.visita_facil_api.repository.PropiedadRepository;
+import com.construsoft.visita_facil_api.propiedad.model.Propiedad;
+import com.construsoft.visita_facil_api.propiedad.repository.PropiedadRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

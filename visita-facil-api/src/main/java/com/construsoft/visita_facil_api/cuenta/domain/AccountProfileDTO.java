@@ -1,4 +1,4 @@
-package com.construsoft.visita_facil_api.domain;
+package com.construsoft.visita_facil_api.cuenta.domain;
 
 public class AccountProfileDTO {
     private String email;
@@ -6,7 +6,8 @@ public class AccountProfileDTO {
     private String name;
     private String phone;
 
-    public AccountProfileDTO(){}
+    public AccountProfileDTO() {
+    }
 
     public String getEmail() {
         return email;
@@ -16,7 +17,7 @@ public class AccountProfileDTO {
         this.email = email;
         return this;
     }
-    
+
     public String getPassword() {
         return password;
     }

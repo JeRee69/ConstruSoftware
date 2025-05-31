@@ -1,57 +1,28 @@
-package com.construsoft.visita_facil_api.model;
+package com.construsoft.visita_facil_api.propiedad.domain;
 
-import jakarta.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Table(name = "propiedades")
-public class Propiedad {
+public class PropiedadDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
-    @Column(nullable = false)
     private String titulo;
-
-    @Column(nullable = false)
     private String descripcion;
-
-    @Column(nullable = false)
     private int precio;
-
-    @Column(nullable = false)
     private String tipo;
-
-    @Column(nullable = false)
     private String ubicacion;
+    private List<String> urlsImagenes;
+    private boolean disponible = true;
 
-    @Column(nullable = false)
-    private boolean disponible;
+    public PropiedadDTO() {
+    }
 
-    @ElementCollection
-    @CollectionTable(name = "imagenes_propiedad", joinColumns = @JoinColumn(name = "propiedad_id"))
-    @Column(name = "url_imagen")
-    private List<String> urlsImagenes = new ArrayList<>();
-
-    public Propiedad() {}
-
-    public Propiedad(String titulo, String descripcion, int precio, String tipo, String ubicacion, boolean disponible) {
+    public PropiedadDTO(String titulo, String descripcion, int precio, String tipo, String ubicacion, List<String> urlsImagenes, boolean disponible) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
         this.tipo = tipo;
         this.ubicacion = ubicacion;
+        this.urlsImagenes = urlsImagenes;
         this.disponible = disponible;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getTitulo() {

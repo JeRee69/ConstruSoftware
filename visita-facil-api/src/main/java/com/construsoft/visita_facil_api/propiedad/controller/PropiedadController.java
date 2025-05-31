@@ -1,8 +1,8 @@
-package com.construsoft.visita_facil_api.controller;
+package com.construsoft.visita_facil_api.propiedad.controller;
 
-import com.construsoft.visita_facil_api.domain.PropiedadDTO;
-import com.construsoft.visita_facil_api.model.Propiedad;
-import com.construsoft.visita_facil_api.service.PropiedadService;
+import com.construsoft.visita_facil_api.propiedad.domain.PropiedadDTO;
+import com.construsoft.visita_facil_api.propiedad.model.Propiedad;
+import com.construsoft.visita_facil_api.propiedad.service.PropiedadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

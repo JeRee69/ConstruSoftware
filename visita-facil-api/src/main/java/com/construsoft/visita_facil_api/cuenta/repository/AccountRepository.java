@@ -1,10 +1,9 @@
-package com.construsoft.visita_facil_api.repository;
+package com.construsoft.visita_facil_api.cuenta.repository;
 
-import java.util.Optional;
-
+import com.construsoft.visita_facil_api.cuenta.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.construsoft.visita_facil_api.model.Account;
+import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
