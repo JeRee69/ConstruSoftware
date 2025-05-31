@@ -1,4 +1,4 @@
-package com.construsoft.visita_facil_api;
+package com.construsoft.visita_facil_api.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
