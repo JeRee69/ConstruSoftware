@@ -73,7 +73,7 @@ public class VisitaService {
 
 
     public Visita agendarVisita(SolicitudVisitaDTO dto) {
-        Propiedad propiedad = propiedadRepo.findById(dto.getPropiedadId())
+        Propiedad propiedad = propiedadRepo.findById(dto.getPropiedadId().intValue())
                 .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
 
         Account agente = null; // asignación automática???

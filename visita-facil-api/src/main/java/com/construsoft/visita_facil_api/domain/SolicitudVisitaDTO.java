@@ -14,7 +14,7 @@ public class SolicitudVisitaDTO {
     private String correoCliente;
     private String telefonoCliente;
 
-    public Integer getPropiedadId() {
+    public Long getPropiedadId() {
         return propiedadId;
     }
 
