@@ -1,4 +1,4 @@
-package com.construsoft.visita_facil_api.cuenta.model;
+package com.construsoft.visita_facil_api.model;
 
 import jakarta.persistence.*;
 
@@ -19,8 +19,7 @@ public class Profile {
     private String phone;
 
 
-    public Profile() {
-    }
+    public Profile() {}
 
     public Profile(Long id, Account account, String name, String phone) {
         this.id = id;

@@ -1,4 +1,4 @@
-package com.construsoft.visita_facil_api.propiedad.domain;
+package com.construsoft.visita_facil_api.domain;
 
 import java.util.List;
 

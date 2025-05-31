@@ -1,8 +1,8 @@
-package com.construsoft.visita_facil_api.cuenta.controller;
+package com.construsoft.visita_facil_api.controller;
 
-import com.construsoft.visita_facil_api.cuenta.domain.AccountProfileDTO;
-import com.construsoft.visita_facil_api.cuenta.model.Account;
-import com.construsoft.visita_facil_api.cuenta.service.AccountService;
+import com.construsoft.visita_facil_api.domain.AccountProfileDTO;
+import com.construsoft.visita_facil_api.model.Account;
+import com.construsoft.visita_facil_api.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,5 +1,6 @@
-package com.construsoft.visita_facil_api.cuenta.model;
+package com.construsoft.visita_facil_api.model;
 
+import com.construsoft.visita_facil_api.enums.Rol;
 import jakarta.persistence.*;
 
 @Entity
@@ -13,6 +14,9 @@ public class Account {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Rol rol;
 
     public Account() {
     }
@@ -49,4 +53,13 @@ public class Account {
         this.password = password;
         return this;
     }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
 }

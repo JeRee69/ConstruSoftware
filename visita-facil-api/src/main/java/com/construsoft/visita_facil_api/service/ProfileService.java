@@ -1,7 +1,7 @@
-package com.construsoft.visita_facil_api.cuenta.service;
+package com.construsoft.visita_facil_api.service;
 
-import com.construsoft.visita_facil_api.cuenta.model.Profile;
-import com.construsoft.visita_facil_api.cuenta.repository.ProfileRepository;
+import com.construsoft.visita_facil_api.model.Profile;
+import com.construsoft.visita_facil_api.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
