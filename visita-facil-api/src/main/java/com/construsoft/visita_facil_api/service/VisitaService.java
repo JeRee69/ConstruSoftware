@@ -32,7 +32,7 @@ public class VisitaService {
     private DisponibilidadAgenteRepository disponibilidadRepo;
 
     public List<HorarioDisponibleDTO> obtenerHorariosDisponibles(Long propiedadId, LocalDate fecha) {
-        Propiedad propiedad = propiedadRepo.findById(propiedadId)
+        Propiedad propiedad = propiedadRepo.findById(propiedadId.intValue())
                 .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
 
         List<HorarioPropiedad> horariosPropiedad = horarioPropiedadRepo.findByPropiedadAndDia(propiedad, fecha.getDayOfWeek());
