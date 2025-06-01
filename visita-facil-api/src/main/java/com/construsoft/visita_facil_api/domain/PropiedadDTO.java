@@ -1,7 +1,5 @@
 package com.construsoft.visita_facil_api.domain;
 
-import java.util.List;
-
 public class PropiedadDTO {
 
     private String titulo;
@@ -9,19 +7,16 @@ public class PropiedadDTO {
     private int precio;
     private String tipo;
     private String ubicacion;
-    private List<String> urlsImagenes;
     private boolean disponible = true;
 
-    public PropiedadDTO() {
-    }
+    public PropiedadDTO() {}
 
-    public PropiedadDTO(String titulo, String descripcion, int precio, String tipo, String ubicacion, List<String> urlsImagenes, boolean disponible) {
+    public PropiedadDTO(String titulo, String descripcion, int precio, String tipo, String ubicacion, boolean disponible) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
         this.tipo = tipo;
         this.ubicacion = ubicacion;
-        this.urlsImagenes = urlsImagenes;
         this.disponible = disponible;
     }
 
@@ -71,14 +66,6 @@ public class PropiedadDTO {
 
     public void setDisponible(boolean disponible) {
         this.disponible = disponible;
-    }
-
-    public List<String> getUrlsImagenes() {
-        return urlsImagenes;
-    }
-
-    public void setUrlsImagenes(List<String> urlsImagenes) {
-        this.urlsImagenes = urlsImagenes;
     }
 
 }

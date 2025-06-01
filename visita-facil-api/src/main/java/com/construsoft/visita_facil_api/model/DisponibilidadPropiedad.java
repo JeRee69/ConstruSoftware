@@ -49,8 +49,8 @@ public class DisponibilidadPropiedad {
         return fecha;
     }
 
-    public void setFecha(LocalDate dia) {
-        this.fecha = dia;
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     public LocalTime getHoraInicio() {

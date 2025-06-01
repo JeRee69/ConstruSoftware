@@ -16,5 +16,20 @@ public class DisponibilidadPropiedadDTO {
         this.horaFin = horaFin;
     }
 
+    public Integer getPropiedadId() {
+        return Math.toIntExact(propiedadId);
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public LocalTime getHoraFin() {
+        return horaFin;
+    }
 
 }

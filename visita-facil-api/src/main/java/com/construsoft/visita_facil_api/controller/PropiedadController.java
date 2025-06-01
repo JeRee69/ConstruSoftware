@@ -41,8 +41,7 @@ public class PropiedadController {
                 propiedadDTO.getPrecio(),
                 propiedadDTO.getTipo(),
                 propiedadDTO.getUbicacion(),
-                propiedadDTO.isDisponible(),
-                propiedadDTO.getUrlsImagenes()
+                propiedadDTO.isDisponible()
         );
 
         return ResponseEntity.status(201).body(savedPropiedad); // Estatus creado
