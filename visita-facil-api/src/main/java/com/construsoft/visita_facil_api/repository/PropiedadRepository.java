@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PropiedadRepository extends JpaRepository<Propiedad, Integer> {
+public interface PropiedadRepository extends JpaRepository<Propiedad, Long> {
     public List<Propiedad> findByDisponibleTrue();
 }

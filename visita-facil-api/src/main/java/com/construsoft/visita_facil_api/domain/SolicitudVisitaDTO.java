@@ -4,47 +4,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class SolicitudVisitaDTO {
-    private Long propiedadId;
-    private LocalDate fecha;
-    private LocalTime hora;
-    private Long agenteId; // puede ser null si se asigna automáticamente
-
-    // Datos del cliente (sin cuenta)
     private String nombreCliente;
     private String correoCliente;
     private String telefonoCliente;
-
-    public Long getPropiedadId() {
-        return propiedadId;
-    }
-
-    public void setPropiedadId(Long propiedadId) {
-        this.propiedadId = propiedadId;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public LocalTime getHora() {
-        return hora;
-    }
-
-    public void setHora(LocalTime hora) {
-        this.hora = hora;
-    }
-
-    public Long getAgenteId() {
-        return agenteId;
-    }
-
-    public void setAgenteId(Long agenteId) {
-        this.agenteId = agenteId;
-    }
+    private LocalDate fecha;
+    private LocalTime horaInicio;
+    private Long propiedadId;
 
     public String getNombreCliente() {
         return nombreCliente;
@@ -62,6 +27,14 @@ public class SolicitudVisitaDTO {
         this.correoCliente = correoCliente;
     }
 
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
+    }
+
     public String getTelefonoCliente() {
         return telefonoCliente;
     }
@@ -70,4 +43,19 @@ public class SolicitudVisitaDTO {
         this.telefonoCliente = telefonoCliente;
     }
 
+    public LocalTime getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
+    public Long getPropiedadId() {
+        return (long) Math.toIntExact(propiedadId);
+    }
+
+    public void setPropiedadId(Long propiedadId) {
+        this.propiedadId = propiedadId;
+    }
 }

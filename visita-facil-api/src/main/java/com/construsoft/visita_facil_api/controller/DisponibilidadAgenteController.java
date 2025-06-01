@@ -17,8 +17,8 @@ public class DisponibilidadAgenteController {
 
     @PostMapping("/registrar")
     public ResponseEntity<DisponibilidadAgente> registrar(@RequestBody DisponibilidadAgenteDTO dto) {
-        DisponibilidadAgente nuevaDisponibilidad = disponibilidadAgenteService.registrar(dto);
-        return ResponseEntity.ok(nuevaDisponibilidad);
+        DisponibilidadAgente disponibilidadAgente = disponibilidadAgenteService.registrar(dto);
+        return ResponseEntity.ok(disponibilidadAgente);
     }
 
 }

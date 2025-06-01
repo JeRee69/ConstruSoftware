@@ -1,35 +1,51 @@
 package com.construsoft.visita_facil_api.domain;
 
-import java.time.LocalDate;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public class DisponibilidadPropiedadDTO {
-    private final Long propiedadId;
-    private final LocalDate fecha;
-    private final LocalTime horaInicio;
-    private final LocalTime horaFin;
+    private Long id;
+    private DayOfWeek diaSemana;
+    private LocalTime horaInicio;
+    private LocalTime horaFin;
 
-    public DisponibilidadPropiedadDTO(Long propiedadId, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) {
-        this.propiedadId = propiedadId;
-        this.fecha = fecha;
+    public DisponibilidadPropiedadDTO(Long id, DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin) {
+        this.id = id;
+        this.diaSemana = diaSemana;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
     }
 
-    public Integer getPropiedadId() {
-        return Math.toIntExact(propiedadId);
+    public Long getId() {
+        return id;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public DayOfWeek getDiaSemana() {
+        return diaSemana;
+    }
+
+    public void setDiaSemana(DayOfWeek diaSemana) {
+        this.diaSemana = diaSemana;
     }
 
     public LocalTime getHoraInicio() {
         return horaInicio;
     }
 
+    public void setHoraInicio(LocalTime horaInicio) {
+        this.horaInicio = horaInicio;
+    }
+
     public LocalTime getHoraFin() {
         return horaFin;
+    }
+
+    public void setHoraFin(LocalTime horaFin) {
+        this.horaFin = horaFin;
     }
 
 }

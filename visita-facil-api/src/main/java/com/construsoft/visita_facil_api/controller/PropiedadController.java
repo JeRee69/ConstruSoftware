@@ -23,8 +23,7 @@ public class PropiedadController {
     @GetMapping("/{id}")
     public ResponseEntity<Propiedad> getPropiedadById(@PathVariable int id) {
         Optional<Propiedad> propiedad = propiedadService.getById(id);
-        return propiedad.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return propiedad.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/disponibles")
@@ -48,7 +47,7 @@ public class PropiedadController {
     }
 
     @PostMapping("/{id}/imagenes")
-    public ResponseEntity<List<String>> subirImagenes(
+    public ResponseEntity<List<String>> cargarImagenes(
             @PathVariable int id,
             @RequestParam("imagenes") List<MultipartFile> imagenes) {
         try {

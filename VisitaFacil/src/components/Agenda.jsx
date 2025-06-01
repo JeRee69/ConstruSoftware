@@ -60,35 +60,35 @@ const TaskItem = styled.li`
 `;
 
 const Agenda = () => {
-  const tasks = [
-    { id: 1, title: 'Reunión con cliente', time: '10:00 AM' },
-    { id: 2, title: 'Visita a propiedad', time: '1:00 PM' },
-    { id: 3, title: 'Seguimiento por correo', time: '4:30 PM' },
-  ];
+    const tasks = [
+        {id: 1, title: 'Reunión con cliente', time: '10:00 AM'},
+        {id: 2, title: 'Visita a propiedad', time: '1:00 PM'},
+        {id: 3, title: 'Seguimiento por correo', time: '4:30 PM'},
+    ];
 
-  return (
-    <Container>
-      <Sidebar>
-        <SidebarTitle>PropiedadesPlus</SidebarTitle>
-        <SidebarItem>Agenda</SidebarItem>
-        <SidebarItem>Propiedades</SidebarItem>
-        <SidebarItem>Configuración</SidebarItem>
-        <SidebarItem>Cerrar sesión</SidebarItem>
-      </Sidebar>
+    return (
+        <Container>
+            <Sidebar>
+                <SidebarTitle>PropiedadesPlus</SidebarTitle>
+                <SidebarItem>Agenda</SidebarItem>
+                <SidebarItem>Propiedades</SidebarItem>
+                <SidebarItem>Configuración</SidebarItem>
+                <SidebarItem>Cerrar sesión</SidebarItem>
+            </Sidebar>
 
-      <Main>
-        <Header>Agenda del día</Header>
-        <TaskList>
-          {tasks.map((task) => (
-            <TaskItem key={task.id}>
-              <strong>{task.title}</strong> <br />
-              <small>{task.time}</small>
-            </TaskItem>
-          ))}
-        </TaskList>
-      </Main>
-    </Container>
-  );
+            <Main>
+                <Header>Agenda del día</Header>
+                <TaskList>
+                    {tasks.map((task) => (
+                        <TaskItem key={task.id}>
+                            <strong>{task.title}</strong> <br/>
+                            <small>{task.time}</small>
+                        </TaskItem>
+                    ))}
+                </TaskList>
+            </Main>
+        </Container>
+    );
 };
 
 export default Agenda;

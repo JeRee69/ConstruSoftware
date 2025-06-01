@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 public class Account {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -18,8 +19,7 @@ public class Account {
     @Enumerated(EnumType.STRING)
     private Rol rol;
 
-    public Account() {
-    }
+    public Account() {}
 
     public Account(Long id, String email, String password) {
         this.id = id;

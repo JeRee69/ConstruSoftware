@@ -2,7 +2,7 @@ package com.construsoft.visita_facil_api.model;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 @Entity
@@ -13,12 +13,13 @@ public class DisponibilidadPropiedad {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "propiedad_id", nullable = false)
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "propiedad_id")
     private Propiedad propiedad;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LocalDate fecha;
+    private DayOfWeek diaSemana;
 
     @Column(nullable = false)
     private LocalTime horaInicio;
@@ -45,12 +46,12 @@ public class DisponibilidadPropiedad {
         this.propiedad = propiedad;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
+    public DayOfWeek getDiaSemana() {
+        return diaSemana;
     }
 
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
+    public void setDiaSemana(DayOfWeek fecha) {
+        this.diaSemana = fecha;
     }
 
     public LocalTime getHoraInicio() {

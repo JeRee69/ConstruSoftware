@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/disponibilidad/propiedad")
+@CrossOrigin(origins = "*")
 public class DisponibilidadPropiedadController {
 
     @Autowired

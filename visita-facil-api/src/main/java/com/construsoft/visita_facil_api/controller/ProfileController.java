@@ -18,11 +18,7 @@ public class ProfileController {
     @GetMapping("")
     public ResponseEntity<Profile> getProfile(@RequestParam("accountId") Long accountId) {
         Optional<Profile> profileOpt = profileService.getProfileByAccountId(accountId);
-        if (profileOpt.isPresent()) {
-            return ResponseEntity.ok(profileOpt.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return profileOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 }

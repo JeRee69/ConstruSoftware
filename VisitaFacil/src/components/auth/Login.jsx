@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
 const LoginContainer = styled.div`
@@ -105,93 +105,93 @@ const RegisterLink = styled.div`
 `;
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError('');
 
-    try {
-      const response = await fetch('http://localhost:8081/account/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+        try {
+            const response = await fetch('http://localhost:8080/account/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({email, password})
+            });
 
-      if (response.status === 200) {
-        const data = await response.json();
-        const accountId = data.accountId;
+            if (response.status === 200) {
+                const data = await response.json();
+                const accountId = data.accountId;
 
-        // Guardar accountId si se necesita
-        // localStorage.setItem('accountId', accountId);
+                // Guardar accountId si se necesita
+                // localStorage.setItem('accountId', accountId);
 
-        // Redirigir según el tipo de correo
-        if (email.includes('@corredora')) {
-          navigate('/agenda');
-        } else {
-          navigate('/catalogo');
+                // Redirigir según el tipo de correo
+                if (email.includes('@corredora')) {
+                    navigate('/agenda');
+                } else {
+                    navigate('/catalogo');
+                }
+            } else if (response.status === 401) {
+                setError('Credenciales incorrectas. Por favor, intente nuevamente.');
+            } else {
+                setError('Error inesperado. Intente más tarde.');
+            }
+        } catch (err) {
+            setError('Ocurrió un error al iniciar sesión. Por favor, intente más tarde.');
+        } finally {
+            setIsLoading(false);
         }
-      } else if (response.status === 401) {
-        setError('Credenciales incorrectas. Por favor, intente nuevamente.');
-      } else {
-        setError('Error inesperado. Intente más tarde.');
-      }
-    } catch (err) {
-      setError('Ocurrió un error al iniciar sesión. Por favor, intente más tarde.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    };
 
-  return (
-    <LoginContainer>
-      <LoginForm>
-        <Logo>PropiedadesPlus</Logo>
-        <form onSubmit={handleSubmit}>
-          <InputField>
-            <Label htmlFor="email">Correo Electrónico</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="correo@ejemplo.com"
-            />
-          </InputField>
+    return (
+        <LoginContainer>
+            <LoginForm>
+                <Logo>PropiedadesPlus</Logo>
+                <form onSubmit={handleSubmit}>
+                    <InputField>
+                        <Label htmlFor="email">Correo Electrónico</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            placeholder="correo@ejemplo.com"
+                        />
+                    </InputField>
 
-          <InputField>
-            <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-            />
-          </InputField>
+                    <InputField>
+                        <Label htmlFor="password">Contraseña</Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            placeholder="••••••••"
+                        />
+                    </InputField>
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-          </Button>
+                    <Button type="submit" disabled={isLoading}>
+                        {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+                    </Button>
 
-          {error && <ErrorMessage>{error}</ErrorMessage>}
+                    {error && <ErrorMessage>{error}</ErrorMessage>}
 
-          <RegisterLink>
-            ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
-          </RegisterLink>
-        </form>
-      </LoginForm>
-    </LoginContainer>
-  );
+                    <RegisterLink>
+                        ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
+                    </RegisterLink>
+                </form>
+            </LoginForm>
+        </LoginContainer>
+    );
 };
 
 export default Login;

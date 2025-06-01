@@ -12,9 +12,9 @@
     </parent>
 
     <groupId>com.construsoft</groupId>
-    <artifactId>visita-facil-api</artifactId>
+    <artifactId>solicitudVisita-facil-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>visita-facil-api</name>
+    <name>solicitudVisita-facil-api</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
