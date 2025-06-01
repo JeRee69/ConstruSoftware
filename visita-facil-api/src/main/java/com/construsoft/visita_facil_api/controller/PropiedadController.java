@@ -27,6 +27,12 @@ public class PropiedadController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/disponibles")
+    public ResponseEntity<List<Propiedad>> getPropiedadesDisponibles() {
+        List<Propiedad> propDisponibles = propiedadService.getPropiedadesDisponibles();
+        return ResponseEntity.ok(propDisponibles); // Estatus 200
+    }
+
     @PostMapping
     public ResponseEntity<Propiedad> addPropiedad(@RequestBody PropiedadDTO propiedadDTO) {
         Propiedad savedPropiedad = propiedadService.addPropiedad(
@@ -39,7 +45,7 @@ public class PropiedadController {
                 propiedadDTO.getUrlsImagenes()
         );
 
-        return ResponseEntity.status(201).body(savedPropiedad);
+        return ResponseEntity.status(201).body(savedPropiedad); // Estatus creado
     }
 
     @PostMapping("/{id}/imagenes")

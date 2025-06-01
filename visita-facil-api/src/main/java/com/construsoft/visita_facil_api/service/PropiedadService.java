@@ -25,6 +25,10 @@ public class PropiedadService {
         return propiedadRepository.findById(id);
     }
 
+    public List<Propiedad> getPropiedadesDisponibles() {
+        return propiedadRepository.findByDisponibleTrue();
+    }
+
     public Propiedad addPropiedad(String titulo, String descripcion, int precio, String tipo, String ubicacion, boolean disponible, List<String> urlsImagenes) {
         Propiedad propiedad = new Propiedad();
         propiedad.setTitulo(titulo);

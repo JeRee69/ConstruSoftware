@@ -1,32 +1,33 @@
 package com.construsoft.visita_facil_api.model;
 
 import jakarta.persistence.*;
-import java.time.DayOfWeek;
+
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
-@Table(name = "horario_propiedades")
-public class HorarioPropiedad {
+@Table(name = "disponibilidad_propiedades")
+public class DisponibilidadPropiedad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "propiedad_id")
+    @ManyToOne
+    @JoinColumn(name = "propiedad_id", nullable = false)
     private Propiedad propiedad;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private DayOfWeek dia;
+    private LocalDate fecha;
 
-    @Column(name = "hora_inicio", nullable = false)
+    @Column(nullable = false)
     private LocalTime horaInicio;
 
-    @Column(name = "hora_fin", nullable = false)
+    @Column(nullable = false)
     private LocalTime horaFin;
 
-    public HorarioPropiedad() {}
+    public DisponibilidadPropiedad() {
+    }
 
     public Long getId() {
         return id;
@@ -44,12 +45,12 @@ public class HorarioPropiedad {
         this.propiedad = propiedad;
     }
 
-    public DayOfWeek getDia() {
-        return dia;
+    public LocalDate getFecha() {
+        return fecha;
     }
 
-    public void setDia(DayOfWeek dia) {
-        this.dia = dia;
+    public void setFecha(LocalDate dia) {
+        this.fecha = dia;
     }
 
     public LocalTime getHoraInicio() {

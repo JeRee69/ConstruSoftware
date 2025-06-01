@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DisponibilidadService {
+public class DisponibilidadAgenteService {
 
     @Autowired
     private DisponibilidadAgenteRepository disponibilidadRepo;
@@ -17,17 +17,17 @@ public class DisponibilidadService {
     @Autowired
     private AccountRepository accountRepo;
 
-    public void registrarDisponibilidad(DisponibilidadAgenteDTO dto){
+    public DisponibilidadAgente registrar(DisponibilidadAgenteDTO dto){
         Account agente = accountRepo.findById(dto.getAccountId())
                 .orElseThrow(() -> new RuntimeException("Agente no encontrado"));
 
         DisponibilidadAgente disponibilidad = new DisponibilidadAgente();
         disponibilidad.setAgente(agente);
-        disponibilidad.setDia(dto.getDia());
+        disponibilidad.setFecha(dto.getFecha());
         disponibilidad.setHoraInicio(dto.getHoraInicio());
         disponibilidad.setHoraFin(dto.getHoraFin());
 
-        disponibilidadRepo.save(disponibilidad);
+        return disponibilidadRepo.save(disponibilidad);
     }
 
 }

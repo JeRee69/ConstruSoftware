@@ -2,7 +2,7 @@ package com.construsoft.visita_facil_api.model;
 
 import jakarta.persistence.*;
 
-import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -16,10 +16,9 @@ public class DisponibilidadAgente {
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account agente;
-
-    @Enumerated(EnumType.STRING)
+    
     @Column(nullable = false)
-    private DayOfWeek dia;
+    private LocalDate fecha;
 
     @Column(nullable = false)
     private LocalTime horaInicio;
@@ -43,12 +42,12 @@ public class DisponibilidadAgente {
         this.agente = agente;
     }
 
-    public DayOfWeek getDia() {
-        return dia;
+    public LocalDate getFecha() {
+        return fecha;
     }
 
-    public void setDia(DayOfWeek dia) {
-        this.dia = dia;
+    public void setFecha(LocalDate dia) {
+        this.fecha = dia;
     }
 
     public LocalTime getHoraInicio() {

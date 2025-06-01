@@ -1,11 +1,11 @@
 package com.construsoft.visita_facil_api.domain;
 
-import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DisponibilidadAgenteDTO {
     private Long accountId;
-    private DayOfWeek dia;
+    private LocalDate fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
 
@@ -17,12 +17,12 @@ public class DisponibilidadAgenteDTO {
         this.accountId = accountId;
     }
 
-    public DayOfWeek getDia() {
-        return dia;
+    public LocalDate getFecha() {
+        return fecha;
     }
 
-    public void setDia(DayOfWeek dia) {
-        this.dia = dia;
+    public void setFecha(LocalDate fecha) {
+        this.fecha = fecha;
     }
 
     public LocalTime getHoraInicio() {
