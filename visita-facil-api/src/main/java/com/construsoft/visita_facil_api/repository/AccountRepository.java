@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-
     Optional<Account> findByEmail(String email);
     List<Account> findAllByRol(Rol rol);
 }

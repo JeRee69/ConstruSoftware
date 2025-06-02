@@ -1,8 +1,8 @@
 package com.construsoft.visita_facil_api.model;
 
 import com.construsoft.visita_facil_api.enums.EstadoSolicitud;
-
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -13,6 +13,11 @@ public class SolicitudVisita {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    // Relación con Propiedad
+    @ManyToOne
+    @JoinColumn(name = "propiedad_id", nullable = false)
+    private Propiedad propiedad;
 
     // Información del cliente (no autenticado)
     @Column(nullable = false)
@@ -30,20 +35,15 @@ public class SolicitudVisita {
     @Column(nullable = false)
     private LocalTime horaInicio;
 
-    // Relación con Propiedad
-    @ManyToOne
-    @JoinColumn(name = "propiedad_id", nullable = false)
-    private Propiedad propiedad;
+    // Estado de la solicitud: PENDIENTE, CONFIRMADA, CANCELADA, REALIZADA
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoSolicitud estado = EstadoSolicitud.PENDIENTE;
 
     // Relación con Agente (opcional hasta ser asignado)
     @ManyToOne
     @JoinColumn(name = "agente_id")
     private Account agente;
-
-    // Estado de la solicitud: PENDIENTE, CONFIRMADA, CANCELADA, REALIZADA
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EstadoSolicitud estado = EstadoSolicitud.PENDIENTE;
 
     // Constructor vacío
     public SolicitudVisita() {}
@@ -54,6 +54,14 @@ public class SolicitudVisita {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Propiedad getPropiedad() {
+        return propiedad;
+    }
+
+    public void setPropiedad(Propiedad propiedad) {
+        this.propiedad = propiedad;
     }
 
     public String getNombreCliente() {
@@ -96,12 +104,12 @@ public class SolicitudVisita {
         this.horaInicio = horaInicio;
     }
 
-    public Propiedad getPropiedad() {
-        return propiedad;
+    public EstadoSolicitud getEstado() {
+        return estado;
     }
 
-    public void setPropiedad(Propiedad propiedad) {
-        this.propiedad = propiedad;
+    public void setEstado(EstadoSolicitud estado) {
+        this.estado = estado;
     }
 
     public Account getAgente() {
@@ -110,14 +118,6 @@ public class SolicitudVisita {
 
     public void setAgente(Account agente) {
         this.agente = agente;
-    }
-
-    public EstadoSolicitud getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoSolicitud estado) {
-        this.estado = estado;
     }
 
 }

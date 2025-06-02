@@ -4,27 +4,27 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class SolicitudVisitaDTO {
-    private String nombreCliente;
-    private String correoCliente;
-    private String telefonoCliente;
+    private Long idPropiedad;
+    private String nombre;
+    private String correo;
+    private String telefono;
     private LocalDate fecha;
-    private LocalTime horaInicio;
-    private Long propiedadId;
+    private LocalTime hora;
 
-    public String getNombreCliente() {
-        return nombreCliente;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public String getCorreoCliente() {
-        return correoCliente;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setCorreoCliente(String correoCliente) {
-        this.correoCliente = correoCliente;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
     public LocalDate getFecha() {
@@ -35,27 +35,28 @@ public class SolicitudVisitaDTO {
         this.fecha = fecha;
     }
 
-    public String getTelefonoCliente() {
-        return telefonoCliente;
+    public String getTelefono() {
+        return telefono;
     }
 
-    public void setTelefonoCliente(String telefonoCliente) {
-        this.telefonoCliente = telefonoCliente;
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
-    public LocalTime getHoraInicio() {
-        return horaInicio;
+    public LocalTime getHora() {
+        return hora;
     }
 
-    public void setHoraInicio(LocalTime horaInicio) {
-        this.horaInicio = horaInicio;
+    public void setHora(LocalTime hora) {
+        this.hora = hora;
     }
 
-    public Long getPropiedadId() {
-        return (long) Math.toIntExact(propiedadId);
+    public Long getIdPropiedad() {
+        return (long) Math.toIntExact(idPropiedad);
     }
 
-    public void setPropiedadId(Long propiedadId) {
-        this.propiedadId = propiedadId;
+    public void setIdPropiedad(Long idPropiedad) {
+        this.idPropiedad = idPropiedad;
     }
+
 }

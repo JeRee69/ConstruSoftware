@@ -20,20 +20,21 @@ public class SolicitudVisitaService {
     private PropiedadRepository propiedadRepo;
 
     public SolicitudVisita crearSolicitud(SolicitudVisitaDTO dto) {
-        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getPropiedadId());
+        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad());
 
         if (propiedadOpt.isEmpty()) {
             throw new IllegalArgumentException("Propiedad no encontrada");
         }
 
         SolicitudVisita solicitud = new SolicitudVisita();
-        solicitud.setNombreCliente(dto.getNombreCliente());
-        solicitud.setCorreoCliente(dto.getCorreoCliente());
-        solicitud.setTelefonoCliente(dto.getTelefonoCliente());
+        solicitud.setNombreCliente(dto.getNombre());
+        solicitud.setCorreoCliente(dto.getCorreo());
+        solicitud.setTelefonoCliente(dto.getTelefono());
         solicitud.setFecha(dto.getFecha());
-        solicitud.setHoraInicio(dto.getHoraInicio());
+        solicitud.setHoraInicio(dto.getHora());
         solicitud.setPropiedad(propiedadOpt.get());
 
         return solicitudRepo.save(solicitud);
     }
+
 }

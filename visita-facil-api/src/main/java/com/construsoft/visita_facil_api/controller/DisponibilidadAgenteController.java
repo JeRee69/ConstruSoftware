@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/disponibilidad/agente")
+@RequestMapping("/disponibilidad/agentes")
 @CrossOrigin(origins = "*")
 public class DisponibilidadAgenteController {
 
@@ -17,8 +17,8 @@ public class DisponibilidadAgenteController {
 
     @PostMapping("/registrar")
     public ResponseEntity<DisponibilidadAgente> registrar(@RequestBody DisponibilidadAgenteDTO dto) {
-        DisponibilidadAgente disponibilidadAgente = disponibilidadAgenteService.registrar(dto);
-        return ResponseEntity.ok(disponibilidadAgente);
+        DisponibilidadAgente disponibilidad = disponibilidadAgenteService.registrar(dto);
+        return ResponseEntity.ok(disponibilidad);
     }
 
 }

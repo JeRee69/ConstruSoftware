@@ -24,14 +24,14 @@ public class DisponibilidadPropiedadService {
     private DisponibilidadPropiedadRepository disponibilidadRepo;
 
     public DisponibilidadPropiedad registrarDisponibilidad(DisponibilidadPropiedadDTO dto) {
-        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getId());
+        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad());
         if (propiedadOpt.isEmpty()) {
             throw new IllegalArgumentException("Propiedad no encontrada");
         }
 
         DisponibilidadPropiedad disponibilidad = new DisponibilidadPropiedad();
         disponibilidad.setPropiedad(propiedadOpt.get());
-        disponibilidad.setDiaSemana(dto.getDiaSemana());
+        disponibilidad.setDiaSemana(dto.getDia());
         disponibilidad.setHoraInicio(dto.getHoraInicio());
         disponibilidad.setHoraFin(dto.getHoraFin());
 

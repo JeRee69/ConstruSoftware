@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/visita/solicitud")
+@RequestMapping("/visitas/solicitud")
 @CrossOrigin(origins = "*")
 public class SolicitudVisitaController {
 

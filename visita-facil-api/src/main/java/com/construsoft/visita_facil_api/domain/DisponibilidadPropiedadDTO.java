@@ -4,32 +4,32 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public class DisponibilidadPropiedadDTO {
-    private Long id;
-    private DayOfWeek diaSemana;
+    private Long idPropiedad;
+    private DayOfWeek dia;
     private LocalTime horaInicio;
     private LocalTime horaFin;
 
-    public DisponibilidadPropiedadDTO(Long id, DayOfWeek diaSemana, LocalTime horaInicio, LocalTime horaFin) {
-        this.id = id;
-        this.diaSemana = diaSemana;
+    public DisponibilidadPropiedadDTO(Long idPropiedad, DayOfWeek dia, LocalTime horaInicio, LocalTime horaFin) {
+        this.idPropiedad = idPropiedad;
+        this.dia = dia;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdPropiedad() {
+        return idPropiedad;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdPropiedad(Long idPropiedad) {
+        this.idPropiedad = idPropiedad;
     }
 
-    public DayOfWeek getDiaSemana() {
-        return diaSemana;
+    public DayOfWeek getDia() {
+        return dia;
     }
 
-    public void setDiaSemana(DayOfWeek diaSemana) {
-        this.diaSemana = diaSemana;
+    public void setDia(DayOfWeek dia) {
+        this.dia = dia;
     }
 
     public LocalTime getHoraInicio() {

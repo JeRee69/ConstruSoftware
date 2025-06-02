@@ -10,11 +10,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/profile")
+@CrossOrigin(origins = "*")
 public class ProfileController {
+
     @Autowired
     private ProfileService profileService;
 
-    @CrossOrigin(origins = "*")
     @GetMapping("")
     public ResponseEntity<Profile> getProfile(@RequestParam("accountId") Long accountId) {
         Optional<Profile> profileOpt = profileService.getProfileByAccountId(accountId);
