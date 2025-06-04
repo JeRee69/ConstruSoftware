@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const LoginContainer = styled.div`
@@ -20,7 +20,12 @@ const LoginForm = styled.div`
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+
+  display: flex; /* 👈 Centra verticalmente el contenido */
+  flex-direction: column;
+  justify-content: center;
 `;
+
 
 const Logo = styled.div`
   text-align: center;
@@ -42,8 +47,10 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
+  box-sizing: border-box; /* 👈 Asegura que width incluya padding y border */
   width: 100%;
   padding: 0.8rem;
+  background-color: white;
   border: 1px solid #e0e0e0;
   border-radius: 4px;
   font-size: 1rem;
@@ -56,8 +63,11 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
+  box-sizing: border-box; /* 👈 Igual que en inputs */
   width: 100%;
-  padding: 0.8rem;
+  padding: 0.9rem 1rem; /* 👈 Un poco más alto */
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
   background-color: #d32f2f;
   color: white;
   border: none;
@@ -66,7 +76,7 @@ const Button = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-bottom: 1rem;
+  text-align: center;
 
   &:hover {
     background-color: #b71c1c;
@@ -77,6 +87,7 @@ const Button = styled.button`
     cursor: not-allowed;
   }
 `;
+
 
 const ErrorMessage = styled.div`
   color: #d32f2f;
@@ -105,93 +116,91 @@ const RegisterLink = styled.div`
 `;
 
 const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError('');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
-        try {
-            const response = await fetch('http://localhost:8080/account/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({email, password})
-            });
+    try {
+      const response = await fetch('http://localhost:8080/account/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-            if (response.status === 200) {
-                const data = await response.json();
-                const accountId = data.accountId;
+      if (response.status === 200) {
+        const data = await response.json();
+        const accountId = data.accountId;
 
-                // Guardar accountId si se necesita
-                // localStorage.setItem('accountId', accountId);
+        // Guardar datos si es necesario
+        // localStorage.setItem('accountId', accountId);
 
-                // Redirigir según el tipo de correo
-                if (email.includes('@corredora')) {
-                    navigate('/agenda');
-                } else {
-                    navigate('/catalogo');
-                }
-            } else if (response.status === 401) {
-                setError('Credenciales incorrectas. Por favor, intente nuevamente.');
-            } else {
-                setError('Error inesperado. Intente más tarde.');
-            }
-        } catch (err) {
-            setError('Ocurrió un error al iniciar sesión. Por favor, intente más tarde.');
-        } finally {
-            setIsLoading(false);
+        // Redirigir según tipo de usuario
+        if (email.includes('@corredora')) {
+          navigate('/agenda');
+        } else {
+          navigate('/catalogo');
         }
-    };
+      } else if (response.status === 401) {
+        setError('Credenciales incorrectas. Por favor, intente nuevamente.');
+      } else {
+        setError('Error inesperado. Intente más tarde.');
+      }
+    } catch (err) {
+      setError('Ocurrió un error al iniciar sesión. Intente más tarde.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    return (
-        <LoginContainer>
-            <LoginForm>
-                <Logo>PropiedadesPlus</Logo>
-                <form onSubmit={handleSubmit}>
-                    <InputField>
-                        <Label htmlFor="email">Correo Electrónico</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            placeholder="correo@ejemplo.com"
-                        />
-                    </InputField>
+  return (
+    <LoginContainer>
+      <LoginForm>
+        <Logo>VisitaFácil</Logo>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
+          <InputField>
+            <Label htmlFor="email">Correo Electrónico</Label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="correo@ejemplo.com"
+            />
+          </InputField>
 
-                    <InputField>
-                        <Label htmlFor="password">Contraseña</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                            placeholder="••••••••"
-                        />
-                    </InputField>
+          <InputField>
+            <Label htmlFor="password">Contraseña</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+            />
+          </InputField>
 
-                    <Button type="submit" disabled={isLoading}>
-                        {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-                    </Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+          </Button>
 
-                    {error && <ErrorMessage>{error}</ErrorMessage>}
+          {error && <ErrorMessage>{error}</ErrorMessage>}
 
-                    <RegisterLink>
-                        ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
-                    </RegisterLink>
-                </form>
-            </LoginForm>
-        </LoginContainer>
-    );
+          <RegisterLink>
+            ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
+          </RegisterLink>
+        </form>
+      </LoginForm>
+    </LoginContainer>
+  );
 };
 
 export default Login;
