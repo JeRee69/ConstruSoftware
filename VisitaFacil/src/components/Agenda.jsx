@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom'; // ✅ Importa useNavigate
 import styled from 'styled-components';
 
 const OuterWrapper = styled.div`
@@ -89,6 +90,13 @@ const TaskItem = styled.li`
 `;
 
 const Agenda = () => {
+  const navigate = useNavigate(); // ✅ Hook para redirección
+
+  const handleLogout = () => {
+    localStorage.clear(); // ✅ Limpiar datos almacenados
+    navigate('/Login');   // ✅ Redirigir al login
+  };
+
   const tasks = [
     { id: 1, title: 'Reunión con cliente', time: '10:00 AM' },
     { id: 2, title: 'Visita a propiedad', time: '1:00 PM' },
@@ -103,7 +111,7 @@ const Agenda = () => {
           <SidebarItem>Agenda</SidebarItem>
           <SidebarItem>Propiedades</SidebarItem>
           <SidebarItem>Configuración</SidebarItem>
-          <SidebarItem>Cerrar sesión</SidebarItem>
+          <SidebarItem onClick={handleLogout}>Cerrar sesión</SidebarItem>
         </Sidebar>
 
         <Main>
