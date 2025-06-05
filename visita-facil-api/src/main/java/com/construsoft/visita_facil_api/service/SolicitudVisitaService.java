@@ -20,7 +20,7 @@ public class SolicitudVisitaService {
     private PropiedadRepository propiedadRepo;
 
     public SolicitudVisita crearSolicitud(SolicitudVisitaDTO dto) {
-        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad());
+        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad().intValue());
 
         if (propiedadOpt.isEmpty()) {
             throw new IllegalArgumentException("Propiedad no encontrada");

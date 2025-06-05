@@ -1,5 +1,6 @@
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -36,22 +37,13 @@ const Card = styled.div`
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  cursor: pointer; /* 👈 indica que se puede hacer clic */
   transition: transform 0.2s;
+  padding: 1rem;
 
   &:hover {
-    transform: scale(1.02); /* 👈 animación leve al pasar el mouse */
+    transform: scale(1.02);
+    border: 2px solid #d32f2f;
   }
-`;
-
-const Image = styled.img`
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-`;
-
-const CardContent = styled.div`
-  padding: 1rem;
 `;
 
 const PropertyTitle = styled.h3`
@@ -65,50 +57,79 @@ const Info = styled.p`
   font-size: 0.95rem;
 `;
 
+const Button = styled.button`
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #d32f2f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #b71c1c;
+  }
+`;
+
 const Catalogo = () => {
+  const [propiedades, setPropiedades] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
+
   const navigate = useNavigate();
 
-  const propiedades = [
-    {
-      id: 1,
-      titulo: 'Casa en Las Condes',
-      precio: '$350.000.000',
-      direccion: 'Av. Apoquindo 4500',
-      habitaciones: 4,
-      imagen: 'https://source.unsplash.com/400x300/?house',
-    },
-    {
-      id: 2,
-      titulo: 'Departamento en Ñuñoa',
-      precio: '$180.000.000',
-      direccion: 'Irarrázaval 1234',
-      habitaciones: 2,
-      imagen: 'https://source.unsplash.com/400x300/?apartment',
-    },
-    {
-      id: 3,
-      titulo: 'Parcela en Chicureo',
-      precio: '$700.000.000',
-      direccion: 'Camino Chicureo KM 8',
-      habitaciones: 5,
-      imagen: 'https://source.unsplash.com/400x300/?cottage',
-    },
-  ];
+  useEffect(() => {
+    fetch("http://localhost:8080/propiedades/disponibles")
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Error al cargar propiedades");
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setPropiedades(data);
+        setCargando(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setCargando(false);
+      });
+  }, []);
 
   return (
     <PageWrapper>
       <Container>
         <Title>Catálogo de Propiedades</Title>
+
+        {cargando && <p>Cargando propiedades...</p>}
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
+        {!cargando && !error && propiedades.length === 0 && (
+          <p>No hay propiedades disponibles.</p>
+        )}
+
         <Grid>
-          {propiedades.map((propiedad) => (
-            <Card key={propiedad.id} onClick={() => navigate(`/propiedad/${propiedad.id}`)}>
-              <Image src={propiedad.imagen} alt={propiedad.titulo} />
-              <CardContent>
-                <PropertyTitle>{propiedad.titulo}</PropertyTitle>
-                <Info><strong>Precioooo:</strong> {propiedad.precio}</Info>
-                <Info><strong>Dirección:</strong> {propiedad.direccion}</Info>
-                <Info><strong>Habitaciones:</strong> {propiedad.habitaciones}</Info>
-              </CardContent>
+          {propiedades.map((prop) => (
+            <Card key={prop.id}>
+              <PropertyTitle>{prop.titulo}</PropertyTitle>
+              <Info>{prop.descripcion}</Info>
+              <Info>
+                <strong>Precio:</strong> ${prop.precio}
+              </Info>
+              <Info>
+                <strong>Tipo:</strong> {prop.tipo}
+              </Info>
+              <Info>
+                <strong>Ubicación:</strong> {prop.ubicacion}
+              </Info>
+              <Info>
+                <strong>Disponible:</strong> {prop.disponible ? "Sí" : "No"}
+              </Info>
+              <Button onClick={() => navigate(`/propiedad/${prop.id}`)}>
+                Ver Detalles
+              </Button>
             </Card>
           ))}
         </Grid>
