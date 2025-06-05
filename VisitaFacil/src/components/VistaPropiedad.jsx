@@ -16,6 +16,7 @@ const VistaPropiedad = () => {
         return res.json();
       })
       .then((data) => {
+        console.log("JSON recibido:", data); // 👈 Esto es clave
         setPropiedad(data);
         setCargando(false);
       })
@@ -24,6 +25,7 @@ const VistaPropiedad = () => {
         setCargando(false);
       });
   }, [id]);
+  
 
   if (cargando) return <p>Cargando propiedad...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
@@ -39,42 +41,40 @@ const VistaPropiedad = () => {
       <p><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
 
       <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          marginTop: "1rem",
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
-        {propiedad.imagenes && propiedad.imagenes.length > 0 ? (
-          propiedad.imagenes.map((url, index) => {
-            const trimmedUrl = url.trim();
-            const fullUrl = `http://localhost:8080${trimmedUrl}`;
-            console.log("URL imagen:", fullUrl);  // <-- Aquí el console.log
+  style={{
+    display: "flex",
+    gap: "1rem",
+    marginTop: "1rem",
+    justifyContent: "flex-start", // para alinear a la izquierda
+  }}
+>
+  {propiedad.urlsImagenes && propiedad.urlsImagenes.length > 0 ? (
+    propiedad.urlsImagenes.map((url, index) => {
+      const trimmedUrl = url.trim();
+      const fullUrl = `http://localhost:8080${trimmedUrl}`;
+      return (
+        <img
+          key={index}
+          src={fullUrl}
+          alt={`${propiedad.titulo} imagen ${index + 1}`}
+          style={{
+            width: "400px",    // tamaño más grande
+            height: "250px",
+            objectFit: "cover",
+            borderRadius: "8px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+          }}
+          onError={(e) => {
+            e.target.src = "/imagen-no-disponible.png";
+          }}
+        />
+      );
+    })
+  ) : (
+  <p>No hay imágenes disponibles.</p>
+  )}
+</div>
 
-            return (
-              <img
-                key={index}
-                src={fullUrl}
-                alt={`${propiedad.titulo} imagen ${index + 1}`}
-                style={{
-                  width: "300px",
-                  height: "200px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                }}
-                onError={(e) => {
-                  e.target.src = "/imagen-no-disponible.png";
-                }}
-              />
-            );
-          })
-        ) : (
-          <p>No hay imágenes disponibles.</p>
-        )}
-      </div>
     </div>
   );
 };
