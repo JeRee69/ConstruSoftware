@@ -9,14 +9,14 @@ const VistaPropiedad = () => {
 
   useEffect(() => {
     fetch(`http://localhost:8080/propiedades/${id}`)
-      .then((res) => { 
+      .then((res) => {
         if (!res.ok) {
           throw new Error("Error al cargar la propiedad");
         }
         return res.json();
       })
       .then((data) => {
-        console.log("JSON recibido:", data); // 👈 Esto es clave
+        console.log("JSON recibido:", data);
         setPropiedad(data);
         setCargando(false);
       })
@@ -25,58 +25,67 @@ const VistaPropiedad = () => {
         setCargando(false);
       });
   }, [id]);
-  
 
   if (cargando) return <p>Cargando propiedad...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (!propiedad) return <p>Propiedad no encontrada.</p>;
 
   return (
-    <div style={{ maxWidth: "700px", margin: "auto", padding: "2rem" }}>
-      <h1>{propiedad.titulo}</h1>
-      <p>{propiedad.descripcion}</p>
-      <p><strong>Precio:</strong> ${propiedad.precio}</p>
-      <p><strong>Tipo:</strong> {propiedad.tipo}</p>
-      <p><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
-      <p><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
-
-      <div
-  style={{
-    display: "flex",
-    gap: "1rem",
-    marginTop: "1rem",
-    justifyContent: "flex-start", // para alinear a la izquierda
-  }}
->
-  {propiedad.urlsImagenes && propiedad.urlsImagenes.length > 0 ? (
-    propiedad.urlsImagenes.map((url, index) => {
-      const trimmedUrl = url.trim();
-      const fullUrl = `http://localhost:8080${trimmedUrl}`;
-      return (
-        <img
-          key={index}
-          src={fullUrl}
-          alt={`${propiedad.titulo} imagen ${index + 1}`}
+    <div
+    style={{
+      backgroundColor: "#f0f0f0", // Fondo claro
+      width: "100vw",             // Ocupar todo el ancho de la ventana
+      height: "100vh",            // Ocupar toda la altura de la ventana
+      overflowY: "auto",          // Permitir scroll si el contenido es alto
+      padding: "2rem",
+      boxSizing: "border-box",
+      }}
+    >
+      <div style={{ maxWidth: "900px" }}>
+        <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
+        <p style={{ color: "#000" }}>{propiedad.descripcion}</p>
+        <p style={{ color: "#000" }}><strong>Precio:</strong> ${propiedad.precio}</p>
+        <p style={{ color: "#000" }}><strong>Tipo:</strong> {propiedad.tipo}</p>
+        <p style={{ color: "#000" }}><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
+        <p style={{ color: "#000" }}><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
+  
+        <div
           style={{
-            width: "400px",    // tamaño más grande
-            height: "250px",
-            objectFit: "cover",
-            borderRadius: "8px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            display: "flex",
+            gap: "1rem",
+            marginTop: "1rem",
+            justifyContent: "flex-start",
+            flexWrap: "wrap",
           }}
-          onError={(e) => {
-            e.target.src = "/imagen-no-disponible.png";
-          }}
-        />
-      );
-    })
-  ) : (
-  <p>No hay imágenes disponibles.</p>
-  )}
-</div>
-
+        >
+          {propiedad.urlsImagenes && propiedad.urlsImagenes.length > 0 ? (
+            propiedad.urlsImagenes.map((url, index) => {
+              const fullUrl = `http://localhost:8080${url.trim()}`;
+              return (
+                <img
+                  key={index}
+                  src={fullUrl}
+                  alt={`${propiedad.titulo} imagen ${index + 1}`}
+                  style={{
+                    width: "400px",
+                    height: "250px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
+                  onError={(e) => {
+                    e.target.src = "/imagen-no-disponible.png";
+                  }}
+                />
+              );
+            })
+          ) : (
+            <p>No hay imágenes disponibles.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
-};
+}
 
 export default VistaPropiedad;
