@@ -5,6 +5,13 @@
             "name": "VisitaFacilApplication",
             "request": "launch",
             "mainClass": "com.construsoft.visita_facil_api.VisitaFacilApplication",
+            "projectName": "solicitudVisita-facil-api"
+        },
+        {
+            "type": "java",
+            "name": "VisitaFacilApplication",
+            "request": "launch",
+            "mainClass": "com.construsoft.visita_facil_api.VisitaFacilApplication",
             "projectName": "visita-facil-api"
         },
         {

@@ -1,15 +1,16 @@
 package com.construsoft.visita_facil_api.service;
 
 import com.construsoft.visita_facil_api.model.Account;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import jakarta.transaction.Transactional;
-import java.util.Optional;
 import org.springframework.test.context.ActiveProfiles;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -41,4 +42,5 @@ public class AccountServiceTest {
         assertTrue(loginFail.isEmpty(), "El login no debería funcionar con contraseña incorrecta");
         System.out.println("✅ Login falló como se esperaba con contraseña incorrecta");
     }
+
 }

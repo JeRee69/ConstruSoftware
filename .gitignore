@@ -1,7 +1,7 @@
 # ====================================
 # Backend (Spring Boot - Java)
 # ====================================
-visita-facil-api/target/    # Carpeta de compilación de Maven
+solicitudVisita-facil-api/target/    # Carpeta de compilación de Maven
 *.jar                       # Archivos JAR generados
 *.war                       # Archivos WAR (para despliegue en servlets)
 *.class                     # Archivos compilados de Java

@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import styled, { ThemeProvider } from 'styled-components';
+import { darkTheme, lightTheme } from '../../themes/theme';
 
 const LoginContainer = styled.div`
   display: flex;
@@ -8,26 +9,43 @@ const LoginContainer = styled.div`
   align-items: center;
   min-height: 100vh;
   width: 100vw;
-  background-color: #f5f5f5;
-  margin: 0;
-  padding: 0;
+  background-color: ${({ theme }) => theme.background};
 `;
 
 const LoginForm = styled.div`
-  background-color: white;
+  background-color: ${({ theme }) => theme.formBackground};
   padding: 2.5rem;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const Logo = styled.div`
   text-align: center;
   margin-bottom: 2rem;
-  color: #d32f2f;
+  color: ${({ theme }) => theme.buttonBackground};
   font-size: 1.8rem;
   font-weight: bold;
+`;
+
+const ToggleButton = styled.button`
+  background: none;
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.inputBorder};
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  align-self: flex-end;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.inputBackground};
+  }
 `;
 
 const InputField = styled.div`
@@ -37,36 +55,42 @@ const InputField = styled.div`
 const Label = styled.label`
   display: block;
   margin-bottom: 0.5rem;
-  color: #616161;
+  color: ${({ theme }) => theme.text};
   font-size: 0.9rem;
 `;
 
 const Input = styled.input`
+  box-sizing: border-box;
   width: 100%;
   padding: 0.8rem;
-  border: 1px solid #e0e0e0;
+  background-color: ${({ theme }) => theme.inputBackground};
+  color: ${({ theme }) => theme.text};
+  border: 1px solid ${({ theme }) => theme.inputBorder};
   border-radius: 4px;
   font-size: 1rem;
   transition: border-color 0.3s;
 
   &:focus {
-    border-color: #d32f2f;
+    border-color: ${({ theme }) => theme.buttonBackground};
     outline: none;
   }
 `;
 
 const Button = styled.button`
+  box-sizing: border-box;
   width: 100%;
-  padding: 0.8rem;
-  background-color: #d32f2f;
-  color: white;
+  padding: 0.9rem 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  background-color: ${({ theme }) => theme.buttonBackground};
+  color: ${({ theme }) => theme.buttonText};
   border: none;
   border-radius: 4px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-bottom: 1rem;
+  text-align: center;
 
   &:hover {
     background-color: #b71c1c;
@@ -88,10 +112,10 @@ const ErrorMessage = styled.div`
 const RegisterLink = styled.div`
   text-align: center;
   margin-top: 1.5rem;
-  color: #616161;
+  color: ${({ theme }) => theme.text};
 
   a {
-    color: #d32f2f;
+    color: ${({ theme }) => theme.buttonBackground};
     text-decoration: none;
     font-weight: 500;
     margin-left: 0.3rem;
@@ -109,6 +133,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isDark, setIsDark] = useState(false);
+  const theme = isDark ? darkTheme : lightTheme;
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -117,11 +143,9 @@ const Login = () => {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8081/account/login', {
+      const response = await fetch('http://localhost:8080/account/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
 
@@ -129,10 +153,7 @@ const Login = () => {
         const data = await response.json();
         const accountId = data.accountId;
 
-        // Guardar accountId si se necesita
         // localStorage.setItem('accountId', accountId);
-
-        // Redirigir según el tipo de correo
         if (email.includes('@corredora')) {
           navigate('/agenda');
         } else {
@@ -143,54 +164,60 @@ const Login = () => {
       } else {
         setError('Error inesperado. Intente más tarde.');
       }
-    } catch (err) {
-      setError('Ocurrió un error al iniciar sesión. Por favor, intente más tarde.');
+    } catch {
+      setError('Ocurrió un error al iniciar sesión. Intente más tarde.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <LoginContainer>
-      <LoginForm>
-        <Logo>PropiedadesPlus</Logo>
-        <form onSubmit={handleSubmit}>
-          <InputField>
-            <Label htmlFor="email">Correo Electrónico</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="correo@ejemplo.com"
-            />
-          </InputField>
+    <ThemeProvider theme={theme}>
+      <LoginContainer>
+        <LoginForm>
+          <ToggleButton onClick={() => setIsDark(!isDark)}>
+            Cambiar a tema {isDark ? 'claro' : 'oscuro'}
+          </ToggleButton>
 
-          <InputField>
-            <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-            />
-          </InputField>
+          <Logo>PropiedadesPlus</Logo>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
+            <InputField>
+              <Label htmlFor="email">Correo Electrónico</Label>
+              <Input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                placeholder="correo@ejemplo.com"
+              />
+            </InputField>
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-          </Button>
+            <InputField>
+              <Label htmlFor="password">Contraseña</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                placeholder="••••••••"
+              />
+            </InputField>
 
-          {error && <ErrorMessage>{error}</ErrorMessage>}
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? 'Iniciando sesión...' : 'Iniciar sesión'}
+            </Button>
 
-          <RegisterLink>
-            ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
-          </RegisterLink>
-        </form>
-      </LoginForm>
-    </LoginContainer>
+            {error && <ErrorMessage>{error}</ErrorMessage>}
+
+            <RegisterLink>
+              ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
+            </RegisterLink>
+          </form>
+        </LoginForm>
+      </LoginContainer>
+    </ThemeProvider>
   );
 };
 

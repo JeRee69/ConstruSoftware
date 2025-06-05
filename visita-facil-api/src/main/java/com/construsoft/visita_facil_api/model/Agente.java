@@ -2,8 +2,8 @@ package com.construsoft.visita_facil_api.model;
 
 public class Agente extends Usuario {
 
-    public Agente(Long id, String nombre, String correo, String telefono) {
-        super(id, nombre, correo, telefono);
+    public Agente(Long id, String nombre, String apellido, String correo, String telefono, String contrasena) {
+        super(id, nombre, apellido, correo, telefono, contrasena);
     }
 
     public void crearPropiedad() {}
