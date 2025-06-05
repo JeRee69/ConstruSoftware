@@ -1,11 +1,6 @@
 package com.construsoft.visita_facil_api.model;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+
+import jakarta.persistence.*;
 
 @Entity
 public class Profile {
@@ -23,22 +18,14 @@ public class Profile {
     @Column(nullable = false)
     private String phone;
 
-    @Column(nullable = false)
-    private String city;
 
-    @Column(nullable = false)
-    private String address;
+    public Profile() {}
 
-
-    public Profile(){}
-
-    public Profile(Long id, Account account, String name, String phone, String city, String address) {
+    public Profile(Long id, Account account, String name, String phone) {
         this.id = id;
         this.account = account;
         this.name = name;
         this.phone = phone;
-        this.city = city;
-        this.address = address;
 
     }
 
@@ -75,24 +62,6 @@ public class Profile {
 
     public Profile setPhone(String phone) {
         this.phone = phone;
-        return this;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public Profile setCity(String city) {
-        this.city = city;
-        return this;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public Profile setAddress(String adress) {
-        this.address = adress;
         return this;
     }
 

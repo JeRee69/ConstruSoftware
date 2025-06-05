@@ -1,14 +1,16 @@
 package com.construsoft.visita_facil_api.domain;
 
+import com.construsoft.visita_facil_api.enums.Rol;
+
 public class AccountProfileDTO {
     private String email;
     private String password;
     private String name;
-    private String city;
-    private String address;
     private String phone;
+    private Rol rol;
 
-    public AccountProfileDTO(){}
+    public AccountProfileDTO() {
+    }
 
     public String getEmail() {
         return email;
@@ -18,25 +20,6 @@ public class AccountProfileDTO {
         this.email = email;
         return this;
     }
-
-    public String getCity() {
-        return city;
-    }
-
-    public AccountProfileDTO setCity(String city) {
-        this.city = city;
-        return this;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public AccountProfileDTO setAddress(String adress) {
-        this.address = adress;
-        return this;
-    }
-
 
     public String getPassword() {
         return password;
@@ -64,4 +47,13 @@ public class AccountProfileDTO {
         this.phone = phone;
         return this;
     }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
 }

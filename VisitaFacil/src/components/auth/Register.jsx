@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, {useState} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import styled from 'styled-components';
 
 // Reutilizamos los mismos componentes estilizados del Login
@@ -106,148 +106,165 @@ const LoginLink = styled.div`
 `;
 
 const Register = () => {
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    email: '',
-    telefono: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        nombre: '',
+        apellido: '',
+        email: '',
+        telefono: '',
+        password: '',
+        confirmPassword: ''
+    });
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError('');
 
-    // Validaciones básicas
-    if (formData.password !== formData.confirmPassword) {
-      setError('Las contraseñas no coinciden');
-      setIsLoading(false);
-      return;
-    }
+        if (formData.password !== formData.confirmPassword) {
+            setError('Las contraseñas no coinciden');
+            setIsLoading(false);
+            return;
+        }
 
-    try {
-      // Simulación de registro (en un caso real, sería una llamada a tu API)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Redirigir al login después de registro exitoso
-      navigate('/', { state: { registrationSuccess: true } });
-    } catch (err) {
-      setError('Ocurrió un error al registrar. Por favor, intente más tarde.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        const payload = {
+            email: formData.email,
+            password: formData.password,
+            name: `${formData.nombre} ${formData.apellido}`,
+            phone: formData.telefono
+        };
 
-  return (
-    <RegisterContainer>
-      <RegisterForm>
-        <Logo>PropiedadesPlus</Logo>
-        <form onSubmit={handleSubmit}>
-          <InputField>
-            <Label htmlFor="nombre">Nombre</Label>
-            <Input
-              id="nombre"
-              type="text"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleChange}
-              required
-              placeholder="Ej: Juan"
-            />
-          </InputField>
+        try {
+            const response = await fetch('http://localhost:8080/account/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
 
-          <InputField>
-            <Label htmlFor="apellido">Apellido</Label>
-            <Input
-              id="apellido"
-              type="text"
-              name="apellido"
-              value={formData.apellido}
-              onChange={handleChange}
-              required
-              placeholder="Ej: Pérez"
-            />
-          </InputField>
+            if (!response.ok) {
+                const errorData = await response.json();
+                setError(errorData.message || 'Error al registrar el usuario.');
+                return;
+            }
 
-          <InputField>
-            <Label htmlFor="email">Correo Electrónico</Label>
-            <Input
-              id="email"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              placeholder="corredor@propiedades.com"
-            />
-          </InputField>
+            // Registro exitoso
+            navigate('/', {state: {registrationSuccess: true}});
+        } catch (err) {
+            setError('Ocurrió un error al registrar. Por favor, intente más tarde.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-          <InputField>
-            <Label htmlFor="telefono">Teléfono</Label>
-            <Input
-              id="telefono"
-              type="tel"
-              name="telefono"
-              value={formData.telefono}
-              onChange={handleChange}
-              required
-              placeholder="+56 9 1234 5678"
-            />
-          </InputField>
+    return (
+        <RegisterContainer>
+            <RegisterForm>
+                <Logo>PropiedadesPlus</Logo>
+                <form onSubmit={handleSubmit}>
+                    <InputField>
+                        <Label htmlFor="nombre">Nombre</Label>
+                        <Input
+                            id="nombre"
+                            type="text"
+                            name="nombre"
+                            value={formData.nombre}
+                            onChange={handleChange}
+                            required
+                            placeholder="Ej: Juan"
+                        />
+                    </InputField>
 
-          <InputField>
-            <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              placeholder="••••••••"
-              minLength="6"
-            />
-          </InputField>
+                    <InputField>
+                        <Label htmlFor="apellido">Apellido</Label>
+                        <Input
+                            id="apellido"
+                            type="text"
+                            name="apellido"
+                            value={formData.apellido}
+                            onChange={handleChange}
+                            required
+                            placeholder="Ej: Pérez"
+                        />
+                    </InputField>
 
-          <InputField>
-            <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
-            <Input
-              id="confirmPassword"
-              type="password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              placeholder="••••••••"
-            />
-          </InputField>
-          
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Registrando...' : 'Registrarse'}
-          </Button>
-          
-          {error && <ErrorMessage>{error}</ErrorMessage>}
+                    <InputField>
+                        <Label htmlFor="email">Correo Electrónico</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="corredor@propiedades.com"
+                        />
+                    </InputField>
 
-          <LoginLink>
-            ¿Ya tienes una cuenta? <Link to="/">Inicia sesión aquí</Link>
-          </LoginLink>
-        </form>
-      </RegisterForm>
-    </RegisterContainer>
-  );
+                    <InputField>
+                        <Label htmlFor="telefono">Teléfono</Label>
+                        <Input
+                            id="telefono"
+                            type="tel"
+                            name="telefono"
+                            value={formData.telefono}
+                            onChange={handleChange}
+                            required
+                            placeholder="+56 9 1234 5678"
+                        />
+                    </InputField>
+
+                    <InputField>
+                        <Label htmlFor="password">Contraseña</Label>
+                        <Input
+                            id="password"
+                            type="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            placeholder="••••••••"
+                            minLength="6"
+                        />
+                    </InputField>
+
+                    <InputField>
+                        <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
+                        <Input
+                            id="confirmPassword"
+                            type="password"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            required
+                            placeholder="••••••••"
+                        />
+                    </InputField>
+
+                    <Button type="submit" disabled={isLoading}>
+                        {isLoading ? 'Registrando...' : 'Registrarse'}
+                    </Button>
+
+                    {error && <ErrorMessage>{error}</ErrorMessage>}
+
+                    <LoginLink>
+                        ¿Ya tienes una cuenta? <Link to="/">Inicia sesión aquí</Link>
+                    </LoginLink>
+                </form>
+            </RegisterForm>
+        </RegisterContainer>
+    );
 };
 
 export default Register;

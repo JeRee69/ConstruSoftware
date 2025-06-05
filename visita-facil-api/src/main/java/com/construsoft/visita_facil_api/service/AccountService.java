@@ -1,19 +1,15 @@
 package com.construsoft.visita_facil_api.service;
 
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
-
 import com.construsoft.visita_facil_api.model.Account;
 import com.construsoft.visita_facil_api.model.Profile;
 import com.construsoft.visita_facil_api.repository.AccountRepository;
 import com.construsoft.visita_facil_api.repository.ProfileRepository;
-import jakarta.persistence.EntityManager;
-
-
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class AccountService {
@@ -27,7 +23,7 @@ public class AccountService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public Account register(String email, String password, String name, String phone, String ciudad, String direccion) {
+    public Account register(String email, String password, String name, String phone) {
         Account account = new Account();
         account.setEmail(email);
         account.setPassword(passwordEncoder.encode(password));
@@ -37,8 +33,6 @@ public class AccountService {
         profile.setAccount(account);
         profile.setName(name);
         profile.setPhone(phone);
-        profile.setCity(ciudad);
-        profile.setAddress(direccion);
         profileRepository.save(profile);
 
         return account;
@@ -51,4 +45,5 @@ public class AccountService {
         }
         return Optional.empty();
     }
+
 }
