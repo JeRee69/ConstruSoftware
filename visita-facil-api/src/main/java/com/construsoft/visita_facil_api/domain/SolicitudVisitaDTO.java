@@ -51,8 +51,8 @@ public class SolicitudVisitaDTO {
         this.hora = hora;
     }
 
-    public Long getIdPropiedad() {
-        return (long) Math.toIntExact(idPropiedad);
+    public Integer getIdPropiedad() {
+        return (Integer) Math.toIntExact(idPropiedad);
     }
 
     public void setIdPropiedad(Long idPropiedad) {

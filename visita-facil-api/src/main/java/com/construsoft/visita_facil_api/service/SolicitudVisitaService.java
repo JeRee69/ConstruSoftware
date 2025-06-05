@@ -34,7 +34,11 @@ public class SolicitudVisitaService {
         solicitud.setHoraInicio(dto.getHora());
         solicitud.setPropiedad(propiedadOpt.get());
 
-        return solicitudRepo.save(solicitud);
+        SolicitudVisita solicitudGuardada = solicitudRepo.save(solicitud);
+
+
+
+        return solicitudGuardada;
     }
 
 }

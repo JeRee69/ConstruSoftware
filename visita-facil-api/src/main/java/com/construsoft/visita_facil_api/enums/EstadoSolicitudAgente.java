@@ -1,8 +1,7 @@
 package com.construsoft.visita_facil_api.enums;
 
-public enum EstadoSolicitud {
+public enum EstadoSolicitudAgente {
     PENDIENTE,
     ACEPTADA,
-    RECHAZADA,
-    CANCELADA
+    RECHAZADA
 }

@@ -39,7 +39,7 @@ public class DisponibilidadPropiedadService {
     }
 
     public List<DisponibilidadPropiedadDTO> obtenerHorariosDisponibles(Long propiedadId, LocalDate fecha) {
-        Propiedad propiedad = propiedadRepo.findById(propiedadId)
+        Propiedad propiedad = propiedadRepo.findById(Math.toIntExact(propiedadId))
                 .orElseThrow(() -> new IllegalArgumentException("Propiedad no encontrada"));
         DayOfWeek diaSemana = fecha.getDayOfWeek();
 

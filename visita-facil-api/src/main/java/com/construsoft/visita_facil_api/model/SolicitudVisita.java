@@ -1,6 +1,6 @@
 package com.construsoft.visita_facil_api.model;
 
-import com.construsoft.visita_facil_api.enums.EstadoSolicitud;
+import com.construsoft.visita_facil_api.enums.EstadoSolicitudVisita;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -38,7 +38,7 @@ public class SolicitudVisita {
     // Estado de la solicitud: PENDIENTE, CONFIRMADA, CANCELADA, REALIZADA
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EstadoSolicitud estado = EstadoSolicitud.PENDIENTE;
+    private EstadoSolicitudVisita estado = EstadoSolicitudVisita.PENDIENTE;
 
     // Relación con Agente (opcional hasta ser asignado)
     @ManyToOne
@@ -104,11 +104,11 @@ public class SolicitudVisita {
         this.horaInicio = horaInicio;
     }
 
-    public EstadoSolicitud getEstado() {
+    public EstadoSolicitudVisita getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoSolicitud estado) {
+    public void setEstado(EstadoSolicitudVisita estado) {
         this.estado = estado;
     }
 
