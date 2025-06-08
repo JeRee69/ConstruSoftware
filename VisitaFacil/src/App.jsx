@@ -13,7 +13,7 @@ function App() {
       <Route path="/registro" element={<Register />} />
       <Route path="/agenda" element={<Agenda />} />
       <Route path="/catalogo" element={<Catalogo />} />
-    | <Route path="/propiedad/:id" element={<VistaPropiedad />} />
+     <Route path="/propiedad/:id" element={<VistaPropiedad />} />
       <Route path="*" element={<h1 style={{ padding: '2rem' }}>Página no encontrada</h1>} />
 
     </Routes>
