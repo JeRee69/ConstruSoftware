@@ -27,7 +27,8 @@ public class PropiedadService {
         return propiedadRepository.findByDisponibleTrue();
     }
 
-    public Propiedad addPropiedad(String titulo, String descripcion, int precio, String tipo, String ubicacion, boolean disponible) {
+    public Propiedad addPropiedad(String titulo, String descripcion, int precio, String tipo, String ubicacion,
+            boolean disponible) {
         Propiedad propiedad = new Propiedad();
         propiedad.setTitulo(titulo);
         propiedad.setDescripcion(descripcion);

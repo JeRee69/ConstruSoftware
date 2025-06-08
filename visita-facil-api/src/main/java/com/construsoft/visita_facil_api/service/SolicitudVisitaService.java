@@ -31,7 +31,7 @@ public class SolicitudVisitaService {
     private SolicitudAgenteRepository solicitudAgenteRepository;
 
     public SolicitudVisita crearSolicitud(SolicitudVisitaDTO dto) {
-        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad());
+        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad().intValue());
 
         if (propiedadOpt.isEmpty()) {
             throw new IllegalArgumentException("Propiedad no encontrada");
