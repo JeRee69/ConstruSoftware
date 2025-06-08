@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useParams } from "react-router-dom";
+import "../styles/datepicker-custom.css";
+
 
 const VistaPropiedad = () => {
   const { id } = useParams();
@@ -9,6 +11,16 @@ const VistaPropiedad = () => {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [fechaVisita, setFechaVisita] = useState(null);
+  const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
+
+  const horarios = [
+    "09:00",
+    "10:30",
+    "12:00",
+    "15:00",
+    "16:30",
+    "18:00",
+  ]; //esto por mientras, despues se modificara 
 
   useEffect(() => {
     fetch(`http://localhost:8080/propiedades/${id}`)
@@ -19,7 +31,6 @@ const VistaPropiedad = () => {
         return res.json();
       })
       .then((data) => {
-        console.log("JSON recibido:", data);
         setPropiedad(data);
         setCargando(false);
       })
@@ -35,23 +46,23 @@ const VistaPropiedad = () => {
 
   return (
     <div
-    style={{
-      backgroundColor: "#f0f0f0", // Fondo claro
-      width: "100vw",             // Ocupar todo el ancho de la ventana
-      height: "100vh",            // Ocupar toda la altura de la ventana
-      overflowY: "auto",          // Permitir scroll si el contenido es alto
-      padding: "2rem",
-      boxSizing: "border-box",
+      style={{
+        backgroundColor: "#f0f0f0",
+        width: "100vw",
+        height: "100vh",
+        overflowY: "auto",
+        padding: "2rem",
+        boxSizing: "border-box",
       }}
     >
-      <div style={{ maxWidth: "900px" }}>
+      <div style={{ maxWidth: "900px", margin: "auto" }}>
         <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
-        <p style={{ color: "#000" }}>{propiedad.descripcion}</p>
-        <p style={{ color: "#000" }}><strong>Precio:</strong> ${propiedad.precio}</p>
-        <p style={{ color: "#000" }}><strong>Tipo:</strong> {propiedad.tipo}</p>
-        <p style={{ color: "#000" }}><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
-        <p style={{ color: "#000" }}><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
-  
+        <p><strong>Descripción:</strong> {propiedad.descripcion}</p>
+        <p><strong>Precio:</strong> ${propiedad.precio}</p>
+        <p><strong>Tipo:</strong> {propiedad.tipo}</p>
+        <p><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
+        <p><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
+
         <div
           style={{
             display: "flex",
@@ -61,47 +72,78 @@ const VistaPropiedad = () => {
             flexWrap: "wrap",
           }}
         >
-          {propiedad.urlsImagenes && propiedad.urlsImagenes.length > 0 ? (
-            propiedad.urlsImagenes.map((url, index) => {
-              const fullUrl = `http://localhost:8080${url.trim()}`;
-              return (
-                <img
-                  key={index}
-                  src={fullUrl}
-                  alt={`${propiedad.titulo} imagen ${index + 1}`}
-                  style={{
-                    width: "400px",
-                    height: "250px",
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  }}
-                  onError={(e) => {
-                    e.target.src = "/imagen-no-disponible.png";
-                  }}
-                />
-              );
-            })
+          {propiedad.urlsImagenes?.length > 0 ? (
+            propiedad.urlsImagenes.map((url, index) => (
+              <img
+                key={index}
+                src={`http://localhost:8080${url.trim()}`}
+                alt={`Imagen ${index + 1}`}
+                style={{
+                  width: "400px",
+                  height: "250px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                }}
+                onError={(e) => {
+                  e.target.src = "/imagen-no-disponible.png";
+                }}
+              />
+            ))
           ) : (
             <p>No hay imágenes disponibles.</p>
           )}
         </div>
-      </div>
 
-      {/* 📅 Calendario para agendar visita */}
-      <div style={{ marginTop: "2rem", textAlign: "center" }}>
-        <h3>Agendar una visita</h3>
-        <ReactDatePicker
-          selected={fechaVisita}
-          onChange={(date) => setFechaVisita(date)}
-          minDate={new Date()}
-          placeholderText="Selecciona una fecha"
-          dateFormat="dd/MM/yyyy"
-          inline
-        />
+        {/* 📅 Calendario */}
+        <div style={{ marginTop: "2rem", textAlign: "center" }}>
+          <h3>Agendar una visita</h3>
+          <ReactDatePicker
+            selected={fechaVisita}
+            onChange={(date) => {
+              setFechaVisita(date);
+              setHorarioSeleccionado(null); // reset
+            }}
+            minDate={new Date()}
+            placeholderText="Selecciona una fecha"
+            dateFormat="dd/MM/yyyy"
+            inline
+          />
+
+          {fechaVisita && (
+            <div style={{ marginTop: "1rem" }}>
+              <h4>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "10px", marginTop: "10px" }}>
+                {horarios.map((hora) => (
+                  <button
+                    key={hora}
+                    onClick={() => setHorarioSeleccionado(hora)}
+                    style={{
+                      padding: "8px 14px",
+                      borderRadius: "6px",
+                      border: horarioSeleccionado === hora ? "2px solid #d32f2f" : "1px solid #ccc",
+                      backgroundColor: horarioSeleccionado === hora ? "#d32f2f" : "#fff",
+                      color: horarioSeleccionado === hora ? "#fff" : "#333",
+                      cursor: "pointer",
+                      transition: "0.2s",
+                    }}
+                  >
+                    {hora}
+                  </button>
+                ))}
+              </div>
+
+              {horarioSeleccionado && (
+                <p style={{ marginTop: "1rem", fontWeight: "bold", color: "#4caf50" }}>
+                  Visita seleccionada: {fechaVisita.toLocaleDateString()} a las {horarioSeleccionado}
+                </p>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default VistaPropiedad;
