@@ -7,28 +7,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class PropiedadService {
 
     @Autowired
     private PropiedadRepository propiedadRepository;
-    @Autowired
-    private ImgurService imgurService;
 
     public Optional<Propiedad> getById(int id) {
-        return propiedadRepository.findById(id);
+        return propiedadRepository.findById((int) id);
     }
 
     public List<Propiedad> getPropiedadesDisponibles() {
         return propiedadRepository.findByDisponibleTrue();
     }
 
-    public Propiedad addPropiedad(String titulo, String descripcion, int precio, String tipo, String ubicacion,
-            boolean disponible) {
+    public Propiedad addPropiedad(String titulo, String descripcion, int precio, String tipo, String ubicacion, boolean disponible) {
         Propiedad propiedad = new Propiedad();
         propiedad.setTitulo(titulo);
         propiedad.setDescripcion(descripcion);
@@ -40,15 +41,20 @@ public class PropiedadService {
     }
 
     public List<String> subirImagenes(int id, List<MultipartFile> imagenes) throws IOException {
-        Propiedad propiedad = propiedadRepository.findById(id)
+        Propiedad propiedad = propiedadRepository.findById((int) id)
                 .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
 
         List<String> urls = new ArrayList<>();
 
         for (MultipartFile imagen : imagenes) {
-            String url = imgurService.subirImagen(imagen);
-            propiedad.getUrlsImagenes().add(url);
-            urls.add(url);
+            String nombreImagen = UUID.randomUUID() + "_" + imagen.getOriginalFilename();
+            Path ruta = Paths.get("archivos/" + nombreImagen);
+            Files.createDirectories(ruta.getParent());
+            Files.write(ruta, imagen.getBytes());
+
+            String urlRelativa = "/imagenes/" + nombreImagen;
+            propiedad.getUrlsImagenes().add(urlRelativa);
+            urls.add(urlRelativa);
         }
 
         propiedadRepository.save(propiedad);

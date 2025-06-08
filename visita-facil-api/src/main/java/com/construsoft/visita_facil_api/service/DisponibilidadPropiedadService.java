@@ -24,7 +24,7 @@ public class DisponibilidadPropiedadService {
     private DisponibilidadPropiedadRepository disponibilidadRepo;
 
     public DisponibilidadPropiedad registrarDisponibilidad(DisponibilidadPropiedadDTO dto) {
-        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad().intValue());
+        Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad());
         if (propiedadOpt.isEmpty()) {
             throw new IllegalArgumentException("Propiedad no encontrada");
         }
@@ -43,8 +43,8 @@ public class DisponibilidadPropiedadService {
                 .orElseThrow(() -> new IllegalArgumentException("Propiedad no encontrada"));
         DayOfWeek diaSemana = fecha.getDayOfWeek();
 
-        List<DisponibilidadPropiedad> disponibilidades = disponibilidadRepo.findByPropiedadAndDiaSemana(propiedad,
-                diaSemana);
+        List<DisponibilidadPropiedad> disponibilidades =
+                disponibilidadRepo.findByPropiedadAndDiaSemana(propiedad, diaSemana);
 
         return disponibilidades.stream().map(dp -> new DisponibilidadPropiedadDTO(
                 (long) propiedad.getId(),
