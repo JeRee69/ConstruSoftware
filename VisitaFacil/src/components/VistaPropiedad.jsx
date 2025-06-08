@@ -12,6 +12,7 @@ const VistaPropiedad = () => {
   const [fechaVisita, setFechaVisita] = useState(null);
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
   const [horariosDisponibles, setHorariosDisponibles] = useState([]);
+  const [cargandoHorarios, setCargandoHorarios] = useState(false); // nuevo estado
 
   // Cargar datos de la propiedad
   useEffect(() => {
@@ -34,11 +35,12 @@ const VistaPropiedad = () => {
   useEffect(() => {
     if (!fechaVisita) return;
 
+    setCargandoHorarios(true);
     const fechaStr = fechaVisita.toISOString().split("T")[0];
 
     fetch(`http://localhost:8080/disponibilidad/propiedades/${id}?fecha=${fechaStr}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         const horarios = [];
 
         data.forEach(({ horaInicio, horaFin }) => {
@@ -47,22 +49,24 @@ const VistaPropiedad = () => {
 
           const start = new Date();
           start.setHours(h, m, 0, 0);
-
           const end = new Date();
           end.setHours(endH, endM, 0, 0);
 
           while (start < end) {
             const horaFormateada = start.toTimeString().slice(0, 5); // HH:MM
             horarios.push(horaFormateada);
-            start.setMinutes(start.getMinutes() + 60); // intervalos de 1 hora
-}
+            start.setMinutes(start.getMinutes() + 60); // cambia a 30 si prefieres
+          }
         });
 
         setHorariosDisponibles(horarios);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Error cargando horarios:", err);
         setHorariosDisponibles([]);
+      })
+      .finally(() => {
+        setCargandoHorarios(false);
       });
   }, [fechaVisita, id]);
 
@@ -103,7 +107,7 @@ const VistaPropiedad = () => {
             propiedad.urlsImagenes.map((url, index) => (
               <img
                 key={index}
-                src={`http://localhost:8080${url.trim()}`}
+                src={url.trim()}
                 alt={`Imagen ${index + 1}`}
                 style={{
                   width: "400px",
@@ -140,14 +144,18 @@ const VistaPropiedad = () => {
           {fechaVisita && (
             <div style={{ marginTop: "1rem" }}>
               <h4>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
-              <div style={{
-                display: "flex",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                gap: "10px",
-                marginTop: "10px"
-              }}>
-                {horariosDisponibles.length > 0 ? (
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  gap: "10px",
+                  marginTop: "10px",
+                }}
+              >
+                {cargandoHorarios ? (
+                  <p style={{ color: "#888" }}>Cargando horarios...</p>
+                ) : horariosDisponibles.length > 0 ? (
                   horariosDisponibles.map((hora) => (
                     <button
                       key={hora}
@@ -155,8 +163,12 @@ const VistaPropiedad = () => {
                       style={{
                         padding: "8px 14px",
                         borderRadius: "6px",
-                        border: horarioSeleccionado === hora ? "2px solid #d32f2f" : "1px solid #ccc",
-                        backgroundColor: horarioSeleccionado === hora ? "#d32f2f" : "#fff",
+                        border:
+                          horarioSeleccionado === hora
+                            ? "2px solid #d32f2f"
+                            : "1px solid #ccc",
+                        backgroundColor:
+                          horarioSeleccionado === hora ? "#d32f2f" : "#fff",
                         color: horarioSeleccionado === hora ? "#fff" : "#333",
                         cursor: "pointer",
                         transition: "0.2s",
@@ -171,8 +183,15 @@ const VistaPropiedad = () => {
               </div>
 
               {horarioSeleccionado && (
-                <p style={{ marginTop: "1rem", fontWeight: "bold", color: "#4caf50" }}>
-                  Visita seleccionada: {fechaVisita.toLocaleDateString()} a las {horarioSeleccionado}
+                <p
+                  style={{
+                    marginTop: "1rem",
+                    fontWeight: "bold",
+                    color: "#4caf50",
+                  }}
+                >
+                  Visita seleccionada: {fechaVisita.toLocaleDateString()} a las{" "}
+                  {horarioSeleccionado}
                 </p>
               )}
             </div>

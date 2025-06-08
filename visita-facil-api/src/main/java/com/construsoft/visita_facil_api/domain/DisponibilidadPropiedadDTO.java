@@ -16,8 +16,8 @@ public class DisponibilidadPropiedadDTO {
         this.horaFin = horaFin;
     }
 
-    public Long getIdPropiedad() {
-        return idPropiedad;
+    public Integer getIdPropiedad() {
+        return Math.toIntExact(idPropiedad);
     }
 
     public void setIdPropiedad(Long idPropiedad) {
