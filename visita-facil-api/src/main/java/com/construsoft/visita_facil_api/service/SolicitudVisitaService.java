@@ -2,6 +2,7 @@ package com.construsoft.visita_facil_api.service;
 
 import com.construsoft.visita_facil_api.domain.SolicitudVisitaDTO;
 import com.construsoft.visita_facil_api.enums.EstadoSolicitudAgente;
+import com.construsoft.visita_facil_api.enums.EstadoSolicitudVisita;
 import com.construsoft.visita_facil_api.model.*;
 import com.construsoft.visita_facil_api.repository.DisponibilidadAgenteRepository;
 import com.construsoft.visita_facil_api.repository.PropiedadRepository;
@@ -22,7 +23,6 @@ public class SolicitudVisitaService {
 
     @Autowired
     private SolicitudVisitaRepository solicitudRepo;
-
     @Autowired
     private PropiedadRepository propiedadRepo;
     @Autowired
@@ -71,6 +71,20 @@ public class SolicitudVisitaService {
                 .map(DisponibilidadAgente::getAgente)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    public boolean cancelarVisita(Long id) {
+        Optional<SolicitudVisita> visitaOpt = solicitudRepo.findById(id);
+        if (visitaOpt.isPresent()) {
+            SolicitudVisita visita = visitaOpt.get();
+            if (visita.getEstado() != EstadoSolicitudVisita.CANCELADA && visita.getEstado() != EstadoSolicitudVisita.REALIZADA) {
+                visita.setEstado(EstadoSolicitudVisita.CANCELADA);
+                solicitudRepo.save(visita);
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

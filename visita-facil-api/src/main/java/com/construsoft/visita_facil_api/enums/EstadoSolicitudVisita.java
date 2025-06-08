@@ -4,5 +4,6 @@ public enum EstadoSolicitudVisita {
     PENDIENTE,
     ACEPTADA,
     RECHAZADA,
-    CANCELADA
+    CANCELADA,
+    REALIZADA
 }
