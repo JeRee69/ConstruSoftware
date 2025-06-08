@@ -1,8 +1,10 @@
 package com.construsoft.visita_facil_api.controller;
 
+import com.construsoft.visita_facil_api.domain.RespuestaSolicitudAgenteDTO;
 import com.construsoft.visita_facil_api.model.SolicitudAgente;
 import com.construsoft.visita_facil_api.enums.EstadoSolicitudAgente;
 import com.construsoft.visita_facil_api.model.SolicitudAgenteService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,5 +31,11 @@ public class SolicitudAgenteController {
     ) {
         return solicitudAgenteService.obtenerSolicitudesPorAgenteYEstado(agenteId, estado);
     }
-    
+
+    @PutMapping("/accion")
+    public ResponseEntity<String> procesarAccion(@RequestBody RespuestaSolicitudAgenteDTO dto) {
+        solicitudAgenteService.procesarAccion(dto.getSolicitudAgenteId(), dto.getNuevoEstado());
+        return ResponseEntity.ok("Acción procesada con éxito");
+    }
+
 }
