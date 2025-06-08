@@ -1,3 +1,4 @@
+
 solicitudVisita-facil-api/target/
 *.jar
 *.war
@@ -12,8 +13,9 @@ VisitaFacil/build/
 VisitaFacil/.cache/
 VisitaFacil/coverage/
 VisitaFacil/dist/
-.idea/                      # Configuración de IntelliJ IDEA
-.vscode/                    # Configuración de VS Code
-*.iml                       # Archivos de módulos de IDEA
-*.swp                       # Archivos temporales de Vim
-Thumbs.db                   # Miniaturas de Windows
+
+.idea/
+.vscode/
+*.iml
+*.swp
+Thumbs.db
