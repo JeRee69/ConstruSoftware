@@ -35,23 +35,31 @@ const VistaPropiedad = () => {
 
   return (
     <div
-    style={{
-      backgroundColor: "#f0f0f0", // Fondo claro
-      width: "100vw",             // Ocupar todo el ancho de la ventana
-      height: "100vh",            // Ocupar toda la altura de la ventana
-      overflowY: "auto",          // Permitir scroll si el contenido es alto
-      padding: "2rem",
-      boxSizing: "border-box",
+      style={{
+        backgroundColor: "#f0f0f0", // Fondo claro
+        width: "100vw", // Ocupar todo el ancho de la ventana
+        height: "100vh", // Ocupar toda la altura de la ventana
+        overflowY: "auto", // Permitir scroll si el contenido es alto
+        padding: "2rem",
+        boxSizing: "border-box",
       }}
     >
       <div style={{ maxWidth: "900px" }}>
         <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
         <p style={{ color: "#000" }}>{propiedad.descripcion}</p>
-        <p style={{ color: "#000" }}><strong>Precio:</strong> ${propiedad.precio}</p>
-        <p style={{ color: "#000" }}><strong>Tipo:</strong> {propiedad.tipo}</p>
-        <p style={{ color: "#000" }}><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
-        <p style={{ color: "#000" }}><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
-  
+        <p style={{ color: "#000" }}>
+          <strong>Precio:</strong> ${propiedad.precio}
+        </p>
+        <p style={{ color: "#000" }}>
+          <strong>Tipo:</strong> {propiedad.tipo}
+        </p>
+        <p style={{ color: "#000" }}>
+          <strong>Ubicación:</strong> {propiedad.ubicacion}
+        </p>
+        <p style={{ color: "#000" }}>
+          <strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}
+        </p>
+
         <div
           style={{
             display: "flex",
@@ -63,7 +71,7 @@ const VistaPropiedad = () => {
         >
           {propiedad.urlsImagenes && propiedad.urlsImagenes.length > 0 ? (
             propiedad.urlsImagenes.map((url, index) => {
-              const fullUrl = `http://localhost:8080${url.trim()}`;
+              const fullUrl = url.trim();
               return (
                 <img
                   key={index}
@@ -102,6 +110,6 @@ const VistaPropiedad = () => {
       </div>
     </div>
   );
-}
+};
 
 export default VistaPropiedad;
