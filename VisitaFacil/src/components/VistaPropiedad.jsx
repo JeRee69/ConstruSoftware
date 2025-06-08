@@ -12,6 +12,7 @@ const VistaPropiedad = () => {
   const [fechaVisita, setFechaVisita] = useState(null);
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
   const [horariosDisponibles, setHorariosDisponibles] = useState([]);
+  const [cargandoHorarios, setCargandoHorarios] = useState(false); // nuevo estado
 
   // Cargar datos de la propiedad
   useEffect(() => {
@@ -34,11 +35,10 @@ const VistaPropiedad = () => {
   useEffect(() => {
     if (!fechaVisita) return;
 
+    setCargandoHorarios(true);
     const fechaStr = fechaVisita.toISOString().split("T")[0];
 
-    fetch(
-      `http://localhost:8080/disponibilidad/propiedades/${id}?fecha=${fechaStr}`
-    )
+    fetch(`http://localhost:8080/disponibilidad/propiedades/${id}?fecha=${fechaStr}`)
       .then((res) => res.json())
       .then((data) => {
         const horarios = [];
@@ -49,14 +49,13 @@ const VistaPropiedad = () => {
 
           const start = new Date();
           start.setHours(h, m, 0, 0);
-
           const end = new Date();
           end.setHours(endH, endM, 0, 0);
 
           while (start < end) {
-            const horaFormateada = start.toTimeString().slice(0, 5);
+            const horaFormateada = start.toTimeString().slice(0, 5); // HH:MM
             horarios.push(horaFormateada);
-            start.setMinutes(start.getMinutes() + 60);
+            start.setMinutes(start.getMinutes() + 60); // cambia a 30 si prefieres
           }
         });
 
@@ -65,6 +64,9 @@ const VistaPropiedad = () => {
       .catch((err) => {
         console.error("Error cargando horarios:", err);
         setHorariosDisponibles([]);
+      })
+      .finally(() => {
+        setCargandoHorarios(false);
       });
   }, [fechaVisita, id]);
 
@@ -85,21 +87,11 @@ const VistaPropiedad = () => {
     >
       <div style={{ maxWidth: "900px", margin: "auto" }}>
         <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
-        <p>
-          <strong>Descripción:</strong> {propiedad.descripcion}
-        </p>
-        <p>
-          <strong>Precio:</strong> ${propiedad.precio}
-        </p>
-        <p>
-          <strong>Tipo:</strong> {propiedad.tipo}
-        </p>
-        <p>
-          <strong>Ubicación:</strong> {propiedad.ubicacion}
-        </p>
-        <p>
-          <strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}
-        </p>
+        <p><strong>Descripción:</strong> {propiedad.descripcion}</p>
+        <p><strong>Precio:</strong> ${propiedad.precio}</p>
+        <p><strong>Tipo:</strong> {propiedad.tipo}</p>
+        <p><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
+        <p><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
 
         {/* Imágenes */}
         <div
@@ -151,9 +143,7 @@ const VistaPropiedad = () => {
 
           {fechaVisita && (
             <div style={{ marginTop: "1rem" }}>
-              <h4>
-                Horarios disponibles para {fechaVisita.toLocaleDateString()}
-              </h4>
+              <h4>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
               <div
                 style={{
                   display: "flex",
@@ -163,7 +153,9 @@ const VistaPropiedad = () => {
                   marginTop: "10px",
                 }}
               >
-                {horariosDisponibles.length > 0 ? (
+                {cargandoHorarios ? (
+                  <p style={{ color: "#888" }}>Cargando horarios...</p>
+                ) : horariosDisponibles.length > 0 ? (
                   horariosDisponibles.map((hora) => (
                     <button
                       key={hora}
