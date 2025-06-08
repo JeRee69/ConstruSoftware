@@ -13,7 +13,7 @@ const VistaPropiedad = () => {
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
   const [horariosDisponibles, setHorariosDisponibles] = useState([]);
 
-  // Cargar propiedad
+  // Cargar datos de la propiedad
   useEffect(() => {
     fetch(`http://localhost:8080/propiedades/${id}`)
       .then((res) => {
@@ -30,7 +30,7 @@ const VistaPropiedad = () => {
       });
   }, [id]);
 
-  // Cargar horarios dinámicamente al cambiar fecha
+  // Cargar horarios disponibles desde backend
   useEffect(() => {
     if (!fechaVisita) return;
 
@@ -42,15 +42,20 @@ const VistaPropiedad = () => {
         const horarios = [];
 
         data.forEach(({ horaInicio, horaFin }) => {
-          let current = horaInicio;
-          while (current < horaFin) {
-            horarios.push(current);
+          let [h, m] = horaInicio.split(":").map(Number);
+          const [endH, endM] = horaFin.split(":").map(Number);
 
-            const [h, m] = current.split(":").map(Number);
-            const next = new Date();
-            next.setHours(h, m + 60); // bloques de 1 hora
-            current = next.toTimeString().slice(0, 5);
-          }
+          const start = new Date();
+          start.setHours(h, m, 0, 0);
+
+          const end = new Date();
+          end.setHours(endH, endM, 0, 0);
+
+          while (start < end) {
+            const horaFormateada = start.toTimeString().slice(0, 5); // HH:MM
+            horarios.push(horaFormateada);
+            start.setMinutes(start.getMinutes() + 60); // intervalos de 1 hora
+}
         });
 
         setHorariosDisponibles(horarios);
