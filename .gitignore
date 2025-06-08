@@ -1,29 +1,21 @@
-# ====================================
-# Backend (Spring Boot - Java)
-# ====================================
-solicitudVisita-facil-api/target/    # Carpeta de compilación de Maven
-*.jar                       # Archivos JAR generados
-*.war                       # Archivos WAR (para despliegue en servlets)
-*.class                     # Archivos compilados de Java
-*.log                       # Logs de aplicación
-.DS_Store                   # Metadata de macOS (si usas Apple)
 
-# ====================================
-# Frontend (React - Node.js)
-# ====================================
-VisitaFacil/node_modules/   # Dependencias de npm/yarn
-VisitaFacil/.env            # Variables de entorno (sensibles)
-VisitaFacil/.env.local      # Variables de entorno locales
-VisitaFacil/build/          # Carpeta de producción de React
-VisitaFacil/.cache/         # Cache de herramientas como Babel
-VisitaFacil/coverage/       # Reportes de tests (si usas Jest)
-VisitaFacil/dist/           # Carpeta de build alternativo
+solicitudVisita-facil-api/target/
+*.jar
+*.war
+*.class
+*.log
+.DS_Store
 
-# ====================================
-# General (Editor/IDE/Sistema)
-# ====================================
-.idea/                      # Configuración de IntelliJ IDEA
-.vscode/                    # Configuración de VS Code
-*.iml                       # Archivos de módulos de IDEA
-*.swp                       # Archivos temporales de Vim
-Thumbs.db                   # Miniaturas de Windows
+VisitaFacil/node_modules/
+VisitaFacil/.env
+VisitaFacil/.env.local
+VisitaFacil/build/
+VisitaFacil/.cache/
+VisitaFacil/coverage/
+VisitaFacil/dist/
+
+.idea/
+.vscode/
+*.iml
+*.swp
+Thumbs.db
