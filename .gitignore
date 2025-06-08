@@ -27,38 +27,3 @@ VisitaFacil/dist/           # Carpeta de build alternativo
 *.iml                       # Archivos de módulos de IDEA
 *.swp                       # Archivos temporales de Vim
 Thumbs.db                   # Miniaturas de Windows
-VisitaFacil/node_modules/.vite/deps/react-datepicker.js
-
-VisitaFacil/node_modules/date-fns/
-
-VisitaFacil/node_modules/.vite/deps/
-
-VisitaFacil/node_modules/\@floating-ui/core/dist/
-
-VisitaFacil/node_modules/\@floating-ui/core/
-
-VisitaFacil/node_modules/\@floating-ui/dom/dist/
-
-VisitaFacil/node_modules/\@floating-ui/dom/
-
-VisitaFacil/node_modules/\@floating-ui/react-dom/dist/
-
-VisitaFacil/node_modules/\@floating-ui/react-dom/
-
-VisitaFacil/node_modules/\@floating-ui/react/dist/
-
-VisitaFacil/node_modules/\@floating-ui/react/
-
-VisitaFacil/node_modules/\@floating-ui/utils/dist/
-
-VisitaFacil/node_modules/\@floating-ui/utils/dom/
-
-VisitaFacil/node_modules/\@floating-ui/utils/
-
-VisitaFacil/node_modules/clsx/
-
-VisitaFacil/node_modules/react-datepicker/
-
-VisitaFacil/node_modules/tabbable/
-
-VisitaFacil/node_modules/visitafacil/src/assets/
