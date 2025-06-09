@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Usermenu from "./common/Usermenu.jsx";
 
 const PageWrapper = styled.div`
   display: flex;
@@ -9,15 +10,17 @@ const PageWrapper = styled.div`
   background-color: #f0f0f0;
   min-height: 100vh;
   width: 100vw;
-  padding: 20px;
+  padding: 40px;
 `;
 
 const Container = styled.div`
   width: 100%;
-  max-width: 600px;
+  max-width: 1000px; /* más ancho para mejor distribución */
   background-color: #f9f9f9;
   padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h1`
@@ -28,7 +31,7 @@ const Title = styled.h1`
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* responsive */
   gap: 2rem;
 `;
 
@@ -111,29 +114,72 @@ const Catalogo = () => {
         )}
 
         <Grid>
-          {propiedades.map((prop) => (
-            <Card key={prop.id}>
-              <PropertyTitle>{prop.titulo}</PropertyTitle>
-              <Info>{prop.descripcion}</Info>
-              <Info>
-                <strong>Precio:</strong> ${prop.precio}
-              </Info>
-              <Info>
-                <strong>Tipo:</strong> {prop.tipo}
-              </Info>
-              <Info>
-                <strong>Ubicación:</strong> {prop.ubicacion}
-              </Info>
-              <Info>
-                <strong>Disponible:</strong> {prop.disponible ? "Sí" : "No"}
-              </Info>
-              <Button onClick={() => navigate(`/propiedad/${prop.id}`)}>
-                Ver Detalles
-              </Button>
-            </Card>
-          ))}
+          {propiedades.map((prop) => {
+            const primeraImagen =
+              prop.urlsImagenes && prop.urlsImagenes.length > 0
+                ? prop.urlsImagenes[0].trim()
+                : null;
+
+            return (
+              <Card key={prop.id}>
+                {primeraImagen ? (
+                  <img
+                    src={primeraImagen}
+                    alt={`${prop.titulo} imagen principal`}
+                    style={{
+                      width: "100%",
+                      height: "180px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                      marginBottom: "1rem",
+                    }}
+                    onError={(e) => {
+                      e.target.src = "/imagen-no-disponible.png";
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "180px",
+                      backgroundColor: "#ddd",
+                      borderRadius: "8px",
+                      marginBottom: "1rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#666",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Sin imagen
+                  </div>
+                )}
+
+                <PropertyTitle>{prop.titulo}</PropertyTitle>
+                <Info>{prop.descripcion}</Info>
+                <Info>
+                  <strong>Precio:</strong> ${prop.precio}
+                </Info>
+                <Info>
+                  <strong>Tipo:</strong> {prop.tipo}
+                </Info>
+                <Info>
+                  <strong>Ubicación:</strong> {prop.ubicacion}
+                </Info>
+                <Info>
+                  <strong>Disponible:</strong> {prop.disponible ? "Sí" : "No"}
+                </Info>
+                <Button onClick={() => navigate(`/propiedad/${prop.id}`)}>
+                  Ver Detalles
+                </Button>
+              </Card>
+            );
+          })}
         </Grid>
       </Container>
+
+      <Usermenu />
     </PageWrapper>
   );
 };

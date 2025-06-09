@@ -22,15 +22,14 @@ public class PropiedadService {
     private PropiedadRepository propiedadRepository;
 
     public Optional<Propiedad> getById(int id) {
-        return propiedadRepository.findById(id);
+        return propiedadRepository.findById((int) id);
     }
 
     public List<Propiedad> getPropiedadesDisponibles() {
         return propiedadRepository.findByDisponibleTrue();
     }
 
-    public Propiedad addPropiedad(String titulo, String descripcion, int precio, String tipo, String ubicacion,
-            boolean disponible) {
+    public Propiedad addPropiedad(String titulo, String descripcion, int precio, String tipo, String ubicacion, boolean disponible) {
         Propiedad propiedad = new Propiedad();
         propiedad.setTitulo(titulo);
         propiedad.setDescripcion(descripcion);
@@ -42,7 +41,7 @@ public class PropiedadService {
     }
 
     public List<String> subirImagenes(int id, List<MultipartFile> imagenes) throws IOException {
-        Propiedad propiedad = propiedadRepository.findById(id)
+        Propiedad propiedad = propiedadRepository.findById((int) id)
                 .orElseThrow(() -> new RuntimeException("Propiedad no encontrada"));
 
         List<String> urls = new ArrayList<>();
