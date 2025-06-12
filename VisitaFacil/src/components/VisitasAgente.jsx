@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -59,7 +60,6 @@ const Main = styled.div`
 
 const SectionTitle = styled.h3`
   margin-bottom: 1rem;
-  font-size: 1.2rem;
 `;
 
 const VisitCard = styled.div`
@@ -87,41 +87,36 @@ const AcceptButton = styled.button`
 
 const VisitasAgente = () => {
     const navigate = useNavigate();
+    const agenteId = localStorage.getItem('agenteId'); // o sacarlo del login
+
+    const [pendientes, setPendientes] = useState([]);
+    const [confirmadas, setConfirmadas] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const handleLogout = () => {
         localStorage.clear();
         navigate('/Login');
     };
 
-    const visitasPendientes = [
-        {
-            id: 1,
-            cliente: 'Ana Ríos',
-            propiedad: 'Av. Los Robles 123',
-            fecha: '2025-06-13',
-            hora: '11:00',
-        },
-        {
-            id: 2,
-            cliente: 'Carlos Díaz',
-            propiedad: 'Pasaje Central 45',
-            fecha: '2025-06-14',
-            hora: '16:30',
-        },
-    ];
-
-    const visitasConfirmadas = [
-        {
-            id: 3,
-            cliente: 'Lucía Pérez',
-            propiedad: 'Calle Norte 89',
-            fecha: '2025-06-12',
-            hora: '09:00',
-        },
-    ];
+    useEffect(() => {
+        fetch(`/solicitudes-agente/${agenteId}`)
+            .then((res) => res.json())
+            .then((data) => {
+                const pendientes = data.filter((v) => v.estado === 'PENDIENTE');
+                const confirmadas = data.filter((v) => v.estado === 'CONFIRMADA');
+                setPendientes(pendientes);
+                setConfirmadas(confirmadas);
+                setLoading(false);
+            })
+            .catch((err) => {
+                console.error('Error al cargar visitas', err);
+                setLoading(false);
+            });
+    }, [agenteId]);
 
     const aceptarVisita = (id) => {
         console.log(`Aceptar visita ${id}`);
+        // Aquí iría el POST/PUT al backend para aceptar la solicitud
     };
 
     return (
@@ -135,22 +130,28 @@ const VisitasAgente = () => {
                 </Sidebar>
 
                 <Main>
-                    <SectionTitle>Visitas pendientes</SectionTitle>
-                    {visitasPendientes.map((visita) => (
-                        <VisitCard key={visita.id}>
-                            <strong>{visita.cliente}</strong> quiere visitar <strong>{visita.propiedad}</strong><br />
-                            Fecha: {visita.fecha} a las {visita.hora}
-                            <AcceptButton onClick={() => aceptarVisita(visita.id)}>Aceptar</AcceptButton>
-                        </VisitCard>
-                    ))}
+                    {loading ? (
+                        <p>Cargando visitas...</p>
+                    ) : (
+                        <>
+                            <SectionTitle>Visitas pendientes</SectionTitle>
+                            {pendientes.length === 0 ? <p>No hay visitas pendientes.</p> : pendientes.map((visita) => (
+                                <VisitCard key={visita.id}>
+                                    <strong>{visita.nombreCliente}</strong> quiere visitar <strong>{visita.direccionPropiedad}</strong><br />
+                                    Fecha: {visita.fecha} a las {visita.hora}
+                                    <AcceptButton onClick={() => aceptarVisita(visita.id)}>Aceptar</AcceptButton>
+                                </VisitCard>
+                            ))}
 
-                    <SectionTitle>Visitas confirmadas</SectionTitle>
-                    {visitasConfirmadas.map((visita) => (
-                        <VisitCard key={visita.id}>
-                            <strong>{visita.cliente}</strong> - <strong>{visita.propiedad}</strong><br />
-                            Confirmada para el {visita.fecha} a las {visita.hora}
-                        </VisitCard>
-                    ))}
+                            <SectionTitle>Visitas confirmadas</SectionTitle>
+                            {confirmadas.length === 0 ? <p>No hay visitas confirmadas.</p> : confirmadas.map((visita) => (
+                                <VisitCard key={visita.id}>
+                                    <strong>{visita.nombreCliente}</strong> - <strong>{visita.direccionPropiedad}</strong><br />
+                                    Confirmada para el {visita.fecha} a las {visita.hora}
+                                </VisitCard>
+                            ))}
+                        </>
+                    )}
                 </Main>
             </Container>
         </OuterWrapper>
