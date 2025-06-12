@@ -2,7 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Usermenu from "./common/Usermenu.jsx";
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/Thomas
 
 const PageWrapper = styled.div`
   display: flex;
@@ -115,35 +118,78 @@ const Catalogo = () => {
         )}
 
         <Grid>
-          {propiedades.map((prop) => (
-            <Card key={prop.id}>
-              <PropertyTitle>{prop.titulo}</PropertyTitle>
-              <Info>{prop.descripcion}</Info>
-              <Info>
-                <strong>Precio:</strong> ${prop.precio}
-              </Info>
-              <Info>
-                <strong>Tipo:</strong> {prop.tipo}
-              </Info>
-              <Info>
-                <strong>Ubicación:</strong> {prop.ubicacion}
-              </Info>
-              <Info>
-                <strong>Disponible:</strong> {prop.disponible ? "Sí" : "No"}
-              </Info>
-              <Button onClick={() => navigate(`/propiedad/${prop.id}`)}>
-                Ver Detalles
-              </Button>
-            </Card>
-          ))}
+          {propiedades.map((prop) => {
+            const primeraImagen =
+              prop.urlsImagenes && prop.urlsImagenes.length > 0
+                ? prop.urlsImagenes[0].trim()
+                : null;
+
+            return (
+              <Card key={prop.id}>
+                {primeraImagen ? (
+                  <img
+                    src={primeraImagen}
+                    alt={`${prop.titulo} imagen principal`}
+                    style={{
+                      width: "100%",
+                      height: "180px",
+                      objectFit: "cover",
+                      borderRadius: "8px",
+                      marginBottom: "1rem",
+                    }}
+                    onError={(e) => {
+                      e.target.src = "/imagen-no-disponible.png";
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "180px",
+                      backgroundColor: "#ddd",
+                      borderRadius: "8px",
+                      marginBottom: "1rem",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#666",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Sin imagen
+                  </div>
+                )}
+
+                <PropertyTitle>{prop.titulo}</PropertyTitle>
+                <Info>{prop.descripcion}</Info>
+                <Info>
+                  <strong>Precio:</strong> ${prop.precio}
+                </Info>
+                <Info>
+                  <strong>Tipo:</strong> {prop.tipo}
+                </Info>
+                <Info>
+                  <strong>Ubicación:</strong> {prop.ubicacion}
+                </Info>
+                <Info>
+                  <strong>Disponible:</strong> {prop.disponible ? "Sí" : "No"}
+                </Info>
+                <Button onClick={() => navigate(`/propiedad/${prop.id}`)}>
+                  Ver Detalles
+                </Button>
+              </Card>
+            );
+          })}
         </Grid>
       </Container>
 
       <Usermenu />
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/Thomas
     </PageWrapper>
   );
 };
 
 export default Catalogo;
-  
