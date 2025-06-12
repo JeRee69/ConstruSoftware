@@ -4,6 +4,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Catalogo from './components/Catalogo';
 import VistaPropiedad from './components/VistaPropiedad';
+import HistorialVisitas from './components/HistorialVisitas';
 
 function App() {
   return (
@@ -13,7 +14,9 @@ function App() {
       <Route path="/registro" element={<Register />} />
       <Route path="/agenda" element={<Agenda />} />
       <Route path="/catalogo" element={<Catalogo />} />
-     <Route path="/propiedad/:id" element={<VistaPropiedad />} />
+      <Route path="/propiedad/:id" element={<VistaPropiedad />} />
+      <Route path="/historial" element={<HistorialVisitas />} />
+      {/* Ruta para manejar cualquier otra URL no definida */}
       <Route path="*" element={<h1 style={{ padding: '2rem' }}>Página no encontrada</h1>} />
 
     </Routes>

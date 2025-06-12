@@ -65,6 +65,7 @@ const Usermenu = () => {
       {open && (
         <Dropdown>
           <DropdownItem><strong>{nombreUsuario}</strong></DropdownItem>
+          <DropdownItem onClick={() => navigate("/historial")}>Historial de visitas</DropdownItem>
           <DropdownItem onClick={handleLogout}>Cerrar sesión</DropdownItem>
         </Dropdown>
       )}
