@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Usermenu from "./common/Usermenu.jsx";
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/Thomas
 
 const PageWrapper = styled.div`
   display: flex;
@@ -184,10 +180,6 @@ const Catalogo = () => {
       </Container>
 
       <Usermenu />
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/Thomas
     </PageWrapper>
   );
 };
