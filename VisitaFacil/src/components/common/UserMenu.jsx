@@ -50,7 +50,7 @@ const DropdownItem = styled.div`
   }
 `;
 
-const Usermenu = () => {
+const UserMenu = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const nombreUsuario = localStorage.getItem("nombre") || "Usuario";
@@ -75,4 +75,4 @@ const Usermenu = () => {
   );
 };
 
-export default Usermenu;
+export default UserMenu;
