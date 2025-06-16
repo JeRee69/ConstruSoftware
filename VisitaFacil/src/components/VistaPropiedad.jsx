@@ -70,10 +70,9 @@ const VistaPropiedad = () => {
         setCargandoHorarios(false);
       });
   }, [fechaVisita, id]);
-
-  if (cargando) return <p>Cargando propiedad...</p>;
+  if (cargando) return <p style={{ color: "#000" }}>Cargando propiedad...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!propiedad) return <p>Propiedad no encontrada.</p>;
+  if (!propiedad) return <p style={{ color: "#000" }}>Propiedad no encontrada.</p>;
 
   return (
     <div
@@ -85,14 +84,23 @@ const VistaPropiedad = () => {
         padding: "2rem",
         boxSizing: "border-box",
       }}
-    >
-      <div style={{ maxWidth: "900px", margin: "auto" }}>
+    >      <div style={{ maxWidth: "900px", margin: "auto" }}>
         <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
-        <p><strong>Descripción:</strong> {propiedad.descripcion}</p>
-        <p><strong>Precio:</strong> ${propiedad.precio}</p>
-        <p><strong>Tipo:</strong> {propiedad.tipo}</p>
-        <p><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
-        <p><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
+        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
+          <strong style={{ color: "#000" }}>Descripción:</strong> {propiedad.descripcion}
+        </p>
+        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
+          <strong style={{ color: "#000" }}>Precio:</strong> ${propiedad.precio}
+        </p>
+        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
+          <strong style={{ color: "#000" }}>Tipo:</strong> {propiedad.tipo}
+        </p>
+        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
+          <strong style={{ color: "#000" }}>Ubicación:</strong> {propiedad.ubicacion}
+        </p>
+        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
+          <strong style={{ color: "#000" }}>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}
+        </p>
 
         {/* Imágenes */}
         <div
@@ -121,15 +129,12 @@ const VistaPropiedad = () => {
                   e.target.src = "/imagen-no-disponible.png";
                 }}
               />
-            ))
-          ) : (
-            <p>No hay imágenes disponibles.</p>
+            ))          ) : (
+            <p style={{ color: "#000" }}>No hay imágenes disponibles.</p>
           )}
-        </div>
-
-        {/* Calendario y horarios */}
+        </div>        {/* Calendario y horarios */}
         <div style={{ marginTop: "2rem", textAlign: "center" }}>
-          <h3>Agendar una visita</h3>
+          <h3 style={{ color: "#000", margin: "1rem 0" }}>Agendar una visita</h3>
           <ReactDatePicker
             selected={fechaVisita}
             onChange={(date) => {
@@ -140,11 +145,9 @@ const VistaPropiedad = () => {
             placeholderText="Selecciona una fecha"
             dateFormat="dd/MM/yyyy"
             inline
-          />
-
-          {fechaVisita && (
+          />          {fechaVisita && (
             <div style={{ marginTop: "1rem" }}>
-              <h4>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
+              <h4 style={{ color: "#000", margin: "1rem 0" }}>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
               <div
                 style={{
                   display: "flex",
