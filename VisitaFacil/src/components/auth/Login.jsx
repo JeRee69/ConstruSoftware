@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import styled, {ThemeProvider} from 'styled-components';
-import {darkTheme, lightTheme} from '../../themes/theme';
+import {darkTheme, lightTheme} from '../../themes/theme.js';
 
 const LoginContainer = styled.div`
     display: flex;
