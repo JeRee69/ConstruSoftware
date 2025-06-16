@@ -1,0 +1,33 @@
+/* Contenedor del carrusel */
+.slick-slider {
+  width: 100%;
+  max-width: 800px; /* o lo que necesites */
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* Pista del carrusel */
+.slick-track {
+  display: flex !important;
+  align-items: center;
+}
+
+/* Cada slide */
+.slick-slide {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  height: 500px; /* altura estándar para todos los slides */
+  background-color: aqua;
+}
+
+/* Imagen dentro del slide */
+.slick-slide img {
+  max-height: 100%;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}

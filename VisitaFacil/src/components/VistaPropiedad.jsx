@@ -6,6 +6,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/datepicker-custom.css";
+import "../styles/VistaPropiedad.css";  
 
 const VistaPropiedad = () => {
   const { id } = useParams();
@@ -114,14 +115,6 @@ const VistaPropiedad = () => {
                   <img
                     src={url.trim()}
                     alt={`Imagen ${index + 1}`}
-                    style={{
-                      width: "100%",
-                      maxHeight: "400px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                      margin: "0 auto",
-                    }}
                     onError={(e) => {
                       e.target.src = "/imagen-no-disponible.png";
                     }}

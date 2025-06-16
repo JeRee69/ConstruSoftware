@@ -18,10 +18,14 @@ const HistorialVisitas = () => {
 
         const data = await response.json();
 
-        // Asegúrate de que el campo "estado" esté en minúsculas o ajusta según tu backend
-        const visitasRealizadas = data.filter((v) => v.estado?.toLowerCase() === "realizado");
+        console.log("Datos recibidos:", data);
 
-        setVisitas(visitasRealizadas);
+        const visitasFiltradas = data.filter((v) => {
+          const estado = v.estado?.toLowerCase();
+          return estado === "realizado" || estado === "pendiente";
+        });
+
+        setVisitas(visitasFiltradas);
       } catch (error) {
         console.error("Error al cargar visitas:", error);
       } finally {
@@ -32,6 +36,8 @@ const HistorialVisitas = () => {
     fetchVisitas();
   }, [correo]);
 
+  
+
   return (
     <div style={{ padding: "2rem", maxWidth: "1000px", margin: "auto" }}>
       <h2 style={{ color: "#d32f2f", marginBottom: "1rem" }}>Historial de Visitas</h2>
@@ -39,7 +45,7 @@ const HistorialVisitas = () => {
       {cargando ? (
         <p>Cargando...</p>
       ) : visitas.length === 0 ? (
-        <p>No tienes visitas realizadas.</p>
+        <p>No tienes visitas realizadas o pendientes.</p>
       ) : (
         <table style={tablaEstilos}>
           <thead>
@@ -48,6 +54,7 @@ const HistorialVisitas = () => {
               <th style={th}>Hora</th>
               <th style={th}>Propiedad</th>
               <th style={th}>Agente</th>
+              <th style={th}>Estado</th>
             </tr>
           </thead>
           <tbody>
@@ -57,6 +64,7 @@ const HistorialVisitas = () => {
                 <td style={td}>{visita.hora_inicio}</td>
                 <td style={td}>{visita.propiedad_id}</td>
                 <td style={td}>{visita.agente_id}</td>
+                <td style={td}>{visita.estado}</td>
               </tr>
             ))}
           </tbody>
@@ -78,7 +86,7 @@ const tablaEstilos = {
   borderCollapse: "collapse",
   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
   borderRadius: "8px",
-  overflow: "hidden"
+  overflow: "hidden",
 };
 
 const th = {
@@ -86,12 +94,12 @@ const th = {
   color: "#333",
   borderBottom: "2px solid #ccc",
   padding: "0.75rem",
-  textAlign: "left"
+  textAlign: "left",
 };
 
 const td = {
   borderBottom: "1px solid #eee",
-  padding: "0.75rem"
+  padding: "0.75rem",
 };
 
 export default HistorialVisitas;
