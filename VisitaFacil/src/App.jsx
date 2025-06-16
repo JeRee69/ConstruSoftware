@@ -8,6 +8,7 @@ import VisitasAgente from "./components/VisitasAgente.jsx";
 import AdminCatalogo from "./components/CatalogoAdmin.jsx";
 import NuevaPropiedad from "./components/NuevaPropiedad.jsx";
 import RegistrarDisponibilidad from "./components/RegistrarDisponibilidad.jsx";
+import RegistrarDisponibilidadAgente from "./components/RegistrarDisponibilidadAgente.jsx";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/login" element={<Login/>}/>
             <Route path="/registro" element={<Register/>}/>
             <Route path="/agenda" element={<Agenda/>}/>
+            <Route path="/agente/disponibilidad" element={<RegistrarDisponibilidadAgente />} />
             <Route path="/catalogo" element={<Catalogo/>}/>
             <Route path="/propiedad/:id" element={<VistaPropiedad/>}/>
             <Route path="/admin/nueva-propiedad" element={<NuevaPropiedad />} />

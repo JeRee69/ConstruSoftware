@@ -152,14 +152,18 @@ const Login = () => {
             if (response.status === 200) {
                 const data = await response.json(); // { accountId, rol }
 
-                localStorage.setItem('usuario', JSON.stringify(data));
+                // Guardamos ambos datos en localStorage
+                localStorage.setItem('usuario', JSON.stringify({
+                    accountId: data.accountId,
+                    rol: data.rol
+                }));
 
                 switch (data.rol) {
                     case 'ADMINISTRADOR':
                         navigate('/admin/catalogo');
                         break;
                     case 'AGENTE':
-                        navigate('/agenda');
+                        navigate('/agente/disponibilidad');
                         break;
                     case 'CLIENTE':
                     default:
