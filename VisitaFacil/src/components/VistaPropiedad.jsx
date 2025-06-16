@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../styles/datepicker-custom.css";
 
 const VistaPropiedad = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [propiedad, setPropiedad] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [fechaVisita, setFechaVisita] = useState(null);
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
   const [horariosDisponibles, setHorariosDisponibles] = useState([]);
-  const [cargandoHorarios, setCargandoHorarios] = useState(false); // nuevo estado
+  const [cargandoHorarios, setCargandoHorarios] = useState(false);
 
   // Cargar datos de la propiedad
   useEffect(() => {
@@ -53,9 +54,9 @@ const VistaPropiedad = () => {
           end.setHours(endH, endM, 0, 0);
 
           while (start < end) {
-            const horaFormateada = start.toTimeString().slice(0, 5); // HH:MM
+            const horaFormateada = start.toTimeString().slice(0, 5);
             horarios.push(horaFormateada);
-            start.setMinutes(start.getMinutes() + 60); // cambia a 30 si prefieres
+            start.setMinutes(start.getMinutes() + 60); // 60 min bloques
           }
         });
 
@@ -163,12 +164,8 @@ const VistaPropiedad = () => {
                       style={{
                         padding: "8px 14px",
                         borderRadius: "6px",
-                        border:
-                          horarioSeleccionado === hora
-                            ? "2px solid #d32f2f"
-                            : "1px solid #ccc",
-                        backgroundColor:
-                          horarioSeleccionado === hora ? "#d32f2f" : "#fff",
+                        border: horarioSeleccionado === hora ? "2px solid #d32f2f" : "1px solid #ccc",
+                        backgroundColor: horarioSeleccionado === hora ? "#d32f2f" : "#fff",
                         color: horarioSeleccionado === hora ? "#fff" : "#333",
                         cursor: "pointer",
                         transition: "0.2s",
@@ -183,16 +180,42 @@ const VistaPropiedad = () => {
               </div>
 
               {horarioSeleccionado && (
-                <p
-                  style={{
-                    marginTop: "1rem",
-                    fontWeight: "bold",
-                    color: "#4caf50",
-                  }}
-                >
-                  Visita seleccionada: {fechaVisita.toLocaleDateString()} a las{" "}
-                  {horarioSeleccionado}
-                </p>
+                <>
+                  <p
+                    style={{
+                      marginTop: "1rem",
+                      fontWeight: "bold",
+                      color: "#4caf50",
+                    }}
+                  >
+                    Visita seleccionada: {fechaVisita.toLocaleDateString()} a las {horarioSeleccionado}
+                  </p>
+
+                  <button
+                    onClick={() => {
+                      localStorage.setItem("visitaPendiente", JSON.stringify({
+                        propiedadId: propiedad.id,
+                        titulo: propiedad.titulo,
+                        ubicacion: propiedad.ubicacion,
+                        fecha: fechaVisita.toISOString().split("T")[0],
+                        hora: horarioSeleccionado,
+                      }));
+                      navigate("/confirmar-visita");
+                    }}
+                    style={{
+                      marginTop: "1.5rem",
+                      padding: "0.8rem 1.5rem",
+                      backgroundColor: "#d32f2f",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "6px",
+                      fontSize: "1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Confirmar Visita
+                  </button>
+                </>
               )}
             </div>
           )}
