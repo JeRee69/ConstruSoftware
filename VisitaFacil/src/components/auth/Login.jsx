@@ -179,7 +179,7 @@ const Login = () => {
             Cambiar a tema {isDark ? 'claro' : 'oscuro'}
           </ToggleButton>
 
-          <Logo>PropiedadesPlus</Logo>
+          <Logo>VisitaFácil</Logo>
           <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column' }}>
             <InputField>
               <Label htmlFor="email">Correo Electrónico</Label>
