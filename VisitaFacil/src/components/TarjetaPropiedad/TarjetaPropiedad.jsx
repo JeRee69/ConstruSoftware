@@ -1,50 +1,99 @@
-// src/components/TarjetaPropiedad/TarjetaPropiedad.jsx
-import React from "react";
+import React, { useState } from "react";
 import {
     Card,
     PropertyImage,
-    PlaceholderImage,
     PropertyTitle,
-    Info,
-    Button
+    MetaInfo,
+    Price,
+    SmallButton,
+    Content,
+    Footer,
+    FlechaIzquierda,
+    FlechaDerecha,
+    ImagenWrapper,
+    PlaceholderSinImagen,
+    AdminIconos,
+    Icono
 } from "./TarjetaPropiedad.styles";
 
-const TarjetaPropiedad = ({ propiedad, onClick }) => {
-    const primeraImagen =
-        propiedad.urlsImagenes && propiedad.urlsImagenes.length > 0
-            ? propiedad.urlsImagenes[0].trim()
-            : null;
+import { useNavigate } from "react-router-dom";
+import {
+    FaArrowRight,
+    FaChevronLeft,
+    FaChevronRight,
+    FaTrash,
+    FaCalendarAlt
+} from "react-icons/fa";
+
+const TarjetaPropiedad = ({ propiedad, onEliminar, onDisponibilidad, esAdmin }) => {
+    const navigate = useNavigate();
+    const imagenesValidas = propiedad.urlsImagenes?.filter(url => url.trim() !== "") || [];
+    const sinImagenes = imagenesValidas.length === 0;
+    const imagenes = sinImagenes ? [] : imagenesValidas;
+    const [indiceActual, setIndiceActual] = useState(0);
+
+    const cambiarImagen = (direccion) => {
+        setIndiceActual((prev) =>
+            direccion === "izq"
+                ? (prev - 1 + imagenes.length) % imagenes.length
+                : (prev + 1) % imagenes.length
+        );
+    };
+
+    const formatearTitulo = (titulo) =>
+        titulo
+            .toLowerCase()
+            .split(" ")
+            .map(p => p.charAt(0).toUpperCase() + p.slice(1))
+            .join(" ");
 
     return (
         <Card>
-            {primeraImagen ? (
-                <PropertyImage
-                    src={primeraImagen}
-                    alt={`${propiedad.titulo} imagen`}
-                    onError={(e) => {
-                        e.target.src = "/imagen-no-disponible.png";
-                    }}
-                />
-            ) : (
-                <PlaceholderImage>Sin imagen</PlaceholderImage>
-            )}
+            <ImagenWrapper>
+                {sinImagenes ? (
+                    <PlaceholderSinImagen />
+                ) : (
+                    <>
+                        <PropertyImage src={imagenes[indiceActual]} alt={propiedad.titulo} />
+                        {imagenes.length > 1 && (
+                            <>
+                                <FlechaIzquierda onClick={() => cambiarImagen("izq")}>
+                                    <FaChevronLeft />
+                                </FlechaIzquierda>
+                                <FlechaDerecha onClick={() => cambiarImagen("der")}>
+                                    <FaChevronRight />
+                                </FlechaDerecha>
+                            </>
+                        )}
+                    </>
+                )}
+            </ImagenWrapper>
 
-            <PropertyTitle>{propiedad.titulo}</PropertyTitle>
-            <Info>{propiedad.descripcion}</Info>
-            <Info>
-                <strong>Precio:</strong> ${propiedad.precio}
-            </Info>
-            <Info>
-                <strong>Tipo:</strong> {propiedad.tipo}
-            </Info>
-            <Info>
-                <strong>Ubicación:</strong> {propiedad.ubicacion}
-            </Info>
-            <Info>
-                <strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}
-            </Info>
+            <Content>
+                <PropertyTitle>{formatearTitulo(propiedad.titulo)}</PropertyTitle>
+                <MetaInfo>{propiedad.tipo}</MetaInfo>
+                <MetaInfo>{propiedad.ubicacion}</MetaInfo>
+                <Price>${propiedad.precio.toLocaleString()}</Price>
+            </Content>
 
-            <Button onClick={onClick}>Ver Detalles</Button>
+            <Footer>
+                {esAdmin && (
+                    <AdminIconos>
+                        <Icono onClick={() => onDisponibilidad(propiedad)} title="Registrar disponibilidad">
+                            <FaCalendarAlt />
+                        </Icono>
+                        <Icono onClick={() => onEliminar(propiedad)} title="Eliminar propiedad">
+                            <FaTrash />
+                        </Icono>
+                    </AdminIconos>
+                )}
+
+                <div style={{ marginLeft: "auto" }}>
+                    <SmallButton onClick={() => navigate(`/propiedad/${propiedad.id}`)}>
+                        Ver más <FaArrowRight />
+                    </SmallButton>
+                </div>
+            </Footer>
         </Card>
     );
 };

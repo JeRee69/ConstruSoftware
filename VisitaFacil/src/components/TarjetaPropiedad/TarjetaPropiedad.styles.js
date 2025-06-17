@@ -1,17 +1,19 @@
-// src/components/TarjetaPropiedad/TarjetaPropiedad.styles.js
 import styled from "styled-components";
 
 export const Card = styled.div`
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 20px;
   overflow: hidden;
-  transition: transform 0.2s;
-  padding: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  font-family: 'Inter', sans-serif;
+  transition: transform 0.2s, box-shadow 0.2s;
+  max-width: 340px;
 
   &:hover {
-    transform: scale(1.02);
-    border: 2px solid #d32f2f;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
   }
 `;
 
@@ -19,45 +21,128 @@ export const PropertyImage = styled.img`
   width: 100%;
   height: 180px;
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 1rem;
 `;
 
-export const PlaceholderImage = styled.div`
-  width: 100%;
-  height: 180px;
-  background-color: #ddd;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #666;
-  font-style: italic;
+export const Content = styled.div`
+  padding: 1rem;
 `;
 
 export const PropertyTitle = styled.h3`
-  margin: 0 0 0.5rem 0;
-  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
 `;
 
-export const Info = styled.p`
-  margin: 0.25rem 0;
-  color: #666;
-  font-size: 0.95rem;
+export const MetaInfo = styled.p`
+  font-size: 0.9rem;
+  color: #555;
+  margin: 0.2rem 0;
+  /* sin label, solo texto */
 `;
 
-export const Button = styled.button`
-  margin-top: 10px;
-  padding: 8px 12px;
-  background-color: #d32f2f;
-  color: white;
+export const Price = styled.p`
+  font-size: 1rem;
+  font-weight: 500;
+  color: #111;
+  margin-top: 0.6rem;
+`;
+
+
+export const SmallButton = styled.button`
+  background: none;
+  color: #1c1f2a;
   border: none;
-  border-radius: 5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: #b71c1c;
+    background-color: rgba(28, 31, 42, 0.05);
   }
 `;
+
+export const ImagenWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 180px;
+`;
+
+export const FlechaIzquierda = styled.button`
+  position: absolute;
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.4);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 0.4rem;
+  cursor: pointer;
+  z-index: 10;
+
+  &:hover {
+    background: rgba(0,0,0,0.6);
+  }
+`;
+
+export const FlechaDerecha = styled(FlechaIzquierda)`
+  left: auto;
+  right: 8px;
+`;
+
+export const PlaceholderSinImagen = styled.div`
+  width: 100%;
+  height: 180px;
+  background-color: #f0f0f0;
+  color: #999;
+  font-style: italic;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-transform: uppercase;
+  overflow: hidden;
+
+  &::before {
+    content: "Sin imagen";
+    position: absolute;
+    transform: rotate(-45deg);
+    font-size: 1.2rem;
+    color: #bbb;
+    opacity: 0.7;
+  }
+`;
+
+export const Footer = styled.div`
+  padding: 0 1rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const AdminIconos = styled.div`
+  display: flex;
+  gap: 0.8rem;
+`;
+
+export const Icono = styled.button`
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #d32f2f;
+  }
+`;
+

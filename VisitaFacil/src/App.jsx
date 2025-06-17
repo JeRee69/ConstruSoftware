@@ -1,15 +1,16 @@
-import {Route, Routes} from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import Agenda from './components/Agenda';
-import Login from './components/auth/Login.jsx';
-import Register from './components/auth/Register';
+import Login from './views/Login/Login.jsx';
+import Registro from './views/Registro/Registro.jsx';
 import Catalogo from './views/Catalogo/Catalogo.jsx';
 import VistaPropiedad from './components/VistaPropiedad';
 import VisitasAgente from "./components/VisitasAgente.jsx";
-import AdminCatalogo from "./components/CatalogoAdmin.jsx";
+import AdminCatalogo from "./views/CatalogoAdmin/CatalogoAdmin.jsx";
 import NuevaPropiedad from "./components/NuevaPropiedad.jsx";
 import RegistrarDisponibilidad from "./components/RegistrarDisponibilidad.jsx";
 import RegistrarDisponibilidadAgente from "./components/RegistrarDisponibilidadAgente.jsx";
 import BarraNav from "./components/BarraNav/BarraNav.jsx";
+import RutaProtegida from './components/RutaProtegida';
 
 function App() {
     return (
@@ -19,15 +20,55 @@ function App() {
             <Routes>
                 <Route path="/" element={<Catalogo />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/registro" element={<Register />} />
+                <Route path="/registro" element={<Registro />} />
                 <Route path="/agenda" element={<Agenda />} />
-                <Route path="/agente/disponibilidad" element={<RegistrarDisponibilidadAgente />} />
                 <Route path="/catalogo" element={<Catalogo />} />
                 <Route path="/propiedad/:id" element={<VistaPropiedad />} />
-                <Route path="/admin/nueva-propiedad" element={<NuevaPropiedad />} />
-                <Route path="/admin/propiedad/:id/disponibilidad" element={<RegistrarDisponibilidad />} />
-                <Route path="/visitas-agente" element={<VisitasAgente />} />
-                <Route path="/admin/catalogo" element={<AdminCatalogo />} />
+
+                {/* Rutas protegidas para AGENTE */}
+                <Route
+                    path="/agente/disponibilidad"
+                    element={
+                        <RutaProtegida rolRequerido="AGENTE">
+                            <RegistrarDisponibilidadAgente />
+                        </RutaProtegida>
+                    }
+                />
+                <Route
+                    path="/visitas-agente"
+                    element={
+                        <RutaProtegida rolRequerido="AGENTE">
+                            <VisitasAgente />
+                        </RutaProtegida>
+                    }
+                />
+
+                {/* Rutas protegidas para ADMINISTRADOR */}
+                <Route
+                    path="/admin/catalogo"
+                    element={
+                        <RutaProtegida rolRequerido="ADMINISTRADOR">
+                            <AdminCatalogo />
+                        </RutaProtegida>
+                    }
+                />
+                <Route
+                    path="/admin/nueva-propiedad"
+                    element={
+                        <RutaProtegida rolRequerido="ADMINISTRADOR">
+                            <NuevaPropiedad />
+                        </RutaProtegida>
+                    }
+                />
+                <Route
+                    path="/admin/propiedad/:id/disponibilidad"
+                    element={
+                        <RutaProtegida rolRequerido="ADMINISTRADOR">
+                            <RegistrarDisponibilidad />
+                        </RutaProtegida>
+                    }
+                />
+
                 <Route path="*" element={<h1 style={{ padding: '2rem' }}>Página no encontrada</h1>} />
             </Routes>
         </>

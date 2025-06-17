@@ -1,43 +1,51 @@
 import React from 'react';
-import {Link, useNavigate} from 'react-router-dom';
-import {NavContainer} from './BarraNav.styles.js';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+    NavContainer,
+    Logo,
+    NavSectionLeft,
+    NavSectionRight,
+    NavLinks,
+    NavButton
+} from './BarraNav.styles';
 
 const BarraNav = () => {
     const navigate = useNavigate();
-    const token = localStorage.getItem('token');
-    const rol = localStorage.getItem('rol');
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
 
     const logout = () => {
-        localStorage.clear();
-        navigate('/');
+        localStorage.removeItem('usuario');
+        navigate('/login');
     };
 
     return (
         <NavContainer>
-            <div className="left">
-                <Link to="/">Inicio</Link>
-            </div>
+            <NavSectionLeft>
+                <Logo onClick={() => navigate('/')}>VisitaFácil</Logo>
+                <NavLinks>
+                    <Link to="/">Catálogo</Link>
 
-            <div className="right">
-                {!token && <Link to="/login">Iniciar Sesión</Link>}
+                    {usuario?.rol === 'ADMINISTRADOR' && (
+                        <>
+                            <Link to="/admin/catalogo">Panel de administrador</Link>
+                        </>
+                    )}
 
-                {token && rol === 'ADMIN' && (
-                    <>
-                        <Link to="/admin/catalogo">Propiedades</Link>
-                        <Link to="/admin/nueva-propiedad">Nueva Propiedad</Link>
-                        <Link to="/admin/crear-agente">Crear Agente</Link>
-                        <button onClick={logout}>Cerrar Sesión</button>
-                    </>
+                    {usuario?.rol === 'AGENTE' && (
+                        <>
+                            <Link to="/agente/disponibilidad">Disponibilidad</Link>
+                            <Link to="/visitas-agente">Solicitudes</Link>
+                        </>
+                    )}
+                </NavLinks>
+            </NavSectionLeft>
+
+            <NavSectionRight>
+                {usuario && (
+                    <NavButton as="button" onClick={logout}>Cerrar Sesión</NavButton>
                 )}
-
-                {token && rol === 'AGENTE' && (
-                    <>
-                        <Link to="/agente/disponibilidad">Disponibilidad</Link>
-                        <Link to="/visitas-agente">Solicitudes</Link>
-                        <button onClick={logout}>Cerrar Sesión</button>
-                    </>
-                )}
-            </div>
+                {!usuario && <NavButton to="/login">Iniciar Sesión</NavButton>}
+            </NavSectionRight>
         </NavContainer>
     );
 };

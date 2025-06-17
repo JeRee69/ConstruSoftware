@@ -278,7 +278,7 @@ const RegistrarDisponibilidad = () => {
                         </Select>
                     </TimeRow>
 
-                    <Button type="submit">Guardar Disponibilidad</Button>
+                    <Button type="submit">Guardar</Button>
                     {error && <ErrorMsg>{error}</ErrorMsg>}
                 </form>
             </Left>
