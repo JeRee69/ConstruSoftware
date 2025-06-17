@@ -1,8 +1,12 @@
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { useNavigate, useParams } from "react-router-dom";
 import "../styles/datepicker-custom.css";
+import "../styles/VistaPropiedad.css";  
 
 const VistaPropiedad = () => {
   const { id } = useParams();
@@ -15,7 +19,6 @@ const VistaPropiedad = () => {
   const [horariosDisponibles, setHorariosDisponibles] = useState([]);
   const [cargandoHorarios, setCargandoHorarios] = useState(false);
 
-  // Cargar datos de la propiedad
   useEffect(() => {
     fetch(`http://localhost:8080/propiedades/${id}`)
       .then((res) => {
@@ -32,7 +35,6 @@ const VistaPropiedad = () => {
       });
   }, [id]);
 
-  // Cargar horarios disponibles desde backend
   useEffect(() => {
     if (!fechaVisita) return;
 
@@ -56,7 +58,7 @@ const VistaPropiedad = () => {
           while (start < end) {
             const horaFormateada = start.toTimeString().slice(0, 5);
             horarios.push(horaFormateada);
-            start.setMinutes(start.getMinutes() + 60); // 60 min bloques
+            start.setMinutes(start.getMinutes() + 60);
           }
         });
 
@@ -74,6 +76,15 @@ const VistaPropiedad = () => {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
   if (!propiedad) return <p style={{ color: "#000" }}>Propiedad no encontrada.</p>;
 
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+  };
+
   return (
     <div
       style={{
@@ -86,55 +97,38 @@ const VistaPropiedad = () => {
       }}
     >      <div style={{ maxWidth: "900px", margin: "auto" }}>
         <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
-        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
-          <strong style={{ color: "#000" }}>Descripción:</strong> {propiedad.descripcion}
-        </p>
-        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
-          <strong style={{ color: "#000" }}>Precio:</strong> ${propiedad.precio}
-        </p>
-        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
-          <strong style={{ color: "#000" }}>Tipo:</strong> {propiedad.tipo}
-        </p>
-        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
-          <strong style={{ color: "#000" }}>Ubicación:</strong> {propiedad.ubicacion}
-        </p>
-        <p style={{ color: "#000", margin: "0.5rem 0", fontSize: "1rem" }}>
-          <strong style={{ color: "#000" }}>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}
-        </p>
+        <div style={{ color: "#000" }}>
+          <p><strong>Descripción:</strong> {propiedad.descripcion}</p>
+          <p><strong>Precio:</strong> ${propiedad.precio}</p>
+          <p><strong>Tipo:</strong> {propiedad.tipo}</p>
+          <p><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
+          <p><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
+        </div>
 
-        {/* Imágenes */}
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            marginTop: "1rem",
-            justifyContent: "flex-start",
-            flexWrap: "wrap",
-          }}
-        >
+        {/* Carrusel de imágenes */}
+        <div style={{ marginTop: "1.5rem" }}>
           {propiedad.urlsImagenes?.length > 0 ? (
-            propiedad.urlsImagenes.map((url, index) => (
-              <img
-                key={index}
-                src={url.trim()}
-                alt={`Imagen ${index + 1}`}
-                style={{
-                  width: "400px",
-                  height: "250px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                }}
-                onError={(e) => {
-                  e.target.src = "/imagen-no-disponible.png";
-                }}
-              />
-            ))          ) : (
+            <Slider {...sliderSettings}>
+              {propiedad.urlsImagenes.map((url, index) => (
+                <div key={index}>
+                  <img
+                    src={url.trim()}
+                    alt={`Imagen ${index + 1}`}
+                    onError={(e) => {
+                      e.target.src = "/imagen-no-disponible.png";
+                    }}
+                  />
+                </div>
+              ))}
+            </Slider>
+          ) : (
             <p style={{ color: "#000" }}>No hay imágenes disponibles.</p>
           )}
-        </div>        {/* Calendario y horarios */}
-        <div style={{ marginTop: "2rem", textAlign: "center" }}>
-          <h3 style={{ color: "#000", margin: "1rem 0" }}>Agendar una visita</h3>
+        </div>
+
+        {/* Calendario y horarios */}
+        <div style={{ marginTop: "2rem", textAlign: "center", color: "#000" }}>
+          <h3>Agendar una visita</h3>
           <ReactDatePicker
             selected={fechaVisita}
             onChange={(date) => {

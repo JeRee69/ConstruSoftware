@@ -70,13 +70,13 @@ const ConfirmarVisita = () => {
     <div style={{ maxWidth: "600px", margin: "2rem auto", padding: "2rem", background: "#fff", borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
       <h2 style={{ color: "#d32f2f", marginBottom: "1rem" }}>Confirmar Visita</h2>
 
-      <p><strong>Propiedad:</strong> {visita.titulo}</p>
-      <p><strong>Ubicación:</strong> {visita.ubicacion}</p>
-      <p><strong>Fecha:</strong> {visita.fecha}</p>
-      <p><strong>Hora:</strong> {visita.hora}</p>
+      <p style={{ color: "#000" }}><strong>Propiedad:</strong> {visita.titulo}</p>
+      <p style={{ color: "#000" }}><strong>Ubicación:</strong> {visita.ubicacion}</p>
+      <p style={{ color: "#000" }}><strong>Fecha:</strong> {visita.fecha}</p>
+      <p style={{ color: "#000" }}><strong>Hora:</strong> {visita.hora}</p>
 
       <div style={{ marginTop: "2rem" }}>
-        <label>Nombre</label>
+        <label style={{ color: "#000" }}>Nombre</label>
         <input
           name="nombre"
           value={formulario.nombre}
@@ -84,7 +84,7 @@ const ConfirmarVisita = () => {
           style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
         />
 
-        <label>Correo</label>
+        <label style={{ color: "#000" }}>Correo</label>
         <input
           type="email"
           name="correo"
@@ -93,7 +93,7 @@ const ConfirmarVisita = () => {
           style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
         />
 
-        <label>Teléfono</label>
+        <label style={{ color: "#000" }}>Teléfono</label>
         <input
           name="telefono"
           value={formulario.telefono}
