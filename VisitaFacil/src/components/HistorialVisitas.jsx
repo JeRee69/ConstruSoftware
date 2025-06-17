@@ -4,7 +4,7 @@ import "../styles/HistorialVisitas.css";
 const HistorialVisitas = () => {
   const [correo, setCorreo] = useState("");
   const [visitas, setVisitas] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);  
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
 
   const handleBuscar = async () => {
@@ -12,7 +12,7 @@ const HistorialVisitas = () => {
 
     setLoading(true);
     try {
-      const response = await fetch(`http://localhost:8080/visitas/solicitud/historial?correo=${correo}`);
+      const response = await fetch(`http://localhost:8080/visitas/historial?correo=${correo}`);
       const data = await response.json();
       setVisitas(data);
       setMostrarHistorial(true);
