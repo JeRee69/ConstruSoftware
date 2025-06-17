@@ -34,12 +34,11 @@ public class SolicitudVisitaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Visita no encontrada o no se puede cancelar");
         }
     }
-    
+
     @GetMapping("/historial")
     public ResponseEntity<List<SolicitudVisita>> obtenerHistorialPorCorreo(@RequestParam String correo) {
         List<SolicitudVisita> historial = solicitudVisitaService.obtenerHistorialPorCorreo(correo);
         return ResponseEntity.ok(historial);
     }
-
 
 }

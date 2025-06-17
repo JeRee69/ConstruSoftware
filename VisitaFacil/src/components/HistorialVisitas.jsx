@@ -1,105 +1,90 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import "../styles/HistorialVisitas.css";
 
 const HistorialVisitas = () => {
+  const [correo, setCorreo] = useState("");
   const [visitas, setVisitas] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const correo = localStorage.getItem("correo");
+  const [loading, setLoading] = useState(false);
+  const [mostrarHistorial, setMostrarHistorial] = useState(false);
 
-  useEffect(() => {
-    if (!correo) {
-      setCargando(false);
-      return;
+  const handleBuscar = async () => {
+    if (!correo) return alert("Por favor ingresa un correo válido.");
+
+    setLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8080/visitas/solicitud/historial?correo=${correo}`);
+      const data = await response.json();
+      setVisitas(data);
+      setMostrarHistorial(true);
+    } catch (error) {
+      console.error("Error al obtener historial:", error);
+      alert("Error al buscar el historial. Revisa el correo o el servidor.");
+    } finally {
+      setLoading(false);
     }
-
-    const fetchVisitas = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/api/visitas?correo=${correo}`);
-        if (!response.ok) throw new Error("Error en la respuesta del servidor");
-
-        const data = await response.json();
-
-        console.log("Datos recibidos:", data);
-
-        const visitasFiltradas = data.filter((v) => {
-          const estado = v.estado?.toLowerCase();
-          return estado === "realizado" || estado === "pendiente";
-        });
-
-        setVisitas(visitasFiltradas);
-      } catch (error) {
-        console.error("Error al cargar visitas:", error);
-      } finally {
-        setCargando(false);
-      }
-    };
-
-    fetchVisitas();
-  }, [correo]);
-
-  
+  };
 
   return (
-    <div style={{ padding: "2rem", maxWidth: "1000px", margin: "auto" }}>
-      <h2 style={{ color: "#d32f2f", marginBottom: "1rem" }}>Historial de Visitas</h2>
+    <div className="page-wrapper">
+      <h2 className="titulo">Consultar Historial de Visitas</h2>
 
-      {cargando ? (
-        <p>Cargando...</p>
-      ) : visitas.length === 0 ? (
-        <p>No tienes visitas realizadas o pendientes.</p>
-      ) : (
-        <table style={tablaEstilos}>
-          <thead>
-            <tr>
-              <th style={th}>Fecha</th>
-              <th style={th}>Hora</th>
-              <th style={th}>Propiedad</th>
-              <th style={th}>Agente</th>
-              <th style={th}>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visitas.map((visita) => (
-              <tr key={visita.id}>
-                <td style={td}>{formatearFecha(visita.fecha)}</td>
-                <td style={td}>{visita.hora_inicio}</td>
-                <td style={td}>{visita.propiedad_id}</td>
-                <td style={td}>{visita.agente_id}</td>
-                <td style={td}>{visita.estado}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div style={{ marginBottom: "20px" }}>
+        <input
+          type="email"
+          value={correo}
+          onChange={(e) => setCorreo(e.target.value)}
+          placeholder="Ingresa tu correo"
+          style={{
+            padding: "10px",
+            width: "250px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            marginRight: "10px",
+          }}
+        />
+        <button
+          onClick={handleBuscar}
+          style={{
+            padding: "10px 16px",
+            backgroundColor: "#d32f2f",
+            color: "#fff",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}
+        >
+          Ver historial
+        </button>
+      </div>
+
+      {loading && <p>Cargando historial...</p>}
+
+      {mostrarHistorial && (
+        <>
+          {visitas.length === 0 ? (
+            <p>No hay visitas registradas para este correo.</p>
+          ) : (
+            <ul className="lista-visitas">
+              {visitas.map((visita) => (
+                <li key={visita.id} className="item-visita">
+                  <h3>{visita.propiedad.titulo}</h3>
+                  <p><strong>Fecha:</strong> {visita.fecha}</p>
+                  <p><strong>Hora:</strong> {visita.horaInicio}</p>
+                  <p><strong>Estado:</strong> {visita.estado}</p>
+                  {visita.propiedad.urlsImagenes?.[0] && (
+                    <img
+                      src={visita.propiedad.urlsImagenes[0]}
+                      alt="Imagen propiedad"
+                    />
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
       )}
     </div>
   );
-};
-
-// Función para formatear fecha a formato local
-const formatearFecha = (fechaISO) => {
-  const fecha = new Date(fechaISO);
-  return fecha.toLocaleDateString();
-};
-
-// Estilos de tabla
-const tablaEstilos = {
-  width: "100%",
-  borderCollapse: "collapse",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-  borderRadius: "8px",
-  overflow: "hidden",
-};
-
-const th = {
-  backgroundColor: "#f5f5f5",
-  color: "#333",
-  borderBottom: "2px solid #ccc",
-  padding: "0.75rem",
-  textAlign: "left",
-};
-
-const td = {
-  borderBottom: "1px solid #eee",
-  padding: "0.75rem",
 };
 
 export default HistorialVisitas;

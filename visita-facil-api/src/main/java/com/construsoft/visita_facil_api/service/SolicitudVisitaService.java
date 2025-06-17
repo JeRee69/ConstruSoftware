@@ -3,6 +3,7 @@ package com.construsoft.visita_facil_api.service;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,6 +38,14 @@ public class SolicitudVisitaService {
     @Autowired
     private SolicitudVisitaRepository solicitudVisitaRepository;
 
+    public List<SolicitudVisita> obtenerHistorialPorCorreo(String correo) {
+        List<SolicitudVisita> visitasPendientes = solicitudVisitaRepository.findByCorreoClienteAndEstado(correo,
+                EstadoSolicitudVisita.PENDIENTE);
+        List<SolicitudVisita> visitasRealizadas = solicitudVisitaRepository.findByCorreoClienteAndEstado(correo,
+                EstadoSolicitudVisita.REALIZADA);
+        visitasPendientes.addAll(visitasRealizadas);
+        return visitasPendientes;
+    }
 
     public SolicitudVisita crearSolicitud(SolicitudVisitaDTO dto) {
         Optional<Propiedad> propiedadOpt = propiedadRepo.findById(dto.getIdPropiedad().intValue());
@@ -85,7 +94,8 @@ public class SolicitudVisitaService {
         Optional<SolicitudVisita> visitaOpt = solicitudRepo.findById(id);
         if (visitaOpt.isPresent()) {
             SolicitudVisita visita = visitaOpt.get();
-            if (visita.getEstado() != EstadoSolicitudVisita.CANCELADA && visita.getEstado() != EstadoSolicitudVisita.REALIZADA) {
+            if (visita.getEstado() != EstadoSolicitudVisita.CANCELADA
+                    && visita.getEstado() != EstadoSolicitudVisita.REALIZADA) {
                 visita.setEstado(EstadoSolicitudVisita.CANCELADA);
                 solicitudRepo.save(visita);
                 return true;
@@ -95,7 +105,4 @@ public class SolicitudVisitaService {
         return false;
     }
 
-    public List<SolicitudVisita> obtenerHistorialPorCorreo(String correo) {
-        return solicitudVisitaRepository.findByCorreoClienteAndEstado(correo, "realizado");
-    }
 }

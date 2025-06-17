@@ -39,6 +39,7 @@ public class AccountController {
         if (accountOpt.isPresent()) {
             Map<String, Long> response = new HashMap<>();
             response.put("accountId", accountOpt.get().getId());
+            response.put("correo", accountOpt.get().getEmail()); // Agregamos el correo aquí
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
