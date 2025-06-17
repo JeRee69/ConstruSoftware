@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Usermenu from "./common/Usermenu.jsx";
@@ -37,11 +37,17 @@ const Grid = styled.div`
 
 const Card = styled.div`
   background-color: white;
+  color: #000 !important; /* fuerza color negro dentro del Card */
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.2s;
   padding: 1rem;
+
+  /* Fuerza color negro en todos los elementos hijos */
+  * {
+    color: #000 !important;
+  }
 
   &:hover {
     transform: scale(1.02);
@@ -51,13 +57,21 @@ const Card = styled.div`
 
 const PropertyTitle = styled.h3`
   margin: 0 0 0.5rem 0;
-  color: #333;
+  color: #000 !important;
 `;
 
-const Info = styled.p`
-  margin: 0.25rem 0;
-  color: #666;
-  font-size: 0.95rem;
+const PropertyInfo = styled.p`
+  color: #000000 !important;
+  margin: 0.25rem 0 !important;
+  font-size: 0.95rem !important;
+  
+  * {
+    color: #000000 !important;
+  }
+  
+  strong {
+    color: #000000 !important;
+  }
 `;
 
 const Button = styled.button`
@@ -137,8 +151,7 @@ const Catalogo = () => {
                       e.target.src = "/imagen-no-disponible.png";
                     }}
                   />
-                ) : (
-                  <div
+                ) : (                  <div
                     style={{
                       width: "100%",
                       height: "180px",
@@ -154,22 +167,20 @@ const Catalogo = () => {
                   >
                     Sin imagen
                   </div>
-                )}
-
-                <PropertyTitle>{prop.titulo}</PropertyTitle>
-                <Info>{prop.descripcion}</Info>
-                <Info>
+                )}                <PropertyTitle>{prop.titulo}</PropertyTitle>
+                <PropertyInfo>{prop.descripcion}</PropertyInfo>
+                <PropertyInfo>
                   <strong>Precio:</strong> ${prop.precio}
-                </Info>
-                <Info>
+                </PropertyInfo>
+                <PropertyInfo>
                   <strong>Tipo:</strong> {prop.tipo}
-                </Info>
-                <Info>
+                </PropertyInfo>
+                <PropertyInfo>
                   <strong>Ubicación:</strong> {prop.ubicacion}
-                </Info>
-                <Info>
+                </PropertyInfo>
+                <PropertyInfo>
                   <strong>Disponible:</strong> {prop.disponible ? "Sí" : "No"}
-                </Info>
+                </PropertyInfo>
                 <Button onClick={() => navigate(`/propiedad/${prop.id}`)}>
                   Ver Detalles
                 </Button>

@@ -5,11 +5,13 @@ import { useParams } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useNavigate, useParams } from "react-router-dom";
 import "../styles/datepicker-custom.css";
 import "../styles/VistaPropiedad.css";  
 
 const VistaPropiedad = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [propiedad, setPropiedad] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
@@ -71,10 +73,9 @@ const VistaPropiedad = () => {
         setCargandoHorarios(false);
       });
   }, [fechaVisita, id]);
-
-  if (cargando) return <p>Cargando propiedad...</p>;
+  if (cargando) return <p style={{ color: "#000" }}>Cargando propiedad...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!propiedad) return <p>Propiedad no encontrada.</p>;
+  if (!propiedad) return <p style={{ color: "#000" }}>Propiedad no encontrada.</p>;
 
   const sliderSettings = {
     dots: true,
@@ -95,8 +96,7 @@ const VistaPropiedad = () => {
         padding: "2rem",
         boxSizing: "border-box",
       }}
-    >
-      <div style={{ maxWidth: "900px", margin: "auto" }}>
+    >      <div style={{ maxWidth: "900px", margin: "auto" }}>
         <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
         <div style={{ color: "#000" }}>
           <p><strong>Descripción:</strong> {propiedad.descripcion}</p>
@@ -140,11 +140,9 @@ const VistaPropiedad = () => {
             placeholderText="Selecciona una fecha"
             dateFormat="dd/MM/yyyy"
             inline
-          />
-
-          {fechaVisita && (
+          />          {fechaVisita && (
             <div style={{ marginTop: "1rem" }}>
-              <h4>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
+              <h4 style={{ color: "#000", margin: "1rem 0" }}>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
               <div
                 style={{
                   display: "flex",
@@ -164,12 +162,8 @@ const VistaPropiedad = () => {
                       style={{
                         padding: "8px 14px",
                         borderRadius: "6px",
-                        border:
-                          horarioSeleccionado === hora
-                            ? "2px solid #d32f2f"
-                            : "1px solid #ccc",
-                        backgroundColor:
-                          horarioSeleccionado === hora ? "#d32f2f" : "#fff",
+                        border: horarioSeleccionado === hora ? "2px solid #d32f2f" : "1px solid #ccc",
+                        backgroundColor: horarioSeleccionado === hora ? "#d32f2f" : "#fff",
                         color: horarioSeleccionado === hora ? "#fff" : "#333",
                         cursor: "pointer",
                         transition: "0.2s",
@@ -184,16 +178,42 @@ const VistaPropiedad = () => {
               </div>
 
               {horarioSeleccionado && (
-                <p
-                  style={{
-                    marginTop: "1rem",
-                    fontWeight: "bold",
-                    color: "#4caf50",
-                  }}
-                >
-                  Visita seleccionada: {fechaVisita.toLocaleDateString()} a las{" "}
-                  {horarioSeleccionado}
-                </p>
+                <>
+                  <p
+                    style={{
+                      marginTop: "1rem",
+                      fontWeight: "bold",
+                      color: "#4caf50",
+                    }}
+                  >
+                    Visita seleccionada: {fechaVisita.toLocaleDateString()} a las {horarioSeleccionado}
+                  </p>
+
+                  <button
+                    onClick={() => {
+                      localStorage.setItem("visitaPendiente", JSON.stringify({
+                        propiedadId: propiedad.id,
+                        titulo: propiedad.titulo,
+                        ubicacion: propiedad.ubicacion,
+                        fecha: fechaVisita.toISOString().split("T")[0],
+                        hora: horarioSeleccionado,
+                      }));
+                      navigate("/confirmar-visita");
+                    }}
+                    style={{
+                      marginTop: "1.5rem",
+                      padding: "0.8rem 1.5rem",
+                      backgroundColor: "#d32f2f",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "6px",
+                      fontSize: "1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Confirmar Visita
+                  </button>
+                </>
               )}
             </div>
           )}
