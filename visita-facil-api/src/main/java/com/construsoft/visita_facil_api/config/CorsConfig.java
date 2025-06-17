@@ -13,12 +13,12 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") // Permite CORS en todas las rutas
-                        .allowedOrigins("http://localhost:5173") // Cambia este puerto si usas otro para tu frontend
-                                                                 // Vite
+                registry.addMapping("/**") 
+                        .allowedOrigins("http://localhost:5173") 
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
             }
         };
     }
+
 }
