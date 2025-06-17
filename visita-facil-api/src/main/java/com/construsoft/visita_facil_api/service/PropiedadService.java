@@ -1,7 +1,10 @@
 package com.construsoft.visita_facil_api.service;
 
 import com.construsoft.visita_facil_api.model.Propiedad;
+import com.construsoft.visita_facil_api.repository.DisponibilidadPropiedadRepository;
 import com.construsoft.visita_facil_api.repository.PropiedadRepository;
+import com.construsoft.visita_facil_api.repository.SolicitudVisitaRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +21,10 @@ public class PropiedadService {
     private PropiedadRepository propiedadRepository;
     @Autowired
     private ImgurService imgurService;
+    @Autowired
+    private DisponibilidadPropiedadRepository disponibilidadRepo;
+    @Autowired
+    private SolicitudVisitaRepository solicitudVisitaRepo;
 
     public Optional<Propiedad> getById(int id) {
         return propiedadRepository.findById(id);
@@ -53,5 +60,20 @@ public class PropiedadService {
         propiedadRepository.save(propiedad);
         return urls;
     }
+
+    @Transactional
+    public void eliminarPropiedad(Integer id) {
+        Propiedad propiedad = propiedadRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Propiedad no encontrada"));
+
+        propiedad.getUrlsImagenes().clear();
+        propiedadRepository.save(propiedad);
+
+        disponibilidadRepo.deleteByPropiedad(propiedad);
+        solicitudVisitaRepo.deleteByPropiedad(propiedad);
+
+        propiedadRepository.delete(propiedad);
+    }
+
 
 }

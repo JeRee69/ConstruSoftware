@@ -3,7 +3,9 @@ package com.construsoft.visita_facil_api.controller;
 import com.construsoft.visita_facil_api.domain.AccountProfileDTO;
 import com.construsoft.visita_facil_api.domain.RespuestaLoginDTO;
 import com.construsoft.visita_facil_api.model.Account;
+import com.construsoft.visita_facil_api.model.Profile;
 import com.construsoft.visita_facil_api.service.AccountService;
+import com.construsoft.visita_facil_api.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import java.util.Optional;
 public class AccountController {
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private ProfileService profileService;
 
     @CrossOrigin(origins = "*")
     @PostMapping("/register")
@@ -40,7 +44,12 @@ public class AccountController {
         Optional<Account> accountOpt = accountService.login(email, password);
         if (accountOpt.isPresent()) {
             Account account = accountOpt.get();
-            return ResponseEntity.ok(new RespuestaLoginDTO(account.getId(), account.getRol()));
+            RespuestaLoginDTO respuestaLoginDTO = new RespuestaLoginDTO();
+            respuestaLoginDTO.setAccountId(account.getId());
+            respuestaLoginDTO.setRol(account.getRol());
+            Optional<Profile> profile = profileService.getProfileByAccountId(account.getId());
+            respuestaLoginDTO.setNombre(profile.get().getName());
+            return ResponseEntity.ok(respuestaLoginDTO);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

@@ -5,6 +5,7 @@ import com.construsoft.visita_facil_api.enums.Rol;
 public class RespuestaLoginDTO {
     private Long accountId;
     private Rol rol;
+    private String nombre;
 
     public RespuestaLoginDTO() {
     }
@@ -30,4 +31,11 @@ public class RespuestaLoginDTO {
         this.rol = rol;
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
 }

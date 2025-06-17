@@ -56,6 +56,7 @@ export const SmallButton = styled.button`
   font-size: 0.85rem;
   font-weight: 500;
   display: flex;
+    font-family: 'Inter', sans-serif;
   align-items: center;
   gap: 0.4rem;
   cursor: pointer;
@@ -122,6 +123,7 @@ export const PlaceholderSinImagen = styled.div`
 `;
 
 export const Footer = styled.div`
+  margin-top: auto;
   padding: 0 1rem 1rem;
   display: flex;
   justify-content: space-between;

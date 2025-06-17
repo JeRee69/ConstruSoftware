@@ -236,7 +236,7 @@ const RegistrarDisponibilidad = () => {
     return (
         <PageWrapper>
             <Left>
-                <ButtonVolver onClick={() => navigate("/admin/catalogo")}>
+                <ButtonVolver onClick={() => navigate("/catalogo")}>
                     ← Volver al Catálogo
                 </ButtonVolver>
                 <Title>Agregar Disponibilidad</Title>

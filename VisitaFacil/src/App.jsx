@@ -5,7 +5,6 @@ import Registro from './views/Registro/Registro.jsx';
 import Catalogo from './views/Catalogo/Catalogo.jsx';
 import VistaPropiedad from './components/VistaPropiedad';
 import VisitasAgente from "./components/VisitasAgente.jsx";
-import AdminCatalogo from "./views/CatalogoAdmin/CatalogoAdmin.jsx";
 import NuevaPropiedad from "./components/NuevaPropiedad.jsx";
 import RegistrarDisponibilidad from "./components/RegistrarDisponibilidad.jsx";
 import RegistrarDisponibilidadAgente from "./components/RegistrarDisponibilidadAgente.jsx";
@@ -44,14 +43,7 @@ function App() {
                 />
 
                 {/* Rutas protegidas para ADMINISTRADOR */}
-                <Route
-                    path="/admin/catalogo"
-                    element={
-                        <RutaProtegida rolRequerido="ADMINISTRADOR">
-                            <AdminCatalogo />
-                        </RutaProtegida>
-                    }
-                />
+
                 <Route
                     path="/admin/nueva-propiedad"
                     element={

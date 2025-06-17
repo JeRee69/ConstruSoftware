@@ -6,7 +6,7 @@ import {
     NavSectionLeft,
     NavSectionRight,
     NavLinks,
-    NavButton
+    NavButton, Saludo
 } from './BarraNav.styles';
 
 const BarraNav = () => {
@@ -25,11 +25,7 @@ const BarraNav = () => {
                 <NavLinks>
                     <Link to="/">Catálogo</Link>
 
-                    {usuario?.rol === 'ADMINISTRADOR' && (
-                        <>
-                            <Link to="/admin/catalogo">Panel de administrador</Link>
-                        </>
-                    )}
+
 
                     {usuario?.rol === 'AGENTE' && (
                         <>
@@ -42,7 +38,13 @@ const BarraNav = () => {
 
             <NavSectionRight>
                 {usuario && (
-                    <NavButton as="button" onClick={logout}>Cerrar Sesión</NavButton>
+                    <>
+                        <Saludo>
+                            Hola,<br />
+                            <strong>{usuario.rol === "ADMINISTRADOR" ? "Admin" : usuario.nombre}</strong>
+                        </Saludo>
+                        <NavButton as="button" onClick={logout}>Cerrar Sesión</NavButton>
+                    </>
                 )}
                 {!usuario && <NavButton to="/login">Iniciar Sesión</NavButton>}
             </NavSectionRight>

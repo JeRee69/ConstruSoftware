@@ -41,12 +41,13 @@ const Login = () => {
                 const data = await response.json();
                 localStorage.setItem('usuario', JSON.stringify({
                     accountId: data.accountId,
-                    rol: data.rol
+                    rol: data.rol,
+                    nombre: data.nombre
                 }));
 
                 switch (data.rol) {
                     case 'ADMINISTRADOR':
-                        navigate('/admin/catalogo');
+                        navigate('/catalogo');
                         break;
                     case 'AGENTE':
                         navigate('/agente/disponibilidad');
@@ -70,9 +71,8 @@ const Login = () => {
         <ThemeProvider theme={theme}>
             <LoginContainer>
                 <LoginForm>
-                    <ToggleButton onClick={() => setIsDark(!isDark)}>
-                        Cambiar a tema {isDark ? 'claro' : 'oscuro'}
-                    </ToggleButton>
+
+
 
                     <Logo>VisitaFácil</Logo>
 

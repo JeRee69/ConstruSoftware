@@ -48,15 +48,33 @@ export const NavLinks = styled.div`
 export const NavButton = styled(RouterLink)`
   background-color: #1c1f2a;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.65rem 1.2rem;
   border-radius: 8px;
   border: none;
   font-weight: 600;
   font-size: 0.9rem;
   text-decoration: none;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;   /* 👈 alinea verticalmente */
+  justify-content: center;
+  line-height: 1;        /* 👈 asegura altura consistente */
 
   &:hover {
     opacity: 0.85;
   }
 `;
+
+export const Saludo = styled.div`
+  color: #444;
+  font-size: 0.85rem;
+  text-align: right;
+  margin-right: 1rem;
+  line-height: 1.2;
+
+  strong {
+    font-weight: 600;
+    color: #1c1f2a;
+  }
+`;
+
