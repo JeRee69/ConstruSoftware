@@ -58,4 +58,10 @@ public class PropiedadController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarPropiedad(@PathVariable Integer id) {
+        propiedadService.eliminarPropiedad(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

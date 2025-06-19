@@ -1,5 +1,6 @@
 package com.construsoft.visita_facil_api.service;
 
+import com.construsoft.visita_facil_api.enums.Rol;
 import com.construsoft.visita_facil_api.model.Account;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ public class AccountServiceTest {
         String phone = "123456789";
 
         System.out.println("➡️ Registrando cuenta...");
-        Account account = accountService.register(email, password, name, phone);
+        Account account = accountService.register(email, password, name, phone, Rol.CLIENTE);
         assertNotNull(account.getId(), "El ID no debería ser nulo");
         System.out.println("✅ Cuenta registrada con ID: " + account.getId());
 

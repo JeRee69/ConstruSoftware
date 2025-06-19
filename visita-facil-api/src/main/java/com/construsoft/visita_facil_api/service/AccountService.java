@@ -1,5 +1,6 @@
 package com.construsoft.visita_facil_api.service;
 
+import com.construsoft.visita_facil_api.enums.Rol;
 import com.construsoft.visita_facil_api.model.Account;
 import com.construsoft.visita_facil_api.model.Profile;
 import com.construsoft.visita_facil_api.repository.AccountRepository;
@@ -23,10 +24,11 @@ public class AccountService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public Account register(String email, String password, String name, String phone) {
+    public Account register(String email, String password, String name, String phone, Rol rol) {
         Account account = new Account();
         account.setEmail(email);
         account.setPassword(passwordEncoder.encode(password));
+        account.setRol(rol);
         account = accountRepository.save(account);
 
         Profile profile = new Profile();
