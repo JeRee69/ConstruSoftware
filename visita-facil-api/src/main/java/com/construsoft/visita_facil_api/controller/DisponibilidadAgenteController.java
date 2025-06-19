@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/disponibilidad/agentes")
 @CrossOrigin(origins = "*")
@@ -20,5 +22,18 @@ public class DisponibilidadAgenteController {
         DisponibilidadAgente disponibilidad = disponibilidadAgenteService.registrar(dto);
         return ResponseEntity.ok(disponibilidad);
     }
+
+    @GetMapping("/{accountId}")
+    public ResponseEntity<List<DisponibilidadAgente>> obtenerDisponibilidades(@PathVariable Long accountId) {
+        List<DisponibilidadAgente> lista = disponibilidadAgenteService.obtenerPorAgente(accountId);
+        return ResponseEntity.ok(lista);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminarDisponibilidad(@PathVariable Long id) {
+        disponibilidadAgenteService.eliminarPorId(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

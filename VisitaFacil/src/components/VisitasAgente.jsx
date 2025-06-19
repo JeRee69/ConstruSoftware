@@ -85,21 +85,33 @@ const AcceptButton = styled.button`
   }
 `;
 
+const Mensaje = styled.div`
+  background-color: ${({ error }) => (error ? '#ffcdd2' : '#c8e6c9')};
+  color: ${({ error }) => (error ? '#b71c1c' : '#2e7d32')};
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+`;
+
 const VisitasAgente = () => {
     const navigate = useNavigate();
-    const agenteId = localStorage.getItem('agenteId'); // o sacarlo del login
+    const usuario = JSON.parse(localStorage.getItem('usuario'));
+    const agenteId = usuario?.accountId;
 
     const [pendientes, setPendientes] = useState([]);
     const [confirmadas, setConfirmadas] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [mensaje, setMensaje] = useState(null);
+    const [error, setError] = useState(false);
 
     const handleLogout = () => {
         localStorage.clear();
-        navigate('/Login');
+        navigate('/login');
     };
 
-    useEffect(() => {
-        fetch(`/solicitudes-agente/${agenteId}`)
+    const fetchVisitas = () => {
+        fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
             .then((res) => res.json())
             .then((data) => {
                 const pendientes = data.filter((v) => v.estado === 'PENDIENTE');
@@ -110,13 +122,37 @@ const VisitasAgente = () => {
             })
             .catch((err) => {
                 console.error('Error al cargar visitas', err);
+                setMensaje("Error al cargar visitas");
+                setError(true);
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        if (agenteId) {
+            fetchVisitas();
+        }
     }, [agenteId]);
 
     const aceptarVisita = (id) => {
-        console.log(`Aceptar visita ${id}`);
-        // Aquí iría el POST/PUT al backend para aceptar la solicitud
+        fetch("http://localhost:8080/solicitudes-agente/accion", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                solicitudAgenteId: id,
+                nuevoEstado: "CONFIRMADA"
+            }),
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error();
+                setMensaje("Visita confirmada con éxito");
+                setError(false);
+                fetchVisitas();
+            })
+            .catch(() => {
+                setMensaje("Error al confirmar visita");
+                setError(true);
+            });
     };
 
     return (
@@ -130,26 +166,40 @@ const VisitasAgente = () => {
                 </Sidebar>
 
                 <Main>
+                    {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
+
                     {loading ? (
                         <p>Cargando visitas...</p>
                     ) : (
                         <>
                             <SectionTitle>Visitas pendientes</SectionTitle>
-                            {pendientes.length === 0 ? <p>No hay visitas pendientes.</p> : pendientes.map((visita) => (
-                                <VisitCard key={visita.id}>
-                                    <strong>{visita.nombreCliente}</strong> quiere visitar <strong>{visita.direccionPropiedad}</strong><br />
-                                    Fecha: {visita.fecha} a las {visita.hora}
-                                    <AcceptButton onClick={() => aceptarVisita(visita.id)}>Aceptar</AcceptButton>
-                                </VisitCard>
-                            ))}
+                            {pendientes.length === 0 ? (
+                                <p>No hay visitas pendientes.</p>
+                            ) : (
+                                pendientes.map((visita) => (
+                                    <VisitCard key={visita.id}>
+                                        <strong>{visita.nombreCliente}</strong> quiere visitar{" "}
+                                        <strong>{visita.direccionPropiedad}</strong><br />
+                                        Fecha: {visita.fecha} a las {visita.hora}
+                                        <AcceptButton onClick={() => aceptarVisita(visita.id)}>
+                                            Aceptar
+                                        </AcceptButton>
+                                    </VisitCard>
+                                ))
+                            )}
 
                             <SectionTitle>Visitas confirmadas</SectionTitle>
-                            {confirmadas.length === 0 ? <p>No hay visitas confirmadas.</p> : confirmadas.map((visita) => (
-                                <VisitCard key={visita.id}>
-                                    <strong>{visita.nombreCliente}</strong> - <strong>{visita.direccionPropiedad}</strong><br />
-                                    Confirmada para el {visita.fecha} a las {visita.hora}
-                                </VisitCard>
-                            ))}
+                            {confirmadas.length === 0 ? (
+                                <p>No hay visitas confirmadas.</p>
+                            ) : (
+                                confirmadas.map((visita) => (
+                                    <VisitCard key={visita.id}>
+                                        <strong>{visita.nombreCliente}</strong> -{" "}
+                                        <strong>{visita.direccionPropiedad}</strong><br />
+                                        Confirmada para el {visita.fecha} a las {visita.hora}
+                                    </VisitCard>
+                                ))
+                            )}
                         </>
                     )}
                 </Main>
