@@ -100,7 +100,7 @@ const VisitasAgente = () => {
     const agenteId = usuario?.accountId;
 
     const [pendientes, setPendientes] = useState([]);
-    const [confirmadas, setConfirmadas] = useState([]);
+    const [aceptadas, setAceptadas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [mensaje, setMensaje] = useState(null);
     const [error, setError] = useState(false);
@@ -115,9 +115,9 @@ const VisitasAgente = () => {
             .then((res) => res.json())
             .then((data) => {
                 const pendientes = data.filter((v) => v.estado === 'PENDIENTE');
-                const confirmadas = data.filter((v) => v.estado === 'CONFIRMADA');
+                const aceptadas = data.filter((v) => v.estado === 'ACEPTADA');
                 setPendientes(pendientes);
-                setConfirmadas(confirmadas);
+                setAceptadas(aceptadas);
                 setLoading(false);
             })
             .catch((err) => {
@@ -140,17 +140,17 @@ const VisitasAgente = () => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 solicitudAgenteId: id,
-                nuevoEstado: "CONFIRMADA"
+                nuevoEstado: "ACEPTADA"
             }),
         })
             .then((res) => {
                 if (!res.ok) throw new Error();
-                setMensaje("Visita confirmada con éxito");
+                setMensaje("Visita aceptada con éxito");
                 setError(false);
                 fetchVisitas();
             })
             .catch(() => {
-                setMensaje("Error al confirmar visita");
+                setMensaje("Error al aceptar visita");
                 setError(true);
             });
     };
@@ -188,15 +188,15 @@ const VisitasAgente = () => {
                                 ))
                             )}
 
-                            <SectionTitle>Visitas confirmadas</SectionTitle>
-                            {confirmadas.length === 0 ? (
-                                <p>No hay visitas confirmadas.</p>
+                            <SectionTitle>Visitas aceptadas</SectionTitle>
+                            {aceptadas.length === 0 ? (
+                                <p>No hay visitas aceptadas.</p>
                             ) : (
-                                confirmadas.map((visita) => (
+                                aceptadas.map((visita) => (
                                     <VisitCard key={visita.id}>
                                         <strong>{visita.nombreCliente}</strong> -{" "}
                                         <strong>{visita.direccionPropiedad}</strong><br />
-                                        Confirmada para el {visita.fecha} a las {visita.hora}
+                                        Aceptada para el {visita.fecha} a las {visita.hora}
                                     </VisitCard>
                                 ))
                             )}
