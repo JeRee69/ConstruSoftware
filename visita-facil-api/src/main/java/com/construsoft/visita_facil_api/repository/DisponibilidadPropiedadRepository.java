@@ -9,4 +9,7 @@ import java.util.List;
 
 public interface DisponibilidadPropiedadRepository extends JpaRepository<DisponibilidadPropiedad, Long> {
     List<DisponibilidadPropiedad> findByPropiedadAndDiaSemana(Propiedad propiedad, DayOfWeek diaSemana);
+    List<DisponibilidadPropiedad> findByPropiedad(Propiedad propiedad);
+    void deleteByPropiedad(Propiedad propiedad);
+
 }

@@ -2,6 +2,9 @@ package com.construsoft.visita_facil_api.config;
 
 import java.util.List;
 
+import com.construsoft.visita_facil_api.enums.Rol;
+import com.construsoft.visita_facil_api.model.Account;
+import com.construsoft.visita_facil_api.service.AccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -12,13 +15,17 @@ import com.construsoft.visita_facil_api.repository.PropiedadRepository;
 public class DataLoader implements CommandLineRunner {
 
     private final PropiedadRepository propiedadRepository;
+    private final AccountService accountService;
 
-    public DataLoader(PropiedadRepository propiedadRepository) {
+    public DataLoader(PropiedadRepository propiedadRepository, AccountService accountService) {
         this.propiedadRepository = propiedadRepository;
+        this.accountService = accountService;
     }
 
     @Override
     public void run(String... args) throws Exception {
+
+
         if (propiedadRepository.count() == 0) {
 
             Propiedad propiedad1 = new Propiedad();

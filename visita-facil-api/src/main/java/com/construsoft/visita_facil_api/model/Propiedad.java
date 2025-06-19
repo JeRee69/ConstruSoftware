@@ -32,7 +32,11 @@ public class Propiedad {
     private boolean disponible;
 
     @ElementCollection
-    @CollectionTable(name = "imagenes_propiedad", joinColumns = @JoinColumn(name = "propiedad_id"))
+    @CollectionTable(
+            name = "imagenes_propiedad",
+            joinColumns = @JoinColumn(name = "propiedad_id"),
+            foreignKey = @ForeignKey(name = "fk_propiedad_imagenes")
+    )
     @Column(name = "url_imagen")
     private List<String> urlsImagenes = new ArrayList<>();
 

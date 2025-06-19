@@ -106,13 +106,7 @@ const Agenda = () => {
   return (
     <OuterWrapper>
       <Container>
-        <Sidebar>
-          <SidebarTitle>PropiedadesPlus</SidebarTitle>
-          <SidebarItem>Agenda</SidebarItem>
-          <SidebarItem>Propiedades</SidebarItem>
-          <SidebarItem>Configuración</SidebarItem>
-          <SidebarItem onClick={handleLogout}>Cerrar sesión</SidebarItem>
-        </Sidebar>
+
 
         <Main>
           <MainContent>
