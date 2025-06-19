@@ -1,15 +1,16 @@
-import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import {
-    NavContainer,
     Logo,
+    NavButton,
+    NavContainer,
+    NavLinks,
     NavSectionLeft,
     NavSectionRight,
-    NavLinks,
-    NavButton, Saludo
+    Saludo
 } from './BarraNav.styles';
 
-const BarraNav = () => {
+const BarraNav = ({ temaOscuro, setTemaOscuro }) => {
     const navigate = useNavigate();
     const usuario = JSON.parse(localStorage.getItem('usuario'));
 
@@ -34,9 +35,8 @@ const BarraNav = () => {
                         </>
                     )}
                 </NavLinks>
-            </NavSectionLeft>
-
-            <NavSectionRight>
+            </NavSectionLeft>            <NavSectionRight>
+                <ThemeToggle temaOscuro={temaOscuro} setTemaOscuro={setTemaOscuro} />
                 {usuario && (
                     <>
                         <Saludo>

@@ -8,7 +8,7 @@ const OuterWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #eeeeee;
+  background-color: var(--color-secundario);
 `;
 
 const Container = styled.div`
@@ -16,9 +16,9 @@ const Container = styled.div`
   width: 100%;
   max-width: 1000px;
   height: 90vh;
-  background-color: #f9f9f9;
+  background-color: var(--color-fondo-card);
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--color-sombra);
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 `;
@@ -55,7 +55,7 @@ const Main = styled.div`
   flex-grow: 1;
   padding: 2rem;
   overflow-y: auto;
-  background-color: #eeeeee;
+  background-color: var(--color-secundario);
 `;
 
 const SectionTitle = styled.h3`
@@ -63,12 +63,13 @@ const SectionTitle = styled.h3`
 `;
 
 const VisitCard = styled.div`
-  background-color: #ffffff;
+  background-color: var(--color-fondo-card);
   border-left: 5px solid #d32f2f;
   border-radius: 4px;
   padding: 1rem;
   margin-bottom: 1rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 4px var(--color-sombra);
+  color: var(--color-texto);
 `;
 
 const AcceptButton = styled.button`

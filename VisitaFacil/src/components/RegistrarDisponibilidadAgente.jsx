@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 // 🎨 Estilos
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100%;
-  background-color: #f4f4f4;
+  background-color: var(--color-secundario);
   padding: 2rem;
   display: flex;
   justify-content: center;
@@ -21,10 +21,11 @@ const Content = styled.div`
 
 const Column = styled.div`
   flex: 1;
-  background-color: white;
+  background-color: var(--color-fondo-card);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px var(--color-sombra);
+  color: var(--color-texto);
 `;
 
 const Title = styled.h2`
