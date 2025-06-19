@@ -1,6 +1,6 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 const ConfirmarVisita = () => {
   const [visita, setVisita] = useState(null);
@@ -119,18 +119,18 @@ const ConfirmarVisita = () => {
 
   if (!visita) return <p>Cargando...</p>;
 
-  return (
-    <div
+  return (    <div
       style={{
         maxWidth: "600px",
         margin: "2rem auto",
         padding: "2rem",
-        background: "#fff",
+        background: "var(--color-fondo-card)",
         borderRadius: "8px",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        boxShadow: "0 2px 8px var(--color-sombra)",
+        color: "var(--color-texto)",
       }}
     >
-      <h2 style={{ color: "#d32f2f", marginBottom: "1rem" }}>
+      <h2 style={{ color: "var(--color-texto)", marginBottom: "1rem" }}>
         Confirmar Visita
       </h2>
 
@@ -148,38 +148,58 @@ const ConfirmarVisita = () => {
       </p>
 
       <div style={{ marginTop: "2rem" }}>
-        <label>Nombre</label>
-        <input
+        <label style={{ color: "var(--color-texto)", fontWeight: "bold", display: "block", marginBottom: "0.5rem" }}>Nombre</label>        <input
           name="nombre"
           value={formulario.nombre}
           onChange={handleChange}
-          style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
+          style={{ 
+            width: "100%", 
+            padding: "0.5rem", 
+            marginBottom: "1rem",
+            backgroundColor: "var(--color-fondo-card)",
+            color: "var(--color-texto)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "4px"
+          }}
         />
 
-        <label>Correo</label>
-        <input
+        <label style={{ color: "var(--color-texto)", fontWeight: "bold", display: "block", marginBottom: "0.5rem" }}>Correo</label>        <input
           type="email"
           name="correo"
           value={formulario.correo}
           onChange={handleChange}
-          style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
+          style={{ 
+            width: "100%", 
+            padding: "0.5rem", 
+            marginBottom: "1rem",
+            backgroundColor: "var(--color-fondo-card)",
+            color: "var(--color-texto)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "4px"
+          }}
         />
 
-        <label>Teléfono</label>
-        <input
+        <label style={{ color: "var(--color-texto)", fontWeight: "bold", display: "block", marginBottom: "0.5rem" }}>Teléfono</label>        <input
           name="telefono"
           value={formulario.telefono}
           onChange={handleChange}
-          style={{ width: "100%", padding: "0.5rem", marginBottom: "1rem" }}
+          style={{ 
+            width: "100%", 
+            padding: "0.5rem", 
+            marginBottom: "1rem",
+            backgroundColor: "var(--color-fondo-card)",
+            color: "var(--color-texto)",
+            border: "1px solid var(--color-border)",
+            borderRadius: "4px"
+          }}
         />
 
         <button
           onClick={handleSubmit}
-          disabled={enviando}
-          style={{
+          disabled={enviando}          style={{
             width: "100%",
             padding: "0.8rem",
-            backgroundColor: "#d32f2f",
+            backgroundColor: "var(--color-primario)",
             color: "#fff",
             border: "none",
             borderRadius: "6px",

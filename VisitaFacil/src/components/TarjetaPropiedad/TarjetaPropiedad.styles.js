@@ -1,19 +1,20 @@
 import styled from "styled-components";
 
 export const Card = styled.div`
-  background: white;
+  background: var(--color-fondo-card);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 16px var(--color-sombra);
   display: flex;
   flex-direction: column;
   font-family: 'Inter', sans-serif;
   transition: transform 0.2s, box-shadow 0.2s;
   max-width: 340px;
+  color: var(--color-texto);
 
   &:hover {
     transform: translateY(-3px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 24px var(--color-sombra);
   }
 `;
 
@@ -30,13 +31,14 @@ export const Content = styled.div`
 export const PropertyTitle = styled.h3`
   font-size: 1.1rem;
   font-weight: 600;
-  color: #222;
+  color: var(--color-texto);
   margin-bottom: 0.5rem;
 `;
 
 export const MetaInfo = styled.p`
   font-size: 0.9rem;
-  color: #555;
+  color: var(--color-texto);
+  opacity: 0.8;
   margin: 0.2rem 0;
   /* sin label, solo texto */
 `;
@@ -44,7 +46,7 @@ export const MetaInfo = styled.p`
 export const Price = styled.p`
   font-size: 1rem;
   font-weight: 500;
-  color: #111;
+  color: var(--color-texto);
   margin-top: 0.6rem;
 `;
 
@@ -101,8 +103,9 @@ export const FlechaDerecha = styled(FlechaIzquierda)`
 export const PlaceholderSinImagen = styled.div`
   width: 100%;
   height: 180px;
-  background-color: #f0f0f0;
-  color: #999;
+  background-color: var(--color-border);
+  color: var(--color-texto);
+  opacity: 0.6;
   font-style: italic;
   font-size: 1rem;
   display: flex;
@@ -117,8 +120,8 @@ export const PlaceholderSinImagen = styled.div`
     position: absolute;
     transform: rotate(-45deg);
     font-size: 1.2rem;
-    color: #bbb;
-    opacity: 0.7;
+    color: var(--color-texto);
+    opacity: 0.4;
   }
 `;
 
@@ -138,13 +141,15 @@ export const AdminIconos = styled.div`
 export const Icono = styled.button`
   background: none;
   border: none;
-  color: #555;
+  color: var(--color-texto);
+  opacity: 0.7;
   font-size: 1rem;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: color 0.2s, opacity 0.2s;
 
   &:hover {
     color: #d32f2f;
+    opacity: 1;
   }
 `;
 

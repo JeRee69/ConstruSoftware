@@ -1,13 +1,13 @@
-import styled from 'styled-components';
 import { Link as RouterLink } from 'react-router-dom';
+import styled from 'styled-components';
 
 export const NavContainer = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.8rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  background-color: var(--color-fondo-card);
+  box-shadow: 0 2px 10px var(--color-sombra);
   font-family: 'Inter', sans-serif;
 `;
 
@@ -34,7 +34,7 @@ export const NavLinks = styled.div`
   gap: 1.2rem;
 
   a {
-    color: #444;
+    color: var(--color-texto);
     text-decoration: none;
     font-size: 0.95rem;
     font-weight: 500;
@@ -66,7 +66,7 @@ export const NavButton = styled(RouterLink)`
 `;
 
 export const Saludo = styled.div`
-  color: #444;
+  color: var(--color-texto);
   font-size: 0.85rem;
   text-align: right;
   margin-right: 1rem;
@@ -74,7 +74,7 @@ export const Saludo = styled.div`
 
   strong {
     font-weight: 600;
-    color: #1c1f2a;
+    color: var(--color-texto);
   }
 `;
 

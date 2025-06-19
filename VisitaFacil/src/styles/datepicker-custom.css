@@ -1,19 +1,20 @@
 .react-datepicker {
   border: none !important;
   font-family: 'Segoe UI', sans-serif;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px var(--color-sombra);
+  background-color: var(--color-fondo-card) !important;
 }
 
 .react-datepicker__header {
   background-color: #d32f2f !important;
-  color: rgb(0, 0, 0) !important;
+  color: white !important;
   border-bottom: none !important;
 }
 
 .react-datepicker__day-name,
 .react-datepicker__day,
 .react-datepicker__current-month {
-  color: rgb(0, 0, 0) !important;
+  color: var(--color-texto) !important;
 }
 
 .react-datepicker__day--selected,
@@ -24,4 +25,8 @@
 
 .react-datepicker__day:hover {
   background-color: rgba(211, 47, 47, 0.15) !important;
+}
+
+.react-datepicker__month-container {
+  background-color: var(--color-fondo-card) !important;
 }

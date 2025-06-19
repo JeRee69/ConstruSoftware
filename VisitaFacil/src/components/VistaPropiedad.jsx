@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { useNavigate, useParams } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
 import "../styles/datepicker-custom.css";
-import "../styles/VistaPropiedad.css";  
+import "../styles/VistaPropiedad.css";
 
 const VistaPropiedad = () => {
   const { id } = useParams();
@@ -71,10 +71,9 @@ const VistaPropiedad = () => {
       .finally(() => {
         setCargandoHorarios(false);
       });
-  }, [fechaVisita, id]);
-  if (cargando) return <p style={{ color: "#000" }}>Cargando propiedad...</p>;
+  }, [fechaVisita, id]);  if (cargando) return <p style={{ color: "var(--color-texto)" }}>Cargando propiedad...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!propiedad) return <p style={{ color: "#000" }}>Propiedad no encontrada.</p>;
+  if (!propiedad) return <p style={{ color: "var(--color-texto)" }}>Propiedad no encontrada.</p>;
 
   const sliderSettings = {
     dots: true,
@@ -85,19 +84,17 @@ const VistaPropiedad = () => {
     arrows: true,
   };
 
-  return (
-    <div
+  return (    <div
       style={{
-        backgroundColor: "#f0f0f0",
+        backgroundColor: "var(--color-secundario)",
         width: "100vw",
         height: "100vh",
         overflowY: "auto",
         padding: "2rem",
         boxSizing: "border-box",
       }}
-    >      <div style={{ maxWidth: "900px", margin: "auto" }}>
-        <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
-        <div style={{ color: "#000" }}>
+    ><div style={{ maxWidth: "900px", margin: "auto" }}>        <h1 style={{ color: "var(--color-texto)" }}>{propiedad.titulo}</h1>
+        <div style={{ color: "var(--color-texto)" }}>
           <p><strong>Descripción:</strong> {propiedad.descripcion}</p>
           <p><strong>Precio:</strong> ${propiedad.precio}</p>
           <p><strong>Tipo:</strong> {propiedad.tipo}</p>
@@ -122,12 +119,12 @@ const VistaPropiedad = () => {
               ))}
             </Slider>
           ) : (
-            <p style={{ color: "#000" }}>No hay imágenes disponibles.</p>
+            <p style={{ color: "var(--color-texto)" }}>No hay imágenes disponibles.</p>
           )}
         </div>
 
         {/* Calendario y horarios */}
-        <div style={{ marginTop: "2rem", textAlign: "center", color: "#000" }}>
+        <div style={{ marginTop: "2rem", textAlign: "center", color: "var(--color-texto)" }}>
           <h3>Agendar una visita</h3>
           <ReactDatePicker
             selected={fechaVisita}
@@ -141,7 +138,7 @@ const VistaPropiedad = () => {
             inline
           />          {fechaVisita && (
             <div style={{ marginTop: "1rem" }}>
-              <h4 style={{ color: "#000", margin: "1rem 0" }}>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
+              <h4 style={{ color: "var(--color-texto)", margin: "1rem 0" }}>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
               <div
                 style={{
                   display: "flex",
@@ -152,18 +149,17 @@ const VistaPropiedad = () => {
                 }}
               >
                 {cargandoHorarios ? (
-                  <p style={{ color: "#888" }}>Cargando horarios...</p>
+                  <p style={{ color: "var(--color-texto)", opacity: "0.7" }}>Cargando horarios...</p>
                 ) : horariosDisponibles.length > 0 ? (
                   horariosDisponibles.map((hora) => (
                     <button
                       key={hora}
-                      onClick={() => setHorarioSeleccionado(hora)}
-                      style={{
+                      onClick={() => setHorarioSeleccionado(hora)}                      style={{
                         padding: "8px 14px",
                         borderRadius: "6px",
-                        border: horarioSeleccionado === hora ? "2px solid #d32f2f" : "1px solid #ccc",
-                        backgroundColor: horarioSeleccionado === hora ? "#d32f2f" : "#fff",
-                        color: horarioSeleccionado === hora ? "#fff" : "#333",
+                        border: horarioSeleccionado === hora ? "2px solid #d32f2f" : "1px solid var(--color-border)",
+                        backgroundColor: horarioSeleccionado === hora ? "#d32f2f" : "var(--color-fondo-card)",
+                        color: horarioSeleccionado === hora ? "#fff" : "var(--color-texto)",
                         cursor: "pointer",
                         transition: "0.2s",
                       }}
@@ -172,13 +168,12 @@ const VistaPropiedad = () => {
                     </button>
                   ))
                 ) : (
-                  <p style={{ color: "#777" }}>No hay horarios disponibles.</p>
+                  <p style={{ color: "var(--color-texto)", opacity: "0.7" }}>No hay horarios disponibles.</p>
                 )}
               </div>
 
               {horarioSeleccionado && (
-                <>
-                  <p
+                <>                  <p
                     style={{
                       marginTop: "1rem",
                       fontWeight: "bold",

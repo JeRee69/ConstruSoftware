@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const PageWrapper = styled.div`
   display: flex;
   justify-content: center;
-  background-color: #f0f0f0;
+  background-color: var(--color-secundario);
   min-height: 100vh;
   width: 100vw;
   padding: 40px;
@@ -12,11 +12,12 @@ export const PageWrapper = styled.div`
 export const Container = styled.div`
   width: 100%;
   max-width: 1200px;
-  background-color: #f9f9f9;
+  background-color: var(--color-fondo-card);
   padding: 2rem;
   margin: auto;
   border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px var(--color-sombra);
+  color: var(--color-texto);
 `;
 
 export const TitleWrapper = styled.div`
@@ -28,7 +29,7 @@ export const TitleWrapper = styled.div`
 `;
 
 export const Title = styled.h1`
-  color: #d32f2f;
+  color: var(--color-texto);
   text-align: center;
   font-size: 2rem;
 `;

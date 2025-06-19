@@ -1,28 +1,23 @@
 // src/vistas/login/login.jsx
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
-import { darkTheme, lightTheme } from '../../themes/theme.js';
 import {
+    Boton,
+    Campo,
+    EnlaceRegistro,
+    Entrada,
+    Etiqueta,
     LoginContainer,
     LoginForm,
-    ToggleButton,
     Logo,
-    Campo,
-    Etiqueta,
-    Entrada,
-    Boton,
-    MensajeError,
-    EnlaceRegistro
-} from './login.styles.js';
+    MensajeError
+} from './Login.styles.js';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [isDark, setIsDark] = useState(false);
-    const theme = isDark ? darkTheme : lightTheme;
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -65,16 +60,10 @@ const Login = () => {
         } finally {
             setIsLoading(false);
         }
-    };
-
-    return (
-        <ThemeProvider theme={theme}>
-            <LoginContainer>
-                <LoginForm>
-
-
-
-                    <Logo>VisitaFácil</Logo>
+    };    return (
+        <LoginContainer>
+            <LoginForm>
+                <Logo>VisitaFácil</Logo>
 
                     <form onSubmit={handleSubmit}>
                         <Campo>
@@ -109,11 +98,9 @@ const Login = () => {
 
                         <EnlaceRegistro>
                             ¿No tienes una cuenta? <Link to="/registro">Regístrate aquí</Link>
-                        </EnlaceRegistro>
-                    </form>
+                        </EnlaceRegistro>                    </form>
                 </LoginForm>
             </LoginContainer>
-        </ThemeProvider>
     );
 };
 
