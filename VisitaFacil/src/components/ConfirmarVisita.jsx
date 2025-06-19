@@ -29,7 +29,7 @@ const ConfirmarVisita = () => {
   const enviarCorreoAgente = async () => {
     try {
       await axios.post("http://localhost:8080/api/notificacion", {
-        destinatario: "iturriagajeremy@gmail.com",
+        destinatario: "crunchyconjunto@gmail.com", // Cambia esto al correo del agente
         asunto: "Nueva Visita Agendada",
         mensaje: `
           Se ha registrado una nueva visita.
