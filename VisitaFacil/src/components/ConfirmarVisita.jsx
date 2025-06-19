@@ -50,6 +50,32 @@ const ConfirmarVisita = () => {
     }
   };
 
+  const enviarCorreoUsuario = async () => {
+    try {
+      await axios.post("http://localhost:8080/api/notificacion", {
+        destinatario: formulario.correo,
+        asunto: "Confirmación de Solicitud de Visita",
+        mensaje: `
+          Hola ${formulario.nombre},
+
+          ✅ Hemos recibido tu solicitud de visita para la siguiente propiedad:
+
+          📌 Propiedad: ${visita.titulo}
+          📍 Ubicación: ${visita.ubicacion}
+          📅 Fecha: ${visita.fecha}
+          🕒 Hora: ${visita.hora}
+
+          Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
+
+          ¡Gracias por confiar en nosotros!
+        `,
+      });
+      console.log("Correo enviado al usuario");
+    } catch (error) {
+      console.error("Error al enviar correo al usuario:", error);
+    }
+  };
+
   const handleSubmit = async () => {
     if (!formulario.nombre || !formulario.correo || !formulario.telefono) {
       alert("Por favor, completa todos los campos.");
@@ -75,7 +101,8 @@ const ConfirmarVisita = () => {
       });
 
       if (res.ok) {
-        await enviarCorreoAgente(); // <-- Enviar correo al agente
+        await enviarCorreoAgente();
+        await enviarCorreoUsuario();
         alert("✅ Solicitud enviada correctamente");
         localStorage.removeItem("visitaPendiente");
         navigate("/catalogo");
