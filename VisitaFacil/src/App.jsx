@@ -12,7 +12,6 @@ import BarraNav from "./components/BarraNav/BarraNav.jsx";
 import RutaProtegida from "./components/RutaProtegida";
 import HistorialVisitas from "./components/HistorialVisitas.jsx";
 import ConfirmarVisita from "./components/ConfirmarVisita.jsx";
-import NotificacionEmail from "./components/NotificacionEmail.jsx";
 
 function App() {
   return (
@@ -28,7 +27,6 @@ function App() {
         <Route path="/propiedad/:id" element={<VistaPropiedad />} />
         <Route path="/historial" element={<HistorialVisitas />} />
         <Route path="/confirmar-visita" element={<ConfirmarVisita />} />
-        <Route path="/notificacion-email" element={<NotificacionEmail />} />
         <Route
           path="*"
           element={<h1 style={{ padding: "2rem" }}>Página no encontrada</h1>}
