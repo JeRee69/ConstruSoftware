@@ -7,16 +7,16 @@ export const RegisterContainer = styled.div`
   align-items: center;
   min-height: 100vh;
   width: 100vw;
-  background-color: #f5f5f5;
+  background-color: var(--color-secundario);
   margin: 0;
   padding: 0;
 `;
 
 export const RegisterForm = styled.div`
-  background-color: white;
+  background-color: var(--color-fondo-card);
   padding: 2.5rem;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px var(--color-sombra);
   width: 100%;
   max-width: 400px;
 `;
@@ -24,7 +24,7 @@ export const RegisterForm = styled.div`
 export const Logo = styled.div`
   text-align: center;
   margin-bottom: 2rem;
-  color: #d32f2f;
+  color: var(--color-primario);
   font-size: 1.8rem;
   font-weight: bold;
 `;
@@ -36,20 +36,21 @@ export const InputField = styled.div`
 export const Label = styled.label`
   display: block;
   margin-bottom: 0.5rem;
-  color: #616161;
+  color: var(--color-texto);
   font-size: 0.9rem;
 `;
 
 export const Input = styled.input`
   width: 100%;
   padding: 0.8rem;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   font-size: 1rem;
+  background-color: var(--color-fondo-card);
+  color: var(--color-texto);
   transition: border-color 0.3s;
-
   &:focus {
-    border-color: #d32f2f;
+    border-color: var(--color-primario);
     outline: none;
   }
 `;
@@ -57,7 +58,7 @@ export const Input = styled.input`
 export const Button = styled.button`
   width: 100%;
   padding: 0.8rem;
-  background-color: #d32f2f;
+  background-color: var(--color-primario);
   color: white;
   border: none;
   border-radius: 4px;
@@ -87,10 +88,10 @@ export const ErrorMessage = styled.div`
 export const LoginLink = styled.div`
   text-align: center;
   margin-top: 1.5rem;
-  color: #616161;
+  color: var(--color-texto);
 
   a {
-    color: #d32f2f;
+    color: var(--color-primario);
     text-decoration: none;
     font-weight: 500;
     margin-left: 0.3rem;
