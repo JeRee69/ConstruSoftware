@@ -159,7 +159,7 @@ const VisitasAgente = () => {
         <OuterWrapper>
             <Container>
                 <Sidebar>
-                    <SidebarTitle>PropiedadesPlus</SidebarTitle>
+                    <SidebarTitle>VisitaFácil</SidebarTitle>
                     <SidebarItem onClick={() => navigate('/agenda')}>Agenda</SidebarItem>
                     <SidebarItem onClick={() => navigate('/visitas-agente')}>Visitas</SidebarItem>
                     <SidebarItem onClick={handleLogout}>Cerrar sesión</SidebarItem>

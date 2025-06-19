@@ -33,6 +33,9 @@ const BarraNav = () => {
                             <Link to="/visitas-agente">Solicitudes</Link>
                         </>
                     )}
+
+                    <Link to="/historial">Ver Historial</Link>
+                    
                 </NavLinks>
             </NavSectionLeft>
 
