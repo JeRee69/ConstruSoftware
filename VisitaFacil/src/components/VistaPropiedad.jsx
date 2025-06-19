@@ -1,20 +1,24 @@
 import { useEffect, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { useParams } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { useNavigate, useParams } from "react-router-dom";
 import "../styles/datepicker-custom.css";
+import "../styles/VistaPropiedad.css";  
 
 const VistaPropiedad = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [propiedad, setPropiedad] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [fechaVisita, setFechaVisita] = useState(null);
   const [horarioSeleccionado, setHorarioSeleccionado] = useState(null);
   const [horariosDisponibles, setHorariosDisponibles] = useState([]);
-  const [cargandoHorarios, setCargandoHorarios] = useState(false); // nuevo estado
+  const [cargandoHorarios, setCargandoHorarios] = useState(false);
 
-  // Cargar datos de la propiedad
   useEffect(() => {
     fetch(`http://localhost:8080/propiedades/${id}`)
       .then((res) => {
@@ -31,7 +35,6 @@ const VistaPropiedad = () => {
       });
   }, [id]);
 
-  // Cargar horarios disponibles desde backend
   useEffect(() => {
     if (!fechaVisita) return;
 
@@ -53,9 +56,9 @@ const VistaPropiedad = () => {
           end.setHours(endH, endM, 0, 0);
 
           while (start < end) {
-            const horaFormateada = start.toTimeString().slice(0, 5); // HH:MM
+            const horaFormateada = start.toTimeString().slice(0, 5);
             horarios.push(horaFormateada);
-            start.setMinutes(start.getMinutes() + 60); // cambia a 30 si prefieres
+            start.setMinutes(start.getMinutes() + 60);
           }
         });
 
@@ -69,10 +72,18 @@ const VistaPropiedad = () => {
         setCargandoHorarios(false);
       });
   }, [fechaVisita, id]);
-
-  if (cargando) return <p>Cargando propiedad...</p>;
+  if (cargando) return <p style={{ color: "#000" }}>Cargando propiedad...</p>;
   if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!propiedad) return <p>Propiedad no encontrada.</p>;
+  if (!propiedad) return <p style={{ color: "#000" }}>Propiedad no encontrada.</p>;
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+  };
 
   return (
     <div
@@ -84,50 +95,39 @@ const VistaPropiedad = () => {
         padding: "2rem",
         boxSizing: "border-box",
       }}
-    >
-      <div style={{ maxWidth: "900px", margin: "auto" }}>
+    >      <div style={{ maxWidth: "900px", margin: "auto" }}>
         <h1 style={{ color: "#d32f2f" }}>{propiedad.titulo}</h1>
-        <p><strong>Descripción:</strong> {propiedad.descripcion}</p>
-        <p><strong>Precio:</strong> ${propiedad.precio}</p>
-        <p><strong>Tipo:</strong> {propiedad.tipo}</p>
-        <p><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
-        <p><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
+        <div style={{ color: "#000" }}>
+          <p><strong>Descripción:</strong> {propiedad.descripcion}</p>
+          <p><strong>Precio:</strong> ${propiedad.precio}</p>
+          <p><strong>Tipo:</strong> {propiedad.tipo}</p>
+          <p><strong>Ubicación:</strong> {propiedad.ubicacion}</p>
+          <p><strong>Disponible:</strong> {propiedad.disponible ? "Sí" : "No"}</p>
+        </div>
 
-        {/* Imágenes */}
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            marginTop: "1rem",
-            justifyContent: "flex-start",
-            flexWrap: "wrap",
-          }}
-        >
+        {/* Carrusel de imágenes */}
+        <div style={{ marginTop: "1.5rem" }}>
           {propiedad.urlsImagenes?.length > 0 ? (
-            propiedad.urlsImagenes.map((url, index) => (
-              <img
-                key={index}
-                src={url.trim()}
-                alt={`Imagen ${index + 1}`}
-                style={{
-                  width: "400px",
-                  height: "250px",
-                  objectFit: "cover",
-                  borderRadius: "8px",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                }}
-                onError={(e) => {
-                  e.target.src = "/imagen-no-disponible.png";
-                }}
-              />
-            ))
+            <Slider {...sliderSettings}>
+              {propiedad.urlsImagenes.map((url, index) => (
+                <div key={index}>
+                  <img
+                    src={url.trim()}
+                    alt={`Imagen ${index + 1}`}
+                    onError={(e) => {
+                      e.target.src = "/imagen-no-disponible.png";
+                    }}
+                  />
+                </div>
+              ))}
+            </Slider>
           ) : (
-            <p>No hay imágenes disponibles.</p>
+            <p style={{ color: "#000" }}>No hay imágenes disponibles.</p>
           )}
         </div>
 
         {/* Calendario y horarios */}
-        <div style={{ marginTop: "2rem", textAlign: "center" }}>
+        <div style={{ marginTop: "2rem", textAlign: "center", color: "#000" }}>
           <h3>Agendar una visita</h3>
           <ReactDatePicker
             selected={fechaVisita}
@@ -139,11 +139,9 @@ const VistaPropiedad = () => {
             placeholderText="Selecciona una fecha"
             dateFormat="dd/MM/yyyy"
             inline
-          />
-
-          {fechaVisita && (
+          />          {fechaVisita && (
             <div style={{ marginTop: "1rem" }}>
-              <h4>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
+              <h4 style={{ color: "#000", margin: "1rem 0" }}>Horarios disponibles para {fechaVisita.toLocaleDateString()}</h4>
               <div
                 style={{
                   display: "flex",
@@ -163,12 +161,8 @@ const VistaPropiedad = () => {
                       style={{
                         padding: "8px 14px",
                         borderRadius: "6px",
-                        border:
-                          horarioSeleccionado === hora
-                            ? "2px solid #d32f2f"
-                            : "1px solid #ccc",
-                        backgroundColor:
-                          horarioSeleccionado === hora ? "#d32f2f" : "#fff",
+                        border: horarioSeleccionado === hora ? "2px solid #d32f2f" : "1px solid #ccc",
+                        backgroundColor: horarioSeleccionado === hora ? "#d32f2f" : "#fff",
                         color: horarioSeleccionado === hora ? "#fff" : "#333",
                         cursor: "pointer",
                         transition: "0.2s",
@@ -183,16 +177,42 @@ const VistaPropiedad = () => {
               </div>
 
               {horarioSeleccionado && (
-                <p
-                  style={{
-                    marginTop: "1rem",
-                    fontWeight: "bold",
-                    color: "#4caf50",
-                  }}
-                >
-                  Visita seleccionada: {fechaVisita.toLocaleDateString()} a las{" "}
-                  {horarioSeleccionado}
-                </p>
+                <>
+                  <p
+                    style={{
+                      marginTop: "1rem",
+                      fontWeight: "bold",
+                      color: "#4caf50",
+                    }}
+                  >
+                    Visita seleccionada: {fechaVisita.toLocaleDateString()} a las {horarioSeleccionado}
+                  </p>
+
+                  <button
+                    onClick={() => {
+                      localStorage.setItem("visitaPendiente", JSON.stringify({
+                        propiedadId: propiedad.id,
+                        titulo: propiedad.titulo,
+                        ubicacion: propiedad.ubicacion,
+                        fecha: fechaVisita.toISOString().split("T")[0],
+                        hora: horarioSeleccionado,
+                      }));
+                      navigate("/confirmar-visita");
+                    }}
+                    style={{
+                      marginTop: "1.5rem",
+                      padding: "0.8rem 1.5rem",
+                      backgroundColor: "#d32f2f",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "6px",
+                      fontSize: "1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Confirmar Visita
+                  </button>
+                </>
               )}
             </div>
           )}

@@ -10,6 +10,8 @@ import RegistrarDisponibilidad from "./components/RegistrarDisponibilidad.jsx";
 import RegistrarDisponibilidadAgente from "./components/RegistrarDisponibilidadAgente.jsx";
 import BarraNav from "./components/BarraNav/BarraNav.jsx";
 import RutaProtegida from "./components/RutaProtegida";
+import HistorialVisitas from "./components/HistorialVisitas.jsx";
+import ConfirmarVisita from "./components/ConfirmarVisita.jsx";
 
 function App() {
   return (
@@ -23,6 +25,12 @@ function App() {
         <Route path="/agenda" element={<Agenda />} />
         <Route path="/catalogo" element={<Catalogo />} />
         <Route path="/propiedad/:id" element={<VistaPropiedad />} />
+        <Route path="/historial" element={<HistorialVisitas />} />
+        <Route path="/confirmar-visita" element={<ConfirmarVisita />} />
+        <Route
+          path="*"
+          element={<h1 style={{ padding: "2rem" }}>Página no encontrada</h1>}
+        />
 
         {/* Rutas protegidas para AGENTE */}
         <Route
