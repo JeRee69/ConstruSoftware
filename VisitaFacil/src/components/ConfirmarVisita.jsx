@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSweetAlert } from "../hooks/useSweetAlert";
+import "../styles/sweetalert-custom.css";
 
 const ConfirmarVisita = () => {
   const [visita, setVisita] = useState(null);
@@ -11,16 +13,22 @@ const ConfirmarVisita = () => {
   });
   const [enviando, setEnviando] = useState(false);
   const navigate = useNavigate();
+  const { showSuccess, showError, showWarning, showLoading, close } = useSweetAlert();
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("visitaPendiente"));
     if (!data) {
-      alert("No hay visita para confirmar.");
-      navigate("/catalogo");
+      showWarning(
+        "Sin datos de visita",
+        "No hay información de visita para confirmar. Te redirigiremos al catálogo.",
+        "Ir al catálogo"
+      ).then(() => {
+        navigate("/catalogo");
+      });
     } else {
       setVisita(data);
     }
-  }, []);
+  }, [navigate, showWarning]);
 
   const handleChange = (e) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
@@ -49,10 +57,13 @@ const ConfirmarVisita = () => {
       console.error("Error al enviar correo al agente:", error);
     }
   };
-
   const handleSubmit = async () => {
     if (!formulario.nombre || !formulario.correo || !formulario.telefono) {
-      alert("Por favor, completa todos los campos.");
+      showWarning(
+        "Campos incompletos",
+        "Por favor, completa todos los campos antes de continuar.",
+        "Entendido"
+      );
       return;
     }
 
@@ -66,6 +77,7 @@ const ConfirmarVisita = () => {
     };
 
     setEnviando(true);
+    showLoading("Enviando solicitud", "Procesando tu solicitud de visita...");
 
     try {
       const res = await fetch("http://localhost:8080/visitas/solicitar", {
@@ -74,17 +86,33 @@ const ConfirmarVisita = () => {
         body: JSON.stringify(payload),
       });
 
+      close(); // Cerrar loading
+
       if (res.ok) {
         await enviarCorreoAgente(); // <-- Enviar correo al agente
-        alert("✅ Solicitud enviada correctamente");
-        localStorage.removeItem("visitaPendiente");
-        navigate("/catalogo");
+        showSuccess(
+          "¡Solicitud enviada!",
+          "Tu solicitud de visita ha sido enviada correctamente. Te contactaremos pronto.",
+          "Continuar"
+        ).then(() => {
+          localStorage.removeItem("visitaPendiente");
+          navigate("/catalogo");
+        });
       } else {
-        alert("❌ Error al enviar solicitud");
+        showError(
+          "Error al enviar",
+          "Hubo un problema al enviar tu solicitud. Por favor, inténtalo de nuevo.",
+          "Intentar de nuevo"
+        );
       }
     } catch (err) {
       console.error(err);
-      alert("❌ Error al conectar con el servidor");
+      close(); // Cerrar loading
+      showError(
+        "Error de conexión",
+        "No se pudo conectar con el servidor. Revisa tu conexión a internet e inténtalo de nuevo.",
+        "Reintentar"
+      );
     } finally {
       setEnviando(false);
     }
