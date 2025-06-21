@@ -71,9 +71,159 @@ const VistaPropiedad = () => {
       .finally(() => {
         setCargandoHorarios(false);
       });
-  }, [fechaVisita, id]);  if (cargando) return <p style={{ color: "var(--color-texto)" }}>Cargando propiedad...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
-  if (!propiedad) return <p style={{ color: "var(--color-texto)" }}>Propiedad no encontrada.</p>;
+  }, [fechaVisita, id]);  // Componente de carga estético
+  const ComponenteCarga = () => (
+    <div
+      style={{
+        backgroundColor: "var(--color-secundario)",
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "1.5rem",
+      }}
+    >
+      <div
+        style={{
+          width: "60px",
+          height: "60px",
+          border: "4px solid var(--color-border)",
+          borderTop: "4px solid #d32f2f",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+        }}
+      />
+      <p
+        style={{
+          color: "var(--color-texto)",
+          fontSize: "1.1rem",
+          fontWeight: "500",
+          margin: 0,
+        }}
+      >
+        Cargando propiedad...
+      </p>
+      <style>
+        {`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+        `}
+      </style>
+    </div>
+  );
+
+  if (cargando) return <ComponenteCarga />;
+  if (error) return (
+    <div
+      style={{
+        backgroundColor: "var(--color-secundario)",
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "var(--color-fondo-card)",
+          padding: "2rem",
+          borderRadius: "12px",
+          boxShadow: "var(--color-sombra) 0 4px 12px",
+          textAlign: "center",
+          maxWidth: "400px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "3rem",
+            color: "#d32f2f",
+            marginBottom: "1rem",
+          }}
+        >
+          ⚠️
+        </div>
+        <h3 style={{ color: "var(--color-texto)", margin: "0 0 1rem 0" }}>
+          Error al cargar
+        </h3>
+        <p style={{ color: "var(--color-texto)", opacity: "0.8" }}>{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          style={{
+            marginTop: "1rem",
+            padding: "0.7rem 1.5rem",
+            backgroundColor: "#d32f2f",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "0.9rem",
+          }}
+        >
+          Intentar de nuevo
+        </button>
+      </div>
+    </div>
+  );
+  if (!propiedad) return (
+    <div
+      style={{
+        backgroundColor: "var(--color-secundario)",
+        width: "100vw",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "var(--color-fondo-card)",
+          padding: "2rem",
+          borderRadius: "12px",
+          boxShadow: "var(--color-sombra) 0 4px 12px",
+          textAlign: "center",
+          maxWidth: "400px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "3rem",
+            color: "var(--color-texto)",
+            opacity: "0.6",
+            marginBottom: "1rem",
+          }}
+        >
+          🏠
+        </div>
+        <h3 style={{ color: "var(--color-texto)", margin: "0 0 1rem 0" }}>
+          Propiedad no encontrada
+        </h3>
+        <p style={{ color: "var(--color-texto)", opacity: "0.8" }}>
+          La propiedad que buscas no existe o ha sido eliminada.
+        </p>
+        <button
+          onClick={() => navigate("/catalogo")}
+          style={{
+            marginTop: "1rem",
+            padding: "0.7rem 1.5rem",
+            backgroundColor: "#d32f2f",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "0.9rem",
+          }}
+        >
+          Volver al catálogo
+        </button>
+      </div>
+    </div>
+  );
 
   const sliderSettings = {
     dots: true,

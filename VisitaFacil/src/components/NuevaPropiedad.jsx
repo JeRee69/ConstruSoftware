@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useSweetAlert } from "../hooks/useSweetAlert";
+import "../styles/sweetalert-custom.css";
 
 const Container = styled.div`
   max-width: 600px;
@@ -55,6 +57,7 @@ const NuevaPropiedad = () => {
 
     const [imagenes, setImagenes] = useState([]);
     const navigate = useNavigate();
+    const { showSuccess, showError, showLoading, close } = useSweetAlert();
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -66,47 +69,78 @@ const NuevaPropiedad = () => {
 
     const handleImagenes = (e) => {
         setImagenes(Array.from(e.target.files));
-    };
-
-    const handleSubmit = async (e) => {
+    };    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 1. Crear propiedad
-        const response = await fetch("http://localhost:8080/propiedades", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(form),
-        });
+        showLoading("Creando propiedad", "Guardando la información de la nueva propiedad...");
 
-        if (!response.ok) {
-            alert("Error al crear propiedad");
-            return;
-        }
+        try {
+            // 1. Crear propiedad
+            const response = await fetch("http://localhost:8080/propiedades", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(form),
+            });
 
-        const propiedad = await response.json();
-
-        // 2. Subir imágenes (si hay)
-        if (imagenes.length > 0) {
-            const formData = new FormData();
-            imagenes.forEach((img) => formData.append("imagenes", img));
-
-            const uploadResp = await fetch(
-                `http://localhost:8080/propiedades/${propiedad.id}/imagenes`,
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
-
-            if (!uploadResp.ok) {
-                alert("Propiedad creada, pero error al subir imágenes");
+            if (!response.ok) {
+                close();
+                showError(
+                    "Error al crear propiedad",
+                    "Hubo un problema al crear la propiedad. Por favor, verifica los datos e inténtalo de nuevo.",
+                    "Reintentar"
+                );
+                return;
             }
-        }
 
-        alert("Propiedad creada correctamente");
-        navigate("/admin/catalogo");
+            const propiedad = await response.json();
+
+            // 2. Subir imágenes (si hay)
+            if (imagenes.length > 0) {
+                const formData = new FormData();
+                imagenes.forEach((img) => formData.append("imagenes", img));
+
+                const uploadResp = await fetch(
+                    `http://localhost:8080/propiedades/${propiedad.id}/imagenes`,
+                    {
+                        method: "POST",
+                        body: formData,
+                    }
+                );
+
+                close();
+
+                if (!uploadResp.ok) {
+                    showError(
+                        "Propiedad creada",
+                        "La propiedad fue creada exitosamente, pero hubo un error al subir las imágenes. Puedes editarla más tarde para agregar las imágenes.",
+                        "Continuar"
+                    ).then(() => {
+                        navigate("/admin/catalogo");
+                    });
+                    return;
+                }
+            } else {
+                close();
+            }
+
+            showSuccess(
+                "¡Propiedad creada!",
+                "La nueva propiedad ha sido creada correctamente y está disponible en el catálogo.",
+                "Ver catálogo"
+            ).then(() => {
+                navigate("/admin/catalogo");
+            });
+
+        } catch (error) {
+            close();
+            showError(
+                "Error de conexión",
+                "No se pudo conectar con el servidor. Revisa tu conexión a internet e inténtalo de nuevo.",
+                "Reintentar"
+            );
+        }
     };
 
     return (

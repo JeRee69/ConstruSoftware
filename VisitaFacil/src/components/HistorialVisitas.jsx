@@ -1,24 +1,51 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useSweetAlert } from "../hooks/useSweetAlert";
 import "../styles/HistorialVisitas.css";
+import "../styles/sweetalert-custom.css";
 
 const HistorialVisitas = () => {
   const [correo, setCorreo] = useState("");
   const [visitas, setVisitas] = useState([]);
   const [loading, setLoading] = useState(false);  
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
+  const { showWarning, showError, showLoading, close, showInfo } = useSweetAlert();
 
   const handleBuscar = async () => {
-    if (!correo) return alert("Por favor ingresa un correo válido.");
+    if (!correo) {
+      showWarning(
+        "Correo requerido",
+        "Por favor ingresa un correo electrónico válido para buscar tu historial.",
+        "Entendido"
+      );
+      return;
+    }
 
     setLoading(true);
+    showLoading("Buscando historial", "Consultando tus visitas programadas...");
+
     try {
       const response = await fetch(`http://localhost:8080/visitas/historial?correo=${correo}`);
       const data = await response.json();
+      
+      close();
       setVisitas(data);
       setMostrarHistorial(true);
+
+      if (data.length === 0) {
+        showInfo(
+          "Sin visitas registradas",
+          "No se encontraron visitas asociadas a este correo electrónico.",
+          "OK"
+        );
+      }
     } catch (error) {
       console.error("Error al obtener historial:", error);
-      alert("Error al buscar el historial. Revisa el correo o el servidor.");
+      close();
+      showError(
+        "Error en la búsqueda",
+        "Hubo un problema al buscar el historial. Verifica el correo ingresado o la conexión al servidor.",
+        "Reintentar"
+      );
     } finally {
       setLoading(false);
     }
