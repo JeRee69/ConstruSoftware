@@ -7,6 +7,7 @@ import PanelInformacion from "../components/VistaPropiedad/PanelInformacion";
 import BloqueDescripcion from "../components/VistaPropiedad/BloqueDescripcion";
 import MapaPropiedad from "../components/VistaPropiedad/MapaPropiedad";
 import AgendaVisitaBox from "../components/VistaPropiedad/AgendaVisitaBox";
+import Cargando from "./Cargando/Cargando.jsx";
 
 const Pagina = styled.div`
   background-color: var(--color-secundario);
@@ -90,7 +91,7 @@ const VistaPropiedad = () => {
             });
     }, [id]);
 
-    if (cargando) return <p style={{ color: "white" }}>Cargando...</p>;
+    if (cargando) return <Cargando mensaje="Cargando propiedad..." />;
     if (error || !propiedad) return <p style={{ color: "white" }}>Error: {error || "Propiedad no encontrada"}</p>;
 
     return (
