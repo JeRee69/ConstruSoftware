@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const OuterWrapper = styled.div`
   height: 100vh;
@@ -20,7 +20,7 @@ const Container = styled.div`
   border-radius: 12px;
   box-shadow: 0 4px 12px var(--color-sombra);
   overflow: hidden;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 `;
 
 const Sidebar = styled.div`
@@ -87,8 +87,8 @@ const AcceptButton = styled.button`
 `;
 
 const Mensaje = styled.div`
-  background-color: ${({ error }) => (error ? '#ffcdd2' : '#c8e6c9')};
-  color: ${({ error }) => (error ? '#b71c1c' : '#2e7d32')};
+  background-color: ${({ error }) => (error ? "#ffcdd2" : "#c8e6c9")};
+  color: ${({ error }) => (error ? "#b71c1c" : "#2e7d32")};
   padding: 0.8rem 1rem;
   border-radius: 6px;
   margin-bottom: 1rem;
@@ -96,117 +96,153 @@ const Mensaje = styled.div`
 `;
 
 const VisitasAgente = () => {
-    const navigate = useNavigate();
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
-    const agenteId = usuario?.accountId;
+  const navigate = useNavigate();
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const agenteId = usuario?.accountId;
 
-    const [pendientes, setPendientes] = useState([]);
-    const [aceptadas, setAceptadas] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [mensaje, setMensaje] = useState(null);
-    const [error, setError] = useState(false);
+  const [pendientes, setPendientes] = useState([]);
+  const [aceptadas, setAceptadas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [mensaje, setMensaje] = useState(null);
+  const [error, setError] = useState(false);
 
-    const handleLogout = () => {
-        localStorage.clear();
-        navigate('/login');
-    };
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
-    const fetchVisitas = () => {
-        fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                const pendientes = data.filter((v) => v.estado === 'PENDIENTE');
-                const aceptadas = data.filter((v) => v.estado === 'ACEPTADA');
-                setPendientes(pendientes);
-                setAceptadas(aceptadas);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error('Error al cargar visitas', err);
-                setMensaje("Error al cargar visitas");
-                setError(true);
-                setLoading(false);
-            });
-    };
+  const fetchVisitas = () => {
+    fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const pendientes = data.filter((v) => v.estado === "PENDIENTE");
+        const aceptadas = data.filter((v) => v.estado === "ACEPTADA");
+        setPendientes(pendientes);
+        setAceptadas(aceptadas);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error al cargar visitas", err);
+        setMensaje("Error al cargar visitas");
+        setError(true);
+        setLoading(false);
+      });
+  };
 
-    useEffect(() => {
-        if (agenteId) {
-            fetchVisitas();
-        }
-    }, [agenteId]);
+  useEffect(() => {
+    if (agenteId) {
+      fetchVisitas();
+    }
+  }, [agenteId]);
 
-    const aceptarVisita = (id) => {
-        fetch("http://localhost:8080/solicitudes-agente/accion", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                solicitudAgenteId: id,
-                nuevoEstado: "ACEPTADA"
-            }),
-        })
-            .then((res) => {
-                if (!res.ok) throw new Error();
-                setMensaje("Visita aceptada con éxito");
-                setError(false);
-                fetchVisitas();
-            })
-            .catch(() => {
-                setMensaje("Error al aceptar visita");
-                setError(true);
-            });
-    };
+  const enviarCorreoCliente = async (visita) => {
+    try {
+      await fetch("http://localhost:8080/api/notificacion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          destinatario: visita.correoCliente,
+          asunto: "Visita Aceptada ✔️",
+          mensaje: `
+Hola ${visita.nombreCliente},
 
-    return (
-        <OuterWrapper>
-            <Container>
-                <Sidebar>
-                    <SidebarTitle>VisitaFácil</SidebarTitle>
-                    <SidebarItem onClick={() => navigate('/agenda')}>Agenda</SidebarItem>
-                    <SidebarItem onClick={() => navigate('/visitas-agente')}>Visitas</SidebarItem>
-                    <SidebarItem onClick={handleLogout}>Cerrar sesión</SidebarItem>
-                </Sidebar>
+Tu solicitud para visitar la propiedad en:
 
-                <Main>
-                    {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
+📍 ${visita.direccionPropiedad}  
+📅 Fecha: ${visita.fecha}  
+🕒 Hora: ${visita.hora}
 
-                    {loading ? (
-                        <p>Cargando visitas...</p>
-                    ) : (
-                        <>
-                            <SectionTitle>Visitas pendientes</SectionTitle>
-                            {pendientes.length === 0 ? (
-                                <p>No hay visitas pendientes.</p>
-                            ) : (
-                                pendientes.map((visita) => (
-                                    <VisitCard key={visita.id}>
-                                        <strong>{visita.nombreCliente}</strong> quiere visitar{" "}
-                                        <strong>{visita.direccionPropiedad}</strong><br />
-                                        Fecha: {visita.fecha} a las {visita.hora}
-                                        <AcceptButton onClick={() => aceptarVisita(visita.id)}>
-                                            Aceptar
-                                        </AcceptButton>
-                                    </VisitCard>
-                                ))
-                            )}
+Ha sido **aceptada por el agente** ✅
 
-                            <SectionTitle>Visitas aceptadas</SectionTitle>
-                            {aceptadas.length === 0 ? (
-                                <p>No hay visitas aceptadas.</p>
-                            ) : (
-                                aceptadas.map((visita) => (
-                                    <VisitCard key={visita.id}>
-                                        <strong>{visita.nombreCliente}</strong> -{" "}
-                                        <strong>{visita.direccionPropiedad}</strong><br />
-                                        Aceptada para el {visita.fecha} a las {visita.hora}
-                                    </VisitCard>
-                                ))
-                            )}
-                        </>
-                    )}
-                </Main>
-            </Container>
-        </OuterWrapper>
-    );
+Un saludo,  
+VisitaFácil
+          `,
+        }),
+      });
+      console.log("Correo enviado al cliente");
+    } catch (error) {
+      console.error("Error al enviar correo al cliente:", error);
+    }
+  };
+
+  const aceptarVisita = (id) => {
+    const visita = pendientes.find((v) => v.id === id);
+    fetch("http://localhost:8080/solicitudes-agente/accion", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        solicitudAgenteId: id,
+        nuevoEstado: "ACEPTADA",
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        setMensaje("Visita aceptada con éxito");
+        setError(false);
+        enviarCorreoCliente(visita); // 👈 Enviar correo al cliente
+        fetchVisitas();
+      })
+      .catch(() => {
+        setMensaje("Error al aceptar visita");
+        setError(true);
+      });
+  };
+
+  return (
+    <OuterWrapper>
+      <Container>
+        <Sidebar>
+          <SidebarTitle>VisitaFácil</SidebarTitle>
+          <SidebarItem onClick={() => navigate("/agenda")}>Agenda</SidebarItem>
+          <SidebarItem onClick={() => navigate("/visitas-agente")}>
+            Visitas
+          </SidebarItem>
+          <SidebarItem onClick={handleLogout}>Cerrar sesión</SidebarItem>
+        </Sidebar>
+
+        <Main>
+          {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
+
+          {loading ? (
+            <p>Cargando visitas...</p>
+          ) : (
+            <>
+              <SectionTitle>Visitas pendientes</SectionTitle>
+              {pendientes.length === 0 ? (
+                <p>No hay visitas pendientes.</p>
+              ) : (
+                pendientes.map((visita) => (
+                  <VisitCard key={visita.id}>
+                    <strong>{visita.nombreCliente}</strong> quiere visitar{" "}
+                    <strong>{visita.direccionPropiedad}</strong>
+                    <br />
+                    Fecha: {visita.fecha} a las {visita.hora}
+                    <AcceptButton onClick={() => aceptarVisita(visita.id)}>
+                      Aceptar
+                    </AcceptButton>
+                  </VisitCard>
+                ))
+              )}
+
+              <SectionTitle>Visitas aceptadas</SectionTitle>
+              {aceptadas.length === 0 ? (
+                <p>No hay visitas aceptadas.</p>
+              ) : (
+                aceptadas.map((visita) => (
+                  <VisitCard key={visita.id}>
+                    <strong>{visita.nombreCliente}</strong> -{" "}
+                    <strong>{visita.direccionPropiedad}</strong>
+                    <br />
+                    Aceptada para el {visita.fecha} a las {visita.hora}
+                  </VisitCard>
+                ))
+              )}
+            </>
+          )}
+        </Main>
+      </Container>
+    </OuterWrapper>
+  );
 };
 
 export default VisitasAgente;

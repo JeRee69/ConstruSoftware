@@ -1,5 +1,10 @@
 package com.construsoft.visita_facil_api.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.construsoft.visita_facil_api.domain.SolicitudAgenteDTO;
 import com.construsoft.visita_facil_api.enums.EstadoSolicitudAgente;
 import com.construsoft.visita_facil_api.enums.EstadoSolicitudVisita;
@@ -7,16 +12,13 @@ import com.construsoft.visita_facil_api.model.SolicitudAgente;
 import com.construsoft.visita_facil_api.model.SolicitudVisita;
 import com.construsoft.visita_facil_api.repository.SolicitudAgenteRepository;
 import com.construsoft.visita_facil_api.repository.SolicitudVisitaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SolicitudAgenteService {
 
     @Autowired
     private SolicitudAgenteRepository solicitudAgenteRepository;
+
     @Autowired
     private SolicitudVisitaRepository solicitudVisitaRepository;
 
@@ -32,13 +34,13 @@ public class SolicitudAgenteService {
             return new SolicitudAgenteDTO(
                     solicitud.getId(),
                     visita.getNombreCliente(),
+                    visita.getCorreoCliente(), // correo agregado aquí
                     visita.getPropiedad().getUbicacion(),
                     visita.getFecha().toString(),
                     visita.getHoraInicio().toString(),
                     solicitud.getEstado().name()
             );
         }).toList();
-
     }
 
     public List<SolicitudAgente> obtenerSolicitudesPorAgenteYEstado(Long agenteId, EstadoSolicitudAgente estado) {
