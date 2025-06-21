@@ -13,6 +13,7 @@ import VistaPropiedad from "./components/VistaPropiedad";
 import Catalogo from "./views/Catalogo/Catalogo.jsx";
 import Login from "./views/Login/Login.jsx";
 import Registro from "./views/Registro/Registro.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 
 function App() {
   const [temaOscuro, setTemaOscuro] = useState(false);
@@ -101,6 +102,7 @@ function App() {
           element={<h1 style={{ padding: "2rem" }}>Página no encontrada</h1>}
         />
       </Routes>
+
     </>
   );
 }
