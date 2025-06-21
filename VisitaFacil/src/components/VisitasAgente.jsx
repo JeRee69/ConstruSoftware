@@ -2,20 +2,19 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-const OuterWrapper = styled.div`
-  height: 100vh;
-  width: 100vw;
+// 🎨 Estilos
+const Wrapper = styled.div`
+  min-height: 100vh;
+  background-color: var(--color-secundario);
+  padding: 2rem;
   display: flex;
   justify-content: center;
-  align-items: center;
-  background-color: var(--color-secundario);
 `;
 
 const Container = styled.div`
   display: flex;
   width: 100%;
   max-width: 1000px;
-  height: 90vh;
   background-color: var(--color-fondo-card);
   border-radius: 12px;
   box-shadow: 0 4px 12px var(--color-sombra);
@@ -102,9 +101,9 @@ const VisitasAgente = () => {
 
   const [pendientes, setPendientes] = useState([]);
   const [aceptadas, setAceptadas] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState(null);
   const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -112,21 +111,20 @@ const VisitasAgente = () => {
   };
 
   const fetchVisitas = () => {
+    setLoading(true);
+
+    // Pendientes (basadas en disponibilidad)
     fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const pendientes = data.filter((v) => v.estado === "PENDIENTE");
-        const aceptadas = data.filter((v) => v.estado === "ACEPTADA");
-        setPendientes(pendientes);
-        setAceptadas(aceptadas);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error al cargar visitas", err);
-        setMensaje("Error al cargar visitas");
-        setError(true);
-        setLoading(false);
-      });
+        .then((res) => res.json())
+        .then((data) => setPendientes(data));
+
+    // Aceptadas (DTOs directos)
+    fetch(`http://localhost:8080/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`)
+        .then((res) => res.json())
+        .then((data) => {
+          setAceptadas(data);
+          setLoading(false);
+        });
   };
 
   useEffect(() => {
@@ -159,89 +157,87 @@ VisitaFácil
           `,
         }),
       });
-      console.log("Correo enviado al cliente");
     } catch (error) {
       console.error("Error al enviar correo al cliente:", error);
     }
   };
 
-  const aceptarVisita = (id) => {
-    const visita = pendientes.find((v) => v.id === id);
+  const aceptarVisita = (visitaId) => {
+    const visita = pendientes.find((v) => v.id === visitaId);
     fetch("http://localhost:8080/solicitudes-agente/accion", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        solicitudAgenteId: id,
+        solicitudVisitaId: visitaId,
+        agenteId: agenteId,
         nuevoEstado: "ACEPTADA",
       }),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error();
-        setMensaje("Visita aceptada con éxito");
-        setError(false);
-        enviarCorreoCliente(visita); // 👈 Enviar correo al cliente
-        fetchVisitas();
-      })
-      .catch(() => {
-        setMensaje("Error al aceptar visita");
-        setError(true);
-      });
+        .then((res) => {
+          if (!res.ok) throw new Error();
+          setMensaje("Visita aceptada con éxito");
+          setError(false);
+          enviarCorreoCliente(visita);
+          fetchVisitas();
+        })
+        .catch(() => {
+          setMensaje("Error al aceptar visita");
+          setError(true);
+        });
   };
 
   return (
-    <OuterWrapper>
-      <Container>
-        <Sidebar>
-          <SidebarTitle>VisitaFácil</SidebarTitle>
-          <SidebarItem onClick={() => navigate("/agenda")}>Agenda</SidebarItem>
-          <SidebarItem onClick={() => navigate("/visitas-agente")}>
-            Visitas
-          </SidebarItem>
-          <SidebarItem onClick={handleLogout}>Cerrar sesión</SidebarItem>
-        </Sidebar>
+      <Wrapper>
+        <Container>
+          <Sidebar>
+            <SidebarTitle>VisitaFácil</SidebarTitle>
+            <SidebarItem onClick={() => navigate("/agenda")}>Agenda</SidebarItem>
+            <SidebarItem onClick={() => navigate("/visitas-agente")}>Visitas</SidebarItem>
+            <SidebarItem onClick={handleLogout}>Cerrar sesión</SidebarItem>
+          </Sidebar>
 
-        <Main>
-          {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
+          <Main>
+            {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
 
-          {loading ? (
-            <p>Cargando visitas...</p>
-          ) : (
-            <>
-              <SectionTitle>Visitas pendientes</SectionTitle>
-              {pendientes.length === 0 ? (
-                <p>No hay visitas pendientes.</p>
-              ) : (
-                pendientes.map((visita) => (
-                  <VisitCard key={visita.id}>
-                    <strong>{visita.nombreCliente}</strong> quiere visitar{" "}
-                    <strong>{visita.direccionPropiedad}</strong>
-                    <br />
-                    Fecha: {visita.fecha} a las {visita.hora}
-                    <AcceptButton onClick={() => aceptarVisita(visita.id)}>
-                      Aceptar
-                    </AcceptButton>
-                  </VisitCard>
-                ))
-              )}
+            {loading ? (
+                <p>Cargando visitas...</p>
+            ) : (
+                <>
+                  <SectionTitle>Visitas pendientes</SectionTitle>
+                  {pendientes.length === 0 ? (
+                      <p>No hay visitas pendientes.</p>
+                  ) : (
+                      pendientes.map((visita) => (
+                          <VisitCard key={visita.id}>
+                            <strong>{visita.nombreCliente}</strong> quiere visitar{" "}
+                            <strong>{visita.direccionPropiedad}</strong>
+                            <br />
+                            Fecha: {visita.fecha} a las {visita.hora}
+                            <AcceptButton onClick={() => aceptarVisita(visita.id)}>
+                              Aceptar
+                            </AcceptButton>
+                          </VisitCard>
+                      ))
+                  )}
 
-              <SectionTitle>Visitas aceptadas</SectionTitle>
-              {aceptadas.length === 0 ? (
-                <p>No hay visitas aceptadas.</p>
-              ) : (
-                aceptadas.map((visita) => (
-                  <VisitCard key={visita.id}>
-                    <strong>{visita.nombreCliente}</strong> -{" "}
-                    <strong>{visita.direccionPropiedad}</strong>
-                    <br />
-                    Aceptada para el {visita.fecha} a las {visita.hora}
-                  </VisitCard>
-                ))
-              )}
-            </>
-          )}
-        </Main>
-      </Container>
-    </OuterWrapper>
+                  <SectionTitle>Visitas aceptadas</SectionTitle>
+                  {aceptadas.length === 0 ? (
+                      <p>No hay visitas aceptadas.</p>
+                  ) : (
+                      aceptadas.map((visita) => (
+                          <VisitCard key={visita.id}>
+                            <strong>{visita.nombreCliente}</strong> -{" "}
+                            <strong>{visita.direccionPropiedad}</strong>
+                            <br />
+                            Aceptada para el {visita.fecha} a las {visita.hora}
+                          </VisitCard>
+                      ))
+                  )}
+                </>
+            )}
+          </Main>
+        </Container>
+      </Wrapper>
   );
 };
 
