@@ -51,8 +51,8 @@ const ColLateral = styled.div`
 
 const BotonVolver = styled.button`
   background-color: transparent;
-  border: 2px solid #d32f2f;
-  color: #d32f2f;
+  border: 2px solid #006e75;
+  color: #006e75;
   padding: 0.6rem 1.2rem;
   border-radius: 8px;
   cursor: pointer;

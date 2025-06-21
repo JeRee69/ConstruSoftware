@@ -1,84 +1,68 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
-// 🎨 Estilos
-const Wrapper = styled.div`
+const Pagina = styled.div`
   min-height: 100vh;
   background-color: var(--color-secundario);
   padding: 2rem;
   display: flex;
   justify-content: center;
+  align-items: start;
 `;
 
-const Container = styled.div`
-  display: flex;
+const Contenido = styled.div`
   width: 100%;
-  max-width: 1000px;
+  max-width: 900px;
   background-color: var(--color-fondo-card);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px var(--color-sombra);
-  overflow: hidden;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-`;
-
-const Sidebar = styled.div`
-  width: 250px;
-  background-color: #d32f2f;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem;
-`;
-
-const SidebarTitle = styled.h2`
-  margin-bottom: 2rem;
-`;
-
-const SidebarItem = styled.button`
-  background: none;
-  border: none;
-  color: white;
-  padding: 0.8rem 0;
-  text-align: left;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-`;
-
-const Main = styled.div`
-  flex-grow: 1;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px var(--color-sombra);
   padding: 2rem;
-  overflow-y: auto;
-  background-color: var(--color-secundario);
 `;
 
-const SectionTitle = styled.h3`
-  margin-bottom: 1rem;
+const TituloSeccion = styled.h2`
+  color: var(--color-texto);
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 0.5rem;
 `;
 
-const VisitCard = styled.div`
-  background-color: var(--color-fondo-card);
-  border-left: 5px solid #d32f2f;
-  border-radius: 4px;
-  padding: 1rem;
+const Subtitulo = styled.h3`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 2rem;
   margin-bottom: 1rem;
-  box-shadow: 0 1px 4px var(--color-sombra);
+  font-size: 1.2rem;
   color: var(--color-texto);
 `;
 
-const AcceptButton = styled.button`
-  margin-top: 0.5rem;
+const Card = styled.div`
+  background-color: white;
+  border-left: 6px solid #d32f2f;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+`;
+
+const Texto = styled.p`
+  margin: 0.3rem 0;
+  color: #333;
+  font-size: 1rem;
+`;
+
+const BotonAceptar = styled.button`
+  margin-top: 1rem;
   background-color: #388e3c;
   color: white;
   border: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
   cursor: pointer;
+  transition: background 0.3s;
 
   &:hover {
     background-color: #2e7d32;
@@ -88,49 +72,84 @@ const AcceptButton = styled.button`
 const Mensaje = styled.div`
   background-color: ${({ error }) => (error ? "#ffcdd2" : "#c8e6c9")};
   color: ${({ error }) => (error ? "#b71c1c" : "#2e7d32")};
-  padding: 0.8rem 1rem;
+  padding: 1rem;
   border-radius: 6px;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   font-weight: 500;
+  text-align: center;
+`;
+
+const FlechaIcono = styled.button`
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  border-radius: 6px;
+  color: var(--color-texto);
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+
+  &:disabled {
+    color: #aaa;
+    cursor: default;
+    background: none;
+  }
+
+  svg {
+    width: 28px;
+    height: 28px;
+  }
 `;
 
 const VisitasAgente = () => {
-  const navigate = useNavigate();
   const usuario = JSON.parse(localStorage.getItem("usuario"));
   const agenteId = usuario?.accountId;
 
   const [pendientes, setPendientes] = useState([]);
-  const [aceptadas, setAceptadas] = useState([]);
+  const [aceptadasPorFecha, setAceptadasPorFecha] = useState({});
+  const [fechasAceptadas, setFechasAceptadas] = useState([]);
+  const [fechaIndex, setFechaIndex] = useState(0);
+
   const [mensaje, setMensaje] = useState(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
+  const fechaActual = fechasAceptadas[fechaIndex];
 
   const fetchVisitas = () => {
     setLoading(true);
 
-    // Pendientes (basadas en disponibilidad)
     fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
         .then((res) => res.json())
         .then((data) => setPendientes(data));
 
-    // Aceptadas (DTOs directos)
     fetch(`http://localhost:8080/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`)
         .then((res) => res.json())
         .then((data) => {
-          setAceptadas(data);
+          const agrupado = {};
+          data.forEach((v) => {
+            if (!agrupado[v.fecha]) agrupado[v.fecha] = [];
+            agrupado[v.fecha].push(v);
+          });
+
+          // Ordenar visitas por hora dentro de cada fecha
+          for (const fecha in agrupado) {
+            agrupado[fecha].sort((a, b) => a.hora.localeCompare(b.hora));
+          }
+
+          const ordenadas = Object.keys(agrupado).sort(); // fechas en orden
+          setAceptadasPorFecha(agrupado);
+          setFechasAceptadas(ordenadas);
+          setFechaIndex(0);
           setLoading(false);
         });
   };
 
   useEffect(() => {
-    if (agenteId) {
-      fetchVisitas();
-    }
+    if (agenteId) fetchVisitas();
   }, [agenteId]);
 
   const enviarCorreoCliente = async (visita) => {
@@ -150,7 +169,7 @@ Tu solicitud para visitar la propiedad en:
 📅 Fecha: ${visita.fecha}  
 🕒 Hora: ${visita.hora}
 
-Ha sido **aceptada por el agente** ✅
+Ha sido aceptada por el agente ✅
 
 Un saludo,  
 VisitaFácil
@@ -187,57 +206,66 @@ VisitaFácil
   };
 
   return (
-      <Wrapper>
-        <Container>
-          <Sidebar>
-            <SidebarTitle>VisitaFácil</SidebarTitle>
-            <SidebarItem onClick={() => navigate("/agenda")}>Agenda</SidebarItem>
-            <SidebarItem onClick={() => navigate("/visitas-agente")}>Visitas</SidebarItem>
-            <SidebarItem onClick={handleLogout}>Cerrar sesión</SidebarItem>
-          </Sidebar>
+      <Pagina>
+        <Contenido>
+          {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
 
-          <Main>
-            {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
+          {loading ? (
+              <p>Cargando visitas...</p>
+          ) : (
+              <>
+                <TituloSeccion>Visitas pendientes</TituloSeccion>
+                {pendientes.length === 0 ? (
+                    <p>No hay visitas pendientes.</p>
+                ) : (
+                    pendientes.map((visita) => (
+                        <Card key={visita.id}>
+                          <Texto><strong>Cliente:</strong> {visita.nombreCliente}</Texto>
+                          <Texto><strong>Propiedad:</strong> {visita.direccionPropiedad}</Texto>
+                          <Texto><strong>Fecha:</strong> {visita.fecha} a las {visita.hora}</Texto>
+                          <BotonAceptar onClick={() => aceptarVisita(visita.id)}>Aceptar visita</BotonAceptar>
+                        </Card>
+                    ))
+                )}
 
-            {loading ? (
-                <p>Cargando visitas...</p>
-            ) : (
-                <>
-                  <SectionTitle>Visitas pendientes</SectionTitle>
-                  {pendientes.length === 0 ? (
-                      <p>No hay visitas pendientes.</p>
-                  ) : (
-                      pendientes.map((visita) => (
-                          <VisitCard key={visita.id}>
-                            <strong>{visita.nombreCliente}</strong> quiere visitar{" "}
-                            <strong>{visita.direccionPropiedad}</strong>
-                            <br />
-                            Fecha: {visita.fecha} a las {visita.hora}
-                            <AcceptButton onClick={() => aceptarVisita(visita.id)}>
-                              Aceptar
-                            </AcceptButton>
-                          </VisitCard>
-                      ))
-                  )}
+                <TituloSeccion>Visitas aceptadas</TituloSeccion>
+                {fechasAceptadas.length === 0 ? (
+                    <p>No hay visitas aceptadas.</p>
+                ) : (
+                    <>
+                      <Subtitulo>
+                        <FlechaIcono
+                            onClick={() => setFechaIndex((prev) => Math.max(prev - 1, 0))}
+                            disabled={fechaIndex === 0}
+                            title="Día anterior"
+                        >
+                          <ChevronLeft />
+                        </FlechaIcono>
 
-                  <SectionTitle>Visitas aceptadas</SectionTitle>
-                  {aceptadas.length === 0 ? (
-                      <p>No hay visitas aceptadas.</p>
-                  ) : (
-                      aceptadas.map((visita) => (
-                          <VisitCard key={visita.id}>
-                            <strong>{visita.nombreCliente}</strong> -{" "}
-                            <strong>{visita.direccionPropiedad}</strong>
-                            <br />
-                            Aceptada para el {visita.fecha} a las {visita.hora}
-                          </VisitCard>
-                      ))
-                  )}
-                </>
-            )}
-          </Main>
-        </Container>
-      </Wrapper>
+                        {fechaActual}
+
+                        <FlechaIcono
+                            onClick={() => setFechaIndex((prev) => Math.min(prev + 1, fechasAceptadas.length - 1))}
+                            disabled={fechaIndex === fechasAceptadas.length - 1}
+                            title="Día siguiente"
+                        >
+                          <ChevronRight />
+                        </FlechaIcono>
+                      </Subtitulo>
+
+                      {aceptadasPorFecha[fechaActual].map((visita) => (
+                          <Card key={visita.id}>
+                            <Texto><strong>Cliente:</strong> {visita.nombreCliente}</Texto>
+                            <Texto><strong>Propiedad:</strong> {visita.direccionPropiedad}</Texto>
+                            <Texto><strong>Hora:</strong> {visita.hora}</Texto>
+                          </Card>
+                      ))}
+                    </>
+                )}
+              </>
+          )}
+        </Contenido>
+      </Pagina>
   );
 };
 
