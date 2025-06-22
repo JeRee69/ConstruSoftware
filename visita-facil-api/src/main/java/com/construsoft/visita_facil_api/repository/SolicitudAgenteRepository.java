@@ -10,9 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SolicitudAgenteRepository extends JpaRepository<SolicitudAgente, Long> {
-    List<SolicitudAgente> findByAgenteId(Long agenteId);
     List<SolicitudAgente> findByAgenteIdAndEstado(Long agenteId, EstadoSolicitudAgente estado);
-
     Optional<SolicitudAgente> findByAgenteAndSolicitudVisita(Account agente, SolicitudVisita visita);
+    Optional<SolicitudAgente> findBySolicitudVisitaIdAndAgenteId(Long solicitudVisitaId, Long agenteId);
 }
 

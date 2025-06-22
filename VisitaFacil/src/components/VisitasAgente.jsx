@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, MessageCircleMore, CopyCheck, MapPin } from "lucide-react";
 import Cargando from "./Cargando/Cargando.jsx";
 
 const Pagina = styled.div`
@@ -55,18 +55,42 @@ const Texto = styled.p`
 `;
 
 const BotonAceptar = styled.button`
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   background-color: #388e3c;
   color: white;
   border: none;
-  padding: 0.6rem 1.2rem;
+  padding: 0.4rem 1rem;
   border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: background 0.3s;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     background-color: #2e7d32;
+  }
+`;
+
+const BotonCancelar = styled.button`
+  margin-top: 0.5rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.3s;
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #c62828;
   }
 `;
 
@@ -105,63 +129,99 @@ const FlechaIcono = styled.button`
   }
 `;
 
+const LinkPropiedad = styled.a`
+  color: #1976d2;
+  text-decoration: underline;
+  font-weight: 500;
+
+  &:hover {
+    color: #0d47a1;
+  }
+`;
+
+const Copiable = styled.span`
+  cursor: pointer;
+  color: #1976d2;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const LinkWhatsapp = styled.a`
+  color: #25d366;
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
 const VisitasAgente = () => {
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const agenteId = usuario?.accountId;
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const agenteId = usuario?.accountId;
 
-  const [pendientes, setPendientes] = useState([]);
-  const [aceptadasPorFecha, setAceptadasPorFecha] = useState({});
-  const [fechasAceptadas, setFechasAceptadas] = useState([]);
-  const [fechaIndex, setFechaIndex] = useState(0);
+    const [pendientes, setPendientes] = useState([]);
+    const [aceptadasPorFecha, setAceptadasPorFecha] = useState({});
+    const [fechasAceptadas, setFechasAceptadas] = useState([]);
+    const [fechaIndex, setFechaIndex] = useState(0);
 
-  const [mensaje, setMensaje] = useState(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+    const [mensaje, setMensaje] = useState(null);
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-  const fechaActual = fechasAceptadas[fechaIndex];
+    const fechaActual = fechasAceptadas[fechaIndex];
 
-  const fetchVisitas = () => {
-    setLoading(true);
+    const fetchVisitas = () => {
+        setLoading(true);
 
-    fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
-        .then((res) => res.json())
-        .then((data) => setPendientes(data));
+        fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
+            .then((res) => res.json())
+            .then((data) => setPendientes(data));
 
-    fetch(`http://localhost:8080/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`)
-        .then((res) => res.json())
-        .then((data) => {
-          const agrupado = {};
-          data.forEach((v) => {
-            if (!agrupado[v.fecha]) agrupado[v.fecha] = [];
-            agrupado[v.fecha].push(v);
-          });
+        fetch(`http://localhost:8080/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`)
+            .then((res) => res.json())
+            .then((data) => {
+                const agrupado = {};
+                data.forEach((v) => {
+                    if (!agrupado[v.fecha]) agrupado[v.fecha] = [];
+                    agrupado[v.fecha].push(v);
+                });
 
-          // Ordenar visitas por hora dentro de cada fecha
-          for (const fecha in agrupado) {
-            agrupado[fecha].sort((a, b) => a.hora.localeCompare(b.hora));
-          }
+                for (const fecha in agrupado) {
+                    agrupado[fecha].sort((a, b) => a.hora.localeCompare(b.hora));
+                }
 
-          const ordenadas = Object.keys(agrupado).sort(); // fechas en orden
-          setAceptadasPorFecha(agrupado);
-          setFechasAceptadas(ordenadas);
-          setFechaIndex(0);
-          setLoading(false);
-        });
-  };
+                const ordenadas = Object.keys(agrupado).sort();
+                setAceptadasPorFecha(agrupado);
+                setFechasAceptadas(ordenadas);
+                setFechaIndex(0);
+                setLoading(false);
+            });
+    };
 
-  useEffect(() => {
-    if (agenteId) fetchVisitas();
-  }, [agenteId]);
+    useEffect(() => {
+        if (agenteId) fetchVisitas();
+    }, [agenteId]);
 
-  const enviarCorreoCliente = async (visita) => {
-    try {
-      await fetch("http://localhost:8080/api/notificacion", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          destinatario: visita.correoCliente,
-          asunto: "Visita Aceptada ✔️",
-          mensaje: `
+    const copiarCorreo = (correo) => {
+        navigator.clipboard.writeText(correo);
+        setMensaje("Correo copiado al portapapeles");
+        setError(false);
+        setTimeout(() => setMensaje(null), 2000);
+    };
+
+    const enviarCorreoCliente = async (visita) => {
+        try {
+            await fetch("http://localhost:8080/api/notificacion", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    destinatario: visita.correoCliente,
+                    asunto: "Visita Aceptada ✔️",
+                    mensaje: `
 Hola ${visita.nombreCliente},
 
 Tu solicitud para visitar la propiedad en:
@@ -175,99 +235,165 @@ Ha sido aceptada por el agente ✅
 Un saludo,  
 VisitaFácil
           `,
-        }),
-      });
-    } catch (error) {
-      console.error("Error al enviar correo al cliente:", error);
-    }
-  };
+                }),
+            });
+        } catch (error) {
+            console.error("Error al enviar correo al cliente:", error);
+        }
+    };
 
-  const aceptarVisita = (visitaId) => {
-    const visita = pendientes.find((v) => v.id === visitaId);
-    fetch("http://localhost:8080/solicitudes-agente/accion", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        solicitudVisitaId: visitaId,
-        agenteId: agenteId,
-        nuevoEstado: "ACEPTADA",
-      }),
-    })
-        .then((res) => {
-          if (!res.ok) throw new Error();
-          setMensaje("Visita aceptada con éxito");
-          setError(false);
-          enviarCorreoCliente(visita);
-          fetchVisitas();
+    const aceptarVisita = (visitaId) => {
+        const visita = pendientes.find((v) => v.id === visitaId);
+        fetch("http://localhost:8080/solicitudes-agente/accion", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                solicitudVisitaId: visitaId,
+                agenteId: agenteId,
+                nuevoEstado: "ACEPTADA",
+            }),
         })
-        .catch(() => {
-          setMensaje("Error al aceptar visita");
-          setError(true);
-        });
-  };
+            .then((res) => {
+                if (!res.ok) throw new Error();
+                setMensaje("Visita aceptada con éxito");
+                setError(false);
+                enviarCorreoCliente(visita);
+                fetchVisitas();
+            })
+            .catch(() => {
+                setMensaje("Error al aceptar visita");
+                setError(true);
+            });
+    };
 
-  return (
-      <Pagina>
-        <Contenido>
-          {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
+    const cancelarVisita = (visitaId) => {
+        const confirmar = window.confirm("¿Estás seguro que deseas cancelar esta visita?");
+        if (!confirmar) return;
 
-          {loading ? (
-              <Cargando mensaje={"Cargando visitas..."}></Cargando>
-          ) : (
-              <>
-                <TituloSeccion>Visitas pendientes</TituloSeccion>
-                {pendientes.length === 0 ? (
-                    <p>No hay visitas pendientes.</p>
+        fetch("http://localhost:8080/solicitudes-agente/cancelar", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                solicitudVisitaId: visitaId,
+                agenteId: agenteId,
+            }),
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error();
+                setMensaje("Visita cancelada con éxito");
+                setError(false);
+                fetchVisitas();
+            })
+            .catch(() => {
+                setMensaje("Error al cancelar la visita");
+                setError(true);
+            });
+    };
+
+    const renderVisita = (visita, mostrarBoton = false) => {
+        const fechaObj = new Date(visita.fecha);
+        const diaSemana = new Intl.DateTimeFormat("es-CL", { weekday: "long" }).format(fechaObj);
+        const fechaFormateada = visita.fecha.split("-").reverse().join("-");
+
+        return (
+            <Card key={visita.id}>
+                <Texto>
+                    <strong>Propiedad:</strong>{" "}
+                    <LinkPropiedad
+                        href={`http://localhost:5173/propiedad/${visita.idPropiedad}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {visita.tituloPropiedad}
+                    </LinkPropiedad>
+                </Texto>
+
+                <Texto><strong>Ubicación:</strong> {visita.direccionPropiedad}</Texto>
+                <Texto><strong>Cliente:</strong> {visita.nombreCliente}</Texto>
+
+                <Texto>
+                    <strong>Teléfono:</strong>{" "}
+                    <LinkWhatsapp href={`https://wa.me/${visita.telefonoCliente}`} target="_blank">
+                        {visita.telefonoCliente}
+                        <MessageCircleMore size={18} style={{ marginLeft: "8px", verticalAlign: "middle" }} />
+                    </LinkWhatsapp>
+                </Texto>
+
+                <Texto>
+                    <strong>Correo:</strong>{" "}
+                    <Copiable onClick={() => copiarCorreo(visita.correoCliente)}>
+                        {visita.correoCliente}
+                        <CopyCheck size={16} style={{ marginLeft: "8px", verticalAlign: "middle" }} />
+                    </Copiable>
+                </Texto>
+
+                <Texto>
+                    <strong>Fecha:</strong> {diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)} {fechaFormateada} a las {visita.hora}
+                </Texto>
+
+                {mostrarBoton ? (
+                    <BotonAceptar onClick={() => aceptarVisita(visita.id)}>Aceptar visita</BotonAceptar>
                 ) : (
-                    pendientes.map((visita) => (
-                        <Card key={visita.id}>
-                          <Texto><strong>Cliente:</strong> {visita.nombreCliente}</Texto>
-                          <Texto><strong>Propiedad:</strong> {visita.direccionPropiedad}</Texto>
-                          <Texto><strong>Fecha:</strong> {visita.fecha} a las {visita.hora}</Texto>
-                          <BotonAceptar onClick={() => aceptarVisita(visita.id)}>Aceptar visita</BotonAceptar>
-                        </Card>
-                    ))
+                    <BotonCancelar onClick={() => cancelarVisita(visita.id)}>Cancelar visita</BotonCancelar>
                 )}
+            </Card>
+        );
+    };
 
-                <TituloSeccion>Visitas aceptadas</TituloSeccion>
-                {fechasAceptadas.length === 0 ? (
-                    <p>No hay visitas aceptadas.</p>
+    return (
+        <Pagina>
+            <Contenido>
+                {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
+
+                {loading ? (
+                    <Cargando mensaje={"Cargando visitas..."} />
                 ) : (
                     <>
-                      <Subtitulo>
-                        <FlechaIcono
-                            onClick={() => setFechaIndex((prev) => Math.max(prev - 1, 0))}
-                            disabled={fechaIndex === 0}
-                            title="Día anterior"
-                        >
-                          <ChevronLeft />
-                        </FlechaIcono>
+                        <TituloSeccion>Visitas pendientes</TituloSeccion>
+                        {pendientes.length === 0 ? (
+                            <p>No hay visitas pendientes.</p>
+                        ) : (
+                            pendientes.map((visita) => renderVisita(visita, true))
+                        )}
 
-                        {fechaActual}
+                        <TituloSeccion>Visitas aceptadas</TituloSeccion>
+                        {fechasAceptadas.length === 0 ? (
+                            <p>No hay visitas aceptadas.</p>
+                        ) : (
+                            <>
+                                <Subtitulo>
+                                    <FlechaIcono
+                                        onClick={() => setFechaIndex((prev) => Math.max(prev - 1, 0))}
+                                        disabled={fechaIndex === 0}
+                                        title="Día anterior"
+                                    >
+                                        <ChevronLeft />
+                                    </FlechaIcono>
 
-                        <FlechaIcono
-                            onClick={() => setFechaIndex((prev) => Math.min(prev + 1, fechasAceptadas.length - 1))}
-                            disabled={fechaIndex === fechasAceptadas.length - 1}
-                            title="Día siguiente"
-                        >
-                          <ChevronRight />
-                        </FlechaIcono>
-                      </Subtitulo>
+                                    {(() => {
+                                        const fechaObj = new Date(fechaActual);
+                                        const dia = new Intl.DateTimeFormat("es-CL", { weekday: "long" }).format(fechaObj);
+                                        const [yyyy, mm, dd] = fechaActual.split("-");
+                                        return `${dia.charAt(0).toUpperCase() + dia.slice(1)} ${dd}-${mm}-${yyyy}`;
+                                    })()}
 
-                      {aceptadasPorFecha[fechaActual].map((visita) => (
-                          <Card key={visita.id}>
-                            <Texto><strong>Cliente:</strong> {visita.nombreCliente}</Texto>
-                            <Texto><strong>Propiedad:</strong> {visita.direccionPropiedad}</Texto>
-                            <Texto><strong>Hora:</strong> {visita.hora}</Texto>
-                          </Card>
-                      ))}
+                                    <FlechaIcono
+                                        onClick={() => setFechaIndex((prev) => Math.min(prev + 1, fechasAceptadas.length - 1))}
+                                        disabled={fechaIndex === fechasAceptadas.length - 1}
+                                        title="Día siguiente"
+                                    >
+                                        <ChevronRight />
+                                    </FlechaIcono>
+                                </Subtitulo>
+
+                                {aceptadasPorFecha[fechaActual].map((visita) => renderVisita(visita))}
+                            </>
+                        )}
                     </>
                 )}
-              </>
-          )}
-        </Contenido>
-      </Pagina>
-  );
+            </Contenido>
+        </Pagina>
+    );
 };
 
 export default VisitasAgente;

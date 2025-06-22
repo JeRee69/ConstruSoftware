@@ -1,5 +1,6 @@
 package com.construsoft.visita_facil_api.controller;
 
+import com.construsoft.visita_facil_api.domain.CancelacionAgenteDTO;
 import com.construsoft.visita_facil_api.domain.RespuestaSolicitudAgenteDTO;
 import com.construsoft.visita_facil_api.domain.SolicitudAgenteDTO;
 import com.construsoft.visita_facil_api.enums.EstadoSolicitudAgente;
@@ -29,6 +30,12 @@ public class SolicitudAgenteController {
             @RequestParam EstadoSolicitudAgente estado
     ) {
         return solicitudAgenteService.obtenerSolicitudesPorAgenteYEstado(agenteId, estado);
+    }
+
+    @PutMapping("/cancelar")
+    public ResponseEntity<String> cancelarSolicitud(@RequestBody CancelacionAgenteDTO dto) {
+        solicitudAgenteService.cancelarSolicitudAgente(dto.getSolicitudVisitaId(), dto.getAgenteId());
+        return ResponseEntity.ok("Solicitud cancelada correctamente");
     }
 
 
