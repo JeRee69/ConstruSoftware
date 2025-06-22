@@ -8,7 +8,7 @@ import {
     TitleWrapper,
     BotonIcono
 } from "./Catalogo.styles";
-import TarjetaPropiedad from "../../components/TarjetaPropiedad/TarjetaPropiedad";
+import TarjetaPropiedad from "../../components/Catalogo/TarjetaPropiedad.jsx";
 import Cargando from "../../components/Cargando/Cargando";
 import { FiPlus } from "react-icons/fi";
 

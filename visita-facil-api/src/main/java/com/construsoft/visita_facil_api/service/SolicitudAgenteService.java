@@ -56,8 +56,11 @@ public class SolicitudAgenteService {
                 )
                 .map(solicitud -> new SolicitudAgenteDTO(
                         solicitud.getId(),
+                        solicitud.getPropiedad().getId(),
+                        solicitud.getPropiedad().getTitulo(),
                         solicitud.getNombreCliente(),
                         solicitud.getCorreoCliente(),
+                        solicitud.getTelefonoCliente(),
                         solicitud.getPropiedad().getUbicacion(),
                         solicitud.getFecha().toString(),
                         solicitud.getHoraInicio().toString(),
@@ -73,8 +76,11 @@ public class SolicitudAgenteService {
             SolicitudVisita visita = solicitud.getSolicitudVisita();
             return new SolicitudAgenteDTO(
                     solicitud.getId(),
+                    visita.getPropiedad().getId(),
+                    visita.getPropiedad().getTitulo(),
                     visita.getNombreCliente(),
                     visita.getCorreoCliente(),
+                    visita.getTelefonoCliente(),
                     visita.getPropiedad().getUbicacion(),
                     visita.getFecha().toString(),
                     visita.getHoraInicio().toString(),
@@ -106,7 +112,7 @@ public class SolicitudAgenteService {
                     SolicitudAgente nueva = new SolicitudAgente();
                     nueva.setAgente(agente);
                     nueva.setSolicitudVisita(visita);
-                    nueva.setEstado(EstadoSolicitudAgente.PENDIENTE);
+                    nueva.setEstado(EstadoSolicitudAgente.ACEPTADA);
                     return solicitudAgenteRepository.save(nueva);
                 });
 
@@ -120,4 +126,22 @@ public class SolicitudAgenteService {
             solicitudVisitaRepository.save(visita);
         }
     }
+
+    public void cancelarSolicitudAgente(Long solicitudAgenteId, Long agenteId) {
+        SolicitudAgente solicitudAgente = solicitudAgenteRepository.findById(solicitudAgenteId)
+                .orElseThrow(() -> new RuntimeException("SolicitudAgente no encontrada"));
+
+        if (!solicitudAgente.getAgente().getId().equals(agenteId)) {
+            throw new RuntimeException("Este agente no tiene permiso para cancelar esta solicitud");
+        }
+
+        solicitudAgente.setEstado(EstadoSolicitudAgente.CANCELADA);
+        solicitudAgenteRepository.save(solicitudAgente);
+
+        SolicitudVisita solicitudVisita = solicitudAgente.getSolicitudVisita();
+        solicitudVisita.setEstado(EstadoSolicitudVisita.PENDIENTE);
+        solicitudVisita.setAgente(null); // Liberar asignación
+        solicitudVisitaRepository.save(solicitudVisita);
+    }
+
 }
