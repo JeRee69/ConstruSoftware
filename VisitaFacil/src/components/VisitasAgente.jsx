@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Cargando from "./Cargando/Cargando.jsx";
 
 const Pagina = styled.div`
   min-height: 100vh;
@@ -211,7 +212,7 @@ VisitaFácil
           {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
 
           {loading ? (
-              <p>Cargando visitas...</p>
+              <Cargando mensaje={"Cargando visitas..."}></Cargando>
           ) : (
               <>
                 <TituloSeccion>Visitas pendientes</TituloSeccion>
