@@ -13,6 +13,7 @@ VisitaFacil/build/
 VisitaFacil/.cache/
 VisitaFacil/coverage/
 VisitaFacil/dist/
+VisitaFacil/.env/
 
 .idea/
 .vscode/

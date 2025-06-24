@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSweetAlert } from "../hooks/useSweetAlert";
 import "../styles/sweetalert-custom.css";
@@ -16,8 +16,12 @@ const ConfirmarVisita = () => {
   const { showSuccess, showError, showWarning, showLoading, close } =
     useSweetAlert();
 
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
+  const yaMostrado = useRef(false); // para evitar múltiples ejecuciones
+
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("visitaPendiente"));
+
     if (!data) {
       showWarning(
         "Sin datos de visita",
@@ -26,19 +30,32 @@ const ConfirmarVisita = () => {
       ).then(() => {
         navigate("/catalogo");
       });
-    } else {
-      setVisita(data);
+      return;
     }
-  }, [navigate, showWarning]);
+
+    setVisita(data);
+
+    // Si hay usuario logueado y no hemos mostrado confirmación, prellenar y preguntar
+    if (usuario && !yaMostrado.current) {
+      yaMostrado.current = true;
+
+      setFormulario({
+        nombre: usuario.nombre || "",
+        correo: usuario.correo || usuario.email || "",
+        telefono: usuario.telefono || "",
+      });
+    }
+  }, [navigate, showWarning, usuario]);
 
   const handleChange = (e) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
-  const enviarCorreoAgente = async () => {
+  // Enviar correo al agente
+  const enviarCorreoAgente = async (datosCliente) => {
     try {
       await axios.post("http://localhost:8080/api/notificacion", {
-        destinatario: "crunchyconjunto@gmail.com", // Cambia esto al correo del agente
+        destinatario: "crunchyconjunto@gmail.com", // Cambiar al correo real del agente
         asunto: "Nueva Visita Agendada",
         mensaje: `
           Se ha registrado una nueva visita.
@@ -48,24 +65,24 @@ const ConfirmarVisita = () => {
           📅 Fecha: ${visita.fecha}
           🕒 Hora: ${visita.hora}
 
-          👤 Cliente: ${formulario.nombre}
-          📧 Correo: ${formulario.correo}
-          📞 Teléfono: ${formulario.telefono}
+          👤 Cliente: ${datosCliente.nombre}
+          📧 Correo: ${datosCliente.correo}
+          📞 Teléfono: ${datosCliente.telefono}
         `,
       });
-      console.log("Correo enviado al agente");
     } catch (error) {
       console.error("Error al enviar correo al agente:", error);
     }
   };
 
-  const enviarCorreoUsuario = async () => {
+  // Enviar correo al usuario
+  const enviarCorreoUsuario = async (datosCliente) => {
     try {
       await axios.post("http://localhost:8080/api/notificacion", {
-        destinatario: formulario.correo,
+        destinatario: datosCliente.correo,
         asunto: "Confirmación de Solicitud de Visita",
         mensaje: `
-          Hola ${formulario.nombre},
+          Hola ${datosCliente.nombre},
 
           ✅ Hemos recibido tu solicitud de visita para la siguiente propiedad:
 
@@ -79,14 +96,27 @@ const ConfirmarVisita = () => {
           ¡Gracias por confiar en nosotros!
         `,
       });
-      console.log("Correo enviado al usuario");
     } catch (error) {
       console.error("Error al enviar correo al usuario:", error);
     }
   };
 
-  const handleSubmit = async () => {
-    if (!formulario.nombre || !formulario.correo || !formulario.telefono) {
+  // handleSubmit con parámetro que indica si usar datos guardados o formulario
+  const handleSubmit = async (usarDatosGuardados = false) => {
+    const datosAEnviar =
+      usarDatosGuardados && usuario
+        ? {
+            nombre: usuario.nombre || "",
+            correo: usuario.correo || usuario.email || "",
+            telefono: usuario.telefono || "",
+          }
+        : formulario;
+
+    if (
+      !datosAEnviar.nombre ||
+      !datosAEnviar.correo ||
+      !datosAEnviar.telefono
+    ) {
       showWarning(
         "Campos incompletos",
         "Por favor, completa todos los campos antes de continuar.",
@@ -97,9 +127,9 @@ const ConfirmarVisita = () => {
 
     const payload = {
       idPropiedad: visita.propiedadId,
-      nombre: formulario.nombre,
-      correo: formulario.correo,
-      telefono: formulario.telefono,
+      nombre: datosAEnviar.nombre,
+      correo: datosAEnviar.correo,
+      telefono: datosAEnviar.telefono,
       fecha: visita.fecha,
       hora: visita.hora,
     };
@@ -114,11 +144,11 @@ const ConfirmarVisita = () => {
         body: JSON.stringify(payload),
       });
 
-      close(); // Cerrar loading
+      close();
 
       if (res.ok) {
-        await enviarCorreoAgente(); // <-- Enviar correo al agente
-        await enviarCorreoUsuario(); // <-- Enviar correo al usuario
+        await enviarCorreoAgente(datosAEnviar);
+        await enviarCorreoUsuario(datosAEnviar);
         showSuccess(
           "¡Solicitud enviada!",
           "Tu solicitud de visita ha sido enviada correctamente. Te contactaremos pronto.",
@@ -136,7 +166,7 @@ const ConfirmarVisita = () => {
       }
     } catch (err) {
       console.error(err);
-      close(); // Cerrar loading
+      close();
       showError(
         "Error de conexión",
         "No se pudo conectar con el servidor. Revisa tu conexión a internet e inténtalo de nuevo.",
@@ -178,99 +208,84 @@ const ConfirmarVisita = () => {
         <strong>Hora:</strong> {visita.hora}
       </p>
 
-      <div style={{ marginTop: "2rem" }}>
-        <label
-          style={{
-            color: "var(--color-texto)",
-            fontWeight: "bold",
-            display: "block",
-            marginBottom: "0.5rem",
-          }}
-        >
-          Nombre
-        </label>{" "}
-        <input
-          name="nombre"
-          value={formulario.nombre}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginBottom: "1rem",
-            backgroundColor: "var(--color-fondo-card)",
-            color: "var(--color-texto)",
-            border: "1px solid var(--color-border)",
-            borderRadius: "4px",
-          }}
-        />
-        <label
-          style={{
-            color: "var(--color-texto)",
-            fontWeight: "bold",
-            display: "block",
-            marginBottom: "0.5rem",
-          }}
-        >
-          Correo
-        </label>{" "}
-        <input
-          type="email"
-          name="correo"
-          value={formulario.correo}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginBottom: "1rem",
-            backgroundColor: "var(--color-fondo-card)",
-            color: "var(--color-texto)",
-            border: "1px solid var(--color-border)",
-            borderRadius: "4px",
-          }}
-        />
-        <label
-          style={{
-            color: "var(--color-texto)",
-            fontWeight: "bold",
-            display: "block",
-            marginBottom: "0.5rem",
-          }}
-        >
-          Teléfono
-        </label>{" "}
-        <input
-          name="telefono"
-          value={formulario.telefono}
-          onChange={handleChange}
-          style={{
-            width: "100%",
-            padding: "0.5rem",
-            marginBottom: "1rem",
-            backgroundColor: "var(--color-fondo-card)",
-            color: "var(--color-texto)",
-            border: "1px solid var(--color-border)",
-            borderRadius: "4px",
-          }}
-        />
+      {/* Mostrar formulario solo si no hay usuario logueado */}
+      {!usuario && (
+        <div style={{ marginTop: "2rem" }}>
+          <label style={labelStyle}>Nombre</label>
+          <input
+            name="nombre"
+            value={formulario.nombre}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <label style={labelStyle}>Correo</label>
+          <input
+            type="email"
+            name="correo"
+            value={formulario.correo}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <label style={labelStyle}>Teléfono</label>
+          <input
+            name="telefono"
+            value={formulario.telefono}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <button
+            onClick={() => handleSubmit(false)}
+            disabled={enviando}
+            style={buttonStyle}
+          >
+            {enviando ? "Enviando..." : "Confirmar Visita"}
+          </button>
+        </div>
+      )}
+
+      {/* Si hay usuario logueado, mostrar botón para confirmar con sus datos */}
+      {usuario && (
         <button
-          onClick={handleSubmit}
+          onClick={() => handleSubmit(true)}
           disabled={enviando}
-          style={{
-            width: "100%",
-            padding: "0.8rem",
-            backgroundColor: "var(--color-primario)",
-            color: "#fff",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontWeight: "bold",
-          }}
+          style={{ ...buttonStyle, marginTop: "1.5rem" }}
         >
-          {enviando ? "Enviando..." : "Confirmar Visita"}
+          {enviando ? "Enviando..." : "Confirmar visita con mis datos"}
         </button>
-      </div>
+      )}
     </div>
   );
+};
+
+const labelStyle = {
+  color: "var(--color-texto)",
+  fontWeight: "bold",
+  display: "block",
+  marginBottom: "0.5rem",
+};
+
+const inputStyle = {
+  width: "100%",
+  padding: "0.5rem",
+  marginBottom: "1rem",
+  backgroundColor: "var(--color-fondo-card)",
+  color: "var(--color-texto)",
+  border: "1px solid var(--color-border)",
+  borderRadius: "4px",
+};
+
+const buttonStyle = {
+  width: "100%",
+  padding: "0.8rem",
+  backgroundColor: "var(--color-primario)",
+  color: "#fff",
+  border: "none",
+  borderRadius: "6px",
+  cursor: "pointer",
+  fontWeight: "bold",
 };
 
 export default ConfirmarVisita;

@@ -102,7 +102,6 @@ function App() {
           element={<h1 style={{ padding: "2rem" }}>Página no encontrada</h1>}
         />
       </Routes>
-
     </>
   );
 }
