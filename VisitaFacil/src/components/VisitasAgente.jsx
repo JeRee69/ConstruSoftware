@@ -1,6 +1,6 @@
+import { ChevronLeft, ChevronRight, CopyCheck, MessageCircleMore } from "lucide-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ChevronLeft, ChevronRight, MessageCircleMore, CopyCheck, MapPin } from "lucide-react";
 import Cargando from "./Cargando/Cargando.jsx";
 
 const Pagina = styled.div`
