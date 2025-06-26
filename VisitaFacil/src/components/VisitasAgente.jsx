@@ -24,7 +24,7 @@ const Contenido = styled.div`
 const TituloSeccion = styled.h2`
   color: var(--color-texto);
   margin-bottom: 1.5rem;
-  border-bottom: 2px solid #ccc;
+  border-bottom: 2px solid var(--color-border);
   padding-bottom: 0.5rem;
 `;
 
@@ -40,17 +40,18 @@ const Subtitulo = styled.h3`
 `;
 
 const Card = styled.div`
-  background-color: white;
-  border-left: 6px solid #d32f2f;
+  background-color: var(--color-fondo-card);
+  border-left: 6px solid var(--color-primario);
   border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px var(--color-sombra);
+  border: 1px solid var(--color-border);
 `;
 
 const Texto = styled.p`
   margin: 0.3rem 0;
-  color: #333;
+  color: var(--color-texto);
   font-size: 1rem;
 `;
 
@@ -95,13 +96,14 @@ const BotonCancelar = styled.button`
 `;
 
 const Mensaje = styled.div`
-  background-color: ${({ error }) => (error ? "#ffcdd2" : "#c8e6c9")};
-  color: ${({ error }) => (error ? "#b71c1c" : "#2e7d32")};
+  background-color: ${({ error }) => (error ? "rgba(244, 67, 54, 0.1)" : "rgba(76, 175, 80, 0.1)")};
+  color: ${({ error }) => (error ? "#d32f2f" : "#388e3c")};
   padding: 1rem;
   border-radius: 6px;
   margin-bottom: 2rem;
   font-weight: 500;
   text-align: center;
+  border: 1px solid ${({ error }) => (error ? "rgba(244, 67, 54, 0.3)" : "rgba(76, 175, 80, 0.3)")};
 `;
 
 const FlechaIcono = styled.button`
@@ -114,11 +116,12 @@ const FlechaIcono = styled.button`
   transition: background 0.2s;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: var(--color-border);
   }
 
   &:disabled {
-    color: #aaa;
+    color: var(--color-texto);
+    opacity: 0.4;
     cursor: default;
     background: none;
   }
@@ -157,6 +160,14 @@ const LinkWhatsapp = styled.a`
   &:hover {
     text-decoration: underline;
   }
+`;
+
+const MensajeVacio = styled.p`
+  color: var(--color-texto);
+  opacity: 0.7;
+  font-style: italic;
+  text-align: center;
+  margin: 2rem 0;
 `;
 
 const VisitasAgente = () => {
@@ -353,14 +364,14 @@ VisitaFácil
                     <>
                         <TituloSeccion>Visitas pendientes</TituloSeccion>
                         {pendientes.length === 0 ? (
-                            <p>No hay visitas pendientes.</p>
+                            <MensajeVacio>No hay visitas pendientes.</MensajeVacio>
                         ) : (
                             pendientes.map((visita) => renderVisita(visita, true))
                         )}
 
                         <TituloSeccion>Visitas aceptadas</TituloSeccion>
                         {fechasAceptadas.length === 0 ? (
-                            <p>No hay visitas aceptadas.</p>
+                            <MensajeVacio>No hay visitas aceptadas.</MensajeVacio>
                         ) : (
                             <>
                                 <Subtitulo>
