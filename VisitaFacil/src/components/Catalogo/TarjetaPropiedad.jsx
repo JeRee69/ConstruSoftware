@@ -14,7 +14,7 @@ import {
     PlaceholderSinImagen,
     AdminIconos,
     Icono
-} from "./TarjetaPropiedad.styles";
+} from "./TarjetaPropiedad.styles.js";
 
 import { useNavigate } from "react-router-dom";
 import {

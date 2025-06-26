@@ -38,6 +38,7 @@ public class SolicitudVisitaController {
                     .body("❌ Error: " + e.getMessage());
         }
     }
+
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<String> cancelarVisita(@PathVariable Long id) {
         boolean cancelada = solicitudVisitaService.cancelarVisita(id);

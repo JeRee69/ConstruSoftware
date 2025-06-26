@@ -52,8 +52,17 @@ public class AccountController {
             RespuestaLoginDTO respuestaLoginDTO = new RespuestaLoginDTO();
             respuestaLoginDTO.setAccountId(account.getId());
             respuestaLoginDTO.setRol(account.getRol());
+
             Optional<Profile> profile = profileService.getProfileByAccountId(account.getId());
-            respuestaLoginDTO.setNombre(profile.get().getName());
+            if (profile.isPresent()) {
+                respuestaLoginDTO.setNombre(profile.get().getName());
+                respuestaLoginDTO.setTelefono(profile.get().getPhone());
+            } else {
+                respuestaLoginDTO.setNombre(null);
+                respuestaLoginDTO.setTelefono(null);
+            }
+            respuestaLoginDTO.setEmail(account.getEmail());
+
             return ResponseEntity.ok(respuestaLoginDTO);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

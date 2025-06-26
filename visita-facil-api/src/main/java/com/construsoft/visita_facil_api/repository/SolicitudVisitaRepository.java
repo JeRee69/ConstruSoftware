@@ -16,4 +16,6 @@ public interface SolicitudVisitaRepository extends JpaRepository<SolicitudVisita
     void deleteByPropiedad(Propiedad propiedad);
 
     List<SolicitudVisita> findByCorreoClienteAndEstado(String correoCliente, EstadoSolicitudVisita estado);
+
+    List<SolicitudVisita> findByEstado(EstadoSolicitudVisita estadoSolicitudVisita);
 }

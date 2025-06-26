@@ -34,6 +34,9 @@ const BarraNav = ({ temaOscuro, setTemaOscuro }) => {
                             <Link to="/visitas-agente">Solicitudes</Link>
                         </>
                     )}
+
+                    <Link to="/historial">Ver Historial</Link>
+                    
                 </NavLinks>
             </NavSectionLeft>            <NavSectionRight>
                 <ThemeToggle temaOscuro={temaOscuro} setTemaOscuro={setTemaOscuro} />
