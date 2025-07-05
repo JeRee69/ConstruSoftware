@@ -11,7 +11,7 @@ import {
     Button,
     ErrorMessage,
     LoginLink
-} from './registro.styles.js';
+} from './Registro.styles.js';
 
 const Registro = () => {
     const [formData, setFormData] = useState({
@@ -50,7 +50,7 @@ const Registro = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/account/register', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/account/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

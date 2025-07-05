@@ -113,7 +113,7 @@ const RegistrarDisponibilidadAgente = () => {
     const minutos = ["00", "15", "30", "45"];
 
     const fetchDisponibilidades = async () => {
-        const res = await fetch(`http://localhost:8080/disponibilidad/agentes/${accountId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/agentes/${accountId}`);
         if (res.ok) {
             const data = await res.json();
             setDisponibilidades(data);
@@ -163,7 +163,7 @@ const RegistrarDisponibilidadAgente = () => {
             horaFin,
         };
 
-        const res = await fetch("http://localhost:8080/disponibilidad/agentes/registrar", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/agentes/registrar`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -178,7 +178,7 @@ const RegistrarDisponibilidadAgente = () => {
     };
 
     const handleEliminar = async (id) => {
-        const res = await fetch(`http://localhost:8080/disponibilidad/agentes/${id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/agentes/${id}`, {
             method: "DELETE",
         });
         if (res.ok) {

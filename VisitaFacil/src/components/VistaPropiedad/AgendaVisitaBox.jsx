@@ -228,7 +228,7 @@ const AgendaVisitaBox = ({ propiedad }) => {
         if (!fecha) return;
         setCargando(true);
         const fechaStr = fecha.toISOString().split("T")[0];
-        fetch(`http://localhost:8080/disponibilidad/propiedades/${propiedad.id}?fecha=${fechaStr}`)
+        fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/propiedades/${propiedad.id}?fecha=${fechaStr}`)
             .then((res) => res.json())
             .then((data) => {
                 const horarios = [];

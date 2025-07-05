@@ -152,7 +152,7 @@ const HistorialVisitas = () => {
     showLoading("Buscando historial", "Consultando tus visitas programadas...");
 
     try {
-      const response = await fetch(`http://localhost:8080/visitas/historial?correo=${correo}`);
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/visitas/historial?correo=${correo}`);
       const data = await response.json();
 
       close();

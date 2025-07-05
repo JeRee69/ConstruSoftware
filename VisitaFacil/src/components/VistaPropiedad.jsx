@@ -76,7 +76,7 @@ const VistaPropiedad = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetch(`http://localhost:8080/propiedades/${id}`)
+        fetch(`${import.meta.env.VITE_API_URL}/propiedades/${id}`)
             .then((res) => {
                 if (!res.ok) throw new Error("Error al cargar la propiedad");
                 return res.json();

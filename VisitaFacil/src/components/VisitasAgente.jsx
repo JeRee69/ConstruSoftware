@@ -188,11 +188,11 @@ const VisitasAgente = () => {
     const fetchVisitas = () => {
         setLoading(true);
 
-        fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/${agenteId}`)
             .then((res) => res.json())
             .then((data) => setPendientes(data));
 
-        fetch(`http://localhost:8080/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`)
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`)
             .then((res) => res.json())
             .then((data) => {
                 const agrupado = {};
@@ -226,7 +226,7 @@ const VisitasAgente = () => {
 
     const enviarCorreoCliente = async (visita) => {
         try {
-            await fetch("http://localhost:8080/api/notificacion", {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -255,7 +255,7 @@ VisitaFácil
 
     const aceptarVisita = (visitaId) => {
         const visita = pendientes.find((v) => v.id === visitaId);
-        fetch("http://localhost:8080/solicitudes-agente/accion", {
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/accion`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -282,7 +282,7 @@ VisitaFácil
         const confirmar = window.confirm("¿Estás seguro que deseas cancelar esta visita?");
         if (!confirmar) return;
 
-        fetch("http://localhost:8080/solicitudes-agente/cancelar", {
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/cancelar`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
