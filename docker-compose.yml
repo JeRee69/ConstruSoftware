@@ -6,9 +6,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://maglev.proxy.rlwy.net:17445/railway
+      SPRING_DATASOURCE_URL: jdbc:mysql://34.176.71.63:3306/visita_facil
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: bMLDMtgjPYQWXrzegKkivreYfLFHbxmv
+      SPRING_DATASOURCE_PASSWORD: visitafacil2025#
 
   frontend:
     build: ./VisitaFacil
