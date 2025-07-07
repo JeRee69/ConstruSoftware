@@ -313,7 +313,7 @@ VisitaFácil
                 <Texto>
                     <strong>Propiedad:</strong>{" "}
                     <LinkPropiedad
-                        href={`http://localhost:5173/propiedad/${visita.idPropiedad}`}
+                        href={`${import.meta.env.VITE_API_URL}/propiedad/${visita.idPropiedad}`}
                         target="_blank"
                         rel="noopener noreferrer"
                     >
