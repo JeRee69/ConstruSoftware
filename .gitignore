@@ -23,3 +23,6 @@ Thumbs.db
 
 .env
 !VisitaFacil/.env.production
+
+npm/letsencrypt/
+npm/data/
