@@ -78,7 +78,7 @@ const ConfirmarVisita = () => {
   // Enviar correo al usuario
   const enviarCorreoUsuario = async (datosCliente) => {
     try {
-      await axios.post("${import.meta.env.VITE_API_URL}/api/notificacion", {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
         destinatario: datosCliente.correo,
         asunto: "Confirmación de Solicitud de Visita",
         mensaje: `
