@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'; // ✅ Importa useNavigate
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const OuterWrapper = styled.div`
@@ -90,11 +90,11 @@ const TaskItem = styled.li`
 `;
 
 const Agenda = () => {
-  const navigate = useNavigate(); // ✅ Hook para redirección
+  const navigate = useNavigate(); 
 
   const handleLogout = () => {
-    localStorage.clear(); // ✅ Limpiar datos almacenados
-    navigate('/Login');   // ✅ Redirigir al login
+    localStorage.clear(); 
+    navigate('/Login');   
   };
 
   const tasks = [

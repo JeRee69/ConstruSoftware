@@ -39,8 +39,8 @@ const Login = () => {
             accountId: data.accountId,
             rol: data.rol,
             nombre: data.nombre,
-            correo: data.email, // agregado correo
-            telefono: data.telefono, // agregado telefono
+            correo: data.email, 
+            telefono: data.telefono, 
           })
         );
 

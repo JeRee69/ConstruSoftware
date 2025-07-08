@@ -14,10 +14,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://visitafacil.mooo.com") // HTTPS obligatorio en producción
+                        .allowedOrigins("https://visitafacil.mooo.com") 
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
-                      //  .allowCredentials(true); // Importante si usás cookies, sesiones, etc.
+                      
             }
         };
     }

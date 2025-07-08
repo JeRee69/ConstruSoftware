@@ -1,10 +1,20 @@
 package com.construsoft.visita_facil_api.model;
 
-import com.construsoft.visita_facil_api.enums.EstadoSolicitudVisita;
-import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import com.construsoft.visita_facil_api.enums.EstadoSolicitudVisita;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "solicitudes_visita")
@@ -35,17 +45,16 @@ public class SolicitudVisita {
     @Column(nullable = false)
     private LocalTime horaInicio;
 
-    // Estado de la solicitud: PENDIENTE, CONFIRMADA, CANCELADA, REALIZADA
+    // Estado de la solicitud
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoSolicitudVisita estado = EstadoSolicitudVisita.PENDIENTE;
 
-    // Relación con Agente (opcional hasta ser asignado)
+    // Relación con Agente 
     @ManyToOne
     @JoinColumn(name = "agente_id")
     private Account agente;
 
-    // Constructor vacío
     public SolicitudVisita() {}
 
     public Long getId() {

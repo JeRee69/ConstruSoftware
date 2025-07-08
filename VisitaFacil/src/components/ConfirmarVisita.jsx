@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSweetAlert } from "../hooks/useSweetAlert";
 import "../styles/sweetalert-custom.css";
@@ -35,7 +35,7 @@ const ConfirmarVisita = () => {
 
     setVisita(data);
 
-    // Si hay usuario logueado y no hemos mostrado confirmación, prellenar y preguntar
+    
     if (usuario && !yaMostrado.current) {
       yaMostrado.current = true;
 
@@ -55,7 +55,7 @@ const ConfirmarVisita = () => {
   const enviarCorreoAgente = async (datosCliente) => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
-        destinatario: "crunchyconjunto@gmail.com", // Cambiar al correo real del agente
+        destinatario: "crunchyconjunto@gmail.com", 
         asunto: "Nueva Visita Agendada",
         mensaje: `
           Se ha registrado una nueva visita.
@@ -101,7 +101,7 @@ const ConfirmarVisita = () => {
     }
   };
 
-  // handleSubmit con parámetro que indica si usar datos guardados o formulario
+  // parámetro que indica si usar datos guardados o formulario
   const handleSubmit = async (usarDatosGuardados = false) => {
     const datosAEnviar =
       usarDatosGuardados && usuario

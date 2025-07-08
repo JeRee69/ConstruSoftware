@@ -1,17 +1,25 @@
 package com.construsoft.visita_facil_api.controller;
 
-import com.construsoft.visita_facil_api.domain.PropiedadDTO;
-import com.construsoft.visita_facil_api.model.Propiedad;
-import com.construsoft.visita_facil_api.service.PropiedadService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.construsoft.visita_facil_api.domain.PropiedadDTO;
+import com.construsoft.visita_facil_api.model.Propiedad;
+import com.construsoft.visita_facil_api.service.PropiedadService;
 
 @RestController
 @RequestMapping("/propiedades")
@@ -29,7 +37,7 @@ public class PropiedadController {
     @GetMapping("/disponibles")
     public ResponseEntity<List<Propiedad>> getPropiedadesDisponibles() {
         List<Propiedad> propDisponibles = propiedadService.getPropiedadesDisponibles();
-        return ResponseEntity.ok(propDisponibles); // Estatus 200
+        return ResponseEntity.ok(propDisponibles); 
     }
 
     @PostMapping
@@ -43,7 +51,7 @@ public class PropiedadController {
                 propiedadDTO.isDisponible()
         );
 
-        return ResponseEntity.status(201).body(savedPropiedad); // Estatus creado
+        return ResponseEntity.status(201).body(savedPropiedad); 
     }
 
     @PostMapping("/{id}/imagenes")

@@ -1,6 +1,6 @@
 /* Estilos para SweetAlert2 con soporte de temas */
 
-/* Estilos base */
+
 .themed-swal-popup {
     border-radius: 12px !important;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
@@ -45,7 +45,7 @@
     box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1) !important;
 }
 
-/* Tema claro */
+
 [data-theme="light"] .themed-swal-popup {
     background-color: #ffffff !important;
     color: #2d3748 !important;
@@ -62,7 +62,7 @@
     border-color: #3182ce !important;
 }
 
-/* Tema oscuro */
+
 [data-theme="dark"] .themed-swal-popup {
     background-color: #2d3748 !important;
     color: #e2e8f0 !important;
@@ -79,7 +79,7 @@
     border-color: #63b3ed !important;
 }
 
-/* Iconos personalizados */
+
 .swal2-icon.swal2-success .swal2-success-ring {
     border-color: #38a169 !important;
 }
@@ -98,7 +98,7 @@
     color: #3182ce !important;
 }
 
-/* Animaciones suaves */
+
 .swal2-show {
     animation: swal2-show 0.3s ease-out !important;
 }

@@ -52,7 +52,7 @@ img {
   display: block;
 }
 
-/* Estilos específicos para Material-UI Calendar - Adaptable a temas */
+
 .MuiDateCalendar-root,
 .MuiPaper-root.MuiDateCalendar-root {
   width: 100% !important;
@@ -131,7 +131,7 @@ img {
   padding-bottom: 0.5rem !important;
 }
 
-/* Estilos para los años y meses */
+
 .MuiPickersYear-root,
 .MuiDateCalendar-root .MuiPickersYear-root {
   color: var(--color-texto) !important;
@@ -159,7 +159,7 @@ img {
   color: white !important;
 }
 
-/* Forzar que todos los elementos hijos del calendario usen las variables correctas */
+
 .MuiDateCalendar-root * {
   transition: color 0.3s ease, background-color 0.3s ease !important;
 }

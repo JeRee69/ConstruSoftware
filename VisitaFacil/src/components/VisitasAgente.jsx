@@ -270,7 +270,7 @@ VisitaFácil
                 setError(false);
                 enviarCorreoCliente(visita);
                 fetchVisitas();
-                setTimeout(() => setMensaje(null), 3000); // 🔥 aquí desaparece
+                setTimeout(() => setMensaje(null), 3000); 
             })
             .catch(() => {
                 setMensaje("Error al aceptar visita");
@@ -295,7 +295,7 @@ VisitaFácil
                 setMensaje("Visita cancelada con éxito");
                 setError(false);
                 fetchVisitas();
-                setTimeout(() => setMensaje(null), 3000); // 🔥 aquí desaparece
+                setTimeout(() => setMensaje(null), 3000); 
             })
             .catch(() => {
                 setMensaje("Error al cancelar la visita");

@@ -1,11 +1,11 @@
 import Swal from 'sweetalert2';
 
-// Función para obtener el tema actual
+
 const getCurrentTheme = () => {
     return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 };
 
-// Configuración de colores para cada tema
+
 const themeConfig = {
     light: {
         background: '#ffffff',
@@ -27,13 +27,13 @@ const themeConfig = {
     }
 };
 
-// Función para obtener configuración del tema actual
+
 const getThemeConfig = () => {
     const currentTheme = getCurrentTheme();
     return themeConfig[currentTheme];
 };
 
-// SweetAlert personalizado que se adapta al tema
+
 export const ThemedSwal = Swal.mixin({
     customClass: {
         popup: 'themed-swal-popup',
@@ -61,7 +61,7 @@ export const ThemedSwal = Swal.mixin({
     }
 });
 
-// Funciones de conveniencia
+
 export const showSuccess = (title, text) => {
     const config = getThemeConfig();
     return ThemedSwal.fire({
