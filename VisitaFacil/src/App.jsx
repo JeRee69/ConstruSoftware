@@ -14,6 +14,7 @@ import VistaPropiedad from "./components/VistaPropiedad";
 import Catalogo from "./views/Catalogo/Catalogo.jsx";
 import Login from "./views/Login/Login.jsx";
 import Registro from "./views/Registro/Registro.jsx";
+import CancelarVisita from "./components/CancelarVisita";
 
 function App() {
   const [temaOscuro, setTemaOscuro] = useState(false);
@@ -56,6 +57,7 @@ function App() {
         <Route path="/propiedad/:id" element={<VistaPropiedad />} />
         <Route path="/historial" element={<HistorialVisitas />} />
         <Route path="/confirmar-visita" element={<ConfirmarVisita />} />
+        <Route path="/cancelar-visita" element={<CancelarVisita />} />
 
         {/* Rutas protegidas para AGENTE */}
         <Route

@@ -1,58 +1,98 @@
-import { Link, useNavigate } from 'react-router-dom';
-import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 import {
-    Logo,
-    NavButton,
-    NavContainer,
-    NavLinks,
-    NavSectionLeft,
-    NavSectionRight,
-    Saludo
-} from './BarraNav.styles';
+  Logo,
+  NavButton,
+  NavContainer,
+  NavLinks,
+  NavSectionLeft,
+  NavSectionRight,
+  Saludo,
+  Dropdown,
+} from "./BarraNav.styles";
 
 const BarraNav = ({ temaOscuro, setTemaOscuro }) => {
-    const navigate = useNavigate();
-    const usuario = JSON.parse(localStorage.getItem('usuario'));
+  const navigate = useNavigate();
+  const location = useLocation();
+  const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-    const logout = () => {
-        localStorage.removeItem('usuario');
-        navigate('/login');
-    };
+  const logout = () => {
+    localStorage.removeItem("usuario");
+    navigate("/login");
+  };
 
-    return (
-        <NavContainer>
-            <NavSectionLeft>
-                <Logo onClick={() => navigate('/')}>VisitaFácil</Logo>
-                <NavLinks>
-                    <Link to="/">Catálogo</Link>
+  const irASeccionCatalogo = (hash) => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        window.location.hash = hash;
+      }, 200);
+    } else {
+      window.location.hash = hash;
+    }
+  };
 
+  return (
+    <NavContainer>
+      <NavSectionLeft>
+        <Logo onClick={() => navigate("/")}>VisitaFácil</Logo>
+        <NavLinks>
+          {/* Contenedor para el texto clickeable y el dropdown */}
+          <Dropdown>
+            {/* El texto clickeable que va directo a catálogo */}
+            <span
+              onClick={() => navigate("/")}
+              style={{ cursor: "pointer", userSelect: "none", fontWeight: 500 }}
+            >
+              Catálogo ▾
+            </span>
 
+            {/* El dropdown que se muestra al hover */}
+            <div className="dropdown-content">
+              <button onClick={() => irASeccionCatalogo("#casas")}>
+                Casas
+              </button>
+              <button onClick={() => irASeccionCatalogo("#parcelas")}>
+                Parcelas
+              </button>
+              <button onClick={() => irASeccionCatalogo("#departamentos")}>
+                Departamentos
+              </button>
+            </div>
+          </Dropdown>
 
-                    {usuario?.rol === 'AGENTE' && (
-                        <>
-                            <Link to="/agente/disponibilidad">Disponibilidad</Link>
-                            <Link to="/visitas-agente">Solicitudes</Link>
-                        </>
-                    )}
+          {usuario?.rol === "AGENTE" && (
+            <>
+              <Link to="/agente/disponibilidad">Disponibilidad</Link>
+              <Link to="/visitas-agente">Solicitudes</Link>
+            </>
+          )}
 
-                    <Link to="/historial">Ver Historial</Link>
-                    
-                </NavLinks>
-            </NavSectionLeft>            <NavSectionRight>
-                <ThemeToggle temaOscuro={temaOscuro} setTemaOscuro={setTemaOscuro} />
-                {usuario && (
-                    <>
-                        <Saludo>
-                            Hola,<br />
-                            <strong>{usuario.rol === "ADMINISTRADOR" ? "Admin" : usuario.nombre}</strong>
-                        </Saludo>
-                        <NavButton as="button" onClick={logout}>Cerrar Sesión</NavButton>
-                    </>
-                )}
-                {!usuario && <NavButton to="/login">Iniciar Sesión</NavButton>}
-            </NavSectionRight>
-        </NavContainer>
-    );
+          <Link to="/historial">Ver Historial</Link>
+        </NavLinks>
+      </NavSectionLeft>
+
+      <NavSectionRight>
+        <ThemeToggle temaOscuro={temaOscuro} setTemaOscuro={setTemaOscuro} />
+        {usuario ? (
+          <>
+            <Saludo>
+              Hola,
+              <br />
+              <strong>
+                {usuario.rol === "ADMINISTRADOR" ? "Admin" : usuario.nombre}
+              </strong>
+            </Saludo>
+            <NavButton as="button" onClick={logout}>
+              Cerrar Sesión
+            </NavButton>
+          </>
+        ) : (
+          <NavButton to="/login">Iniciar Sesión</NavButton>
+        )}
+      </NavSectionRight>
+    </NavContainer>
+  );
 };
 
 export default BarraNav;

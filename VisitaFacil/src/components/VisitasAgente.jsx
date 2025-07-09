@@ -6,13 +6,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  ChevronLeft,
-  ChevronRight,
-  MessageCircleMore,
-  CopyCheck,
-  MapPin,
-} from "lucide-react";
 import Cargando from "./Cargando/Cargando.jsx";
 
 const Pagina = styled.div`
@@ -203,12 +196,14 @@ const VisitasAgente = () => {
   const fetchVisitas = () => {
     setLoading(true);
 
-    fetch(`http://localhost:8080/solicitudes-agente/${agenteId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/${agenteId}`)
       .then((res) => res.json())
       .then((data) => setPendientes(data));
 
     fetch(
-      `http://localhost:8080/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`
+      `${
+        import.meta.env.VITE_API_URL
+      }/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -260,6 +255,9 @@ const VisitasAgente = () => {
         visita.direccionPropiedad
       )}&sf=true&output=xml`;
 
+      // URL para cancelar la visita
+      const cancelarUrl = `http://localhost:5173/cancelar-visita?id=${visita.id}`;
+
       // Cuerpo del mensaje con enlace incluido
       const mensaje = `
 <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; padding: 1rem;">
@@ -289,12 +287,28 @@ const VisitasAgente = () => {
     </a>
   </div>
 
+  <p>Si deseas cancelar esta visita, haz clic en el siguiente botón:</p>
+
+  <div style="margin: 1.5rem 0;">
+    <a href="${cancelarUrl}" target="_blank" style="
+      background-color: #d32f2f;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+    ">
+      ❌ Cancelar Visita
+    </a>
+  </div>
+
   <p>Un agente se pondrá en contacto contigo si es necesario.</p>
   <p style="margin-top: 2rem;">Saludos,<br><strong>Equipo VisitaFácil</strong></p>
 </div>
 `;
 
-      await fetch("http://localhost:8080/api/notificacion", {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -310,7 +324,7 @@ const VisitasAgente = () => {
 
   const aceptarVisita = (visitaId) => {
     const visita = pendientes.find((v) => v.id === visitaId);
-    fetch("http://localhost:8080/solicitudes-agente/accion", {
+    fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/accion`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -339,7 +353,7 @@ const VisitasAgente = () => {
     );
     if (!confirmar) return;
 
-    fetch("http://localhost:8080/solicitudes-agente/cancelar", {
+    fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/cancelar`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -372,7 +386,9 @@ const VisitasAgente = () => {
         <Texto>
           <strong>Propiedad:</strong>{" "}
           <LinkPropiedad
-            href={`http://localhost:5173/propiedad/${visita.idPropiedad}`}
+            href={`${import.meta.env.VITE_API_URL}/propiedad/${
+              visita.idPropiedad
+            }`}
             target="_blank"
             rel="noopener noreferrer"
           >

@@ -81,7 +81,7 @@ const ConfirmarVisita = () => {
 
   const enviarCorreoAgente = async (datosCliente) => {
     try {
-      await axios.post("http://localhost:8080/api/notificacion", {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
         destinatario: "crunchyconjunto@gmail.com",
         asunto: "Nueva Visita Agendada",
         mensaje: `
@@ -111,7 +111,7 @@ Se ha registrado una nueva visita.
         visita.hora
       );
 
-      await axios.post("http://localhost:8080/api/notificacion", {
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
         destinatario: datosCliente.correo,
         asunto: "Confirmación de Solicitud de Visita",
         mensaje: `
@@ -174,11 +174,14 @@ Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
     showLoading("Enviando solicitud", "Procesando tu solicitud de visita...");
 
     try {
-      const res = await fetch("http://localhost:8080/visitas/solicitar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/visitas/solicitar`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       close();
 
