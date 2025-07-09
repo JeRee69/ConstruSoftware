@@ -25,7 +25,7 @@ const Login = () => {
     setError("");
 
     try {
-      const response = await fetch("http://localhost:8080/account/login", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/account/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -39,8 +39,8 @@ const Login = () => {
             accountId: data.accountId,
             rol: data.rol,
             nombre: data.nombre,
-            correo: data.email, // agregado correo
-            telefono: data.telefono, // agregado telefono
+            correo: data.email, 
+            telefono: data.telefono, 
           })
         );
 

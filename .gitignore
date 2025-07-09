@@ -20,3 +20,8 @@ VisitaFacil/.env/
 *.iml
 *.swp
 Thumbs.db
+
+.env
+!VisitaFacil/.env.production
+
+npm/

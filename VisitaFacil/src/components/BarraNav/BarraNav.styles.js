@@ -56,9 +56,9 @@ export const NavButton = styled(RouterLink)`
   text-decoration: none;
   cursor: pointer;
   display: inline-flex;
-  align-items: center;   /* 👈 alinea verticalmente */
+  align-items: center;   
   justify-content: center;
-  line-height: 1;        /* 👈 asegura altura consistente */
+  line-height: 1;       
 
   &:hover {
     opacity: 0.85;

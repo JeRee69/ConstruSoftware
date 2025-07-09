@@ -1,0 +1,136 @@
+/* Estilos para SweetAlert2 con soporte de temas */
+
+
+.themed-swal-popup {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.themed-swal-title {
+    font-weight: 600 !important;
+    font-size: 1.5rem !important;
+}
+
+.themed-swal-content {
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+}
+
+.themed-swal-confirm {
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.themed-swal-cancel {
+    border-radius: 8px !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    border: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.themed-swal-input {
+    border-radius: 8px !important;
+    padding: 12px !important;
+    font-size: 1rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.themed-swal-input:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1) !important;
+}
+
+
+[data-theme="light"] .themed-swal-popup {
+    background-color: #ffffff !important;
+    color: #2d3748 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .themed-swal-input {
+    background-color: #ffffff !important;
+    color: #2d3748 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+[data-theme="light"] .themed-swal-input:focus {
+    border-color: #3182ce !important;
+}
+
+
+[data-theme="dark"] .themed-swal-popup {
+    background-color: #2d3748 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #4a5568 !important;
+}
+
+[data-theme="dark"] .themed-swal-input {
+    background-color: #4a5568 !important;
+    color: #e2e8f0 !important;
+    border: 1px solid #718096 !important;
+}
+
+[data-theme="dark"] .themed-swal-input:focus {
+    border-color: #63b3ed !important;
+}
+
+
+.swal2-icon.swal2-success .swal2-success-ring {
+    border-color: #38a169 !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-fix {
+    background-color: var(--background-color) !important;
+}
+
+.swal2-icon.swal2-error {
+    border-color: #e53e3e !important;
+    color: #e53e3e !important;
+}
+
+.swal2-icon.swal2-question {
+    border-color: #3182ce !important;
+    color: #3182ce !important;
+}
+
+
+.swal2-show {
+    animation: swal2-show 0.3s ease-out !important;
+}
+
+.swal2-hide {
+    animation: swal2-hide 0.2s ease-in forwards !important;
+}
+
+@keyframes swal2-show {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    45% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+    80% {
+        transform: scale(0.95);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes swal2-hide {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+}

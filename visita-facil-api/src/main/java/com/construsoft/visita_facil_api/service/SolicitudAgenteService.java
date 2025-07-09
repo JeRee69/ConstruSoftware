@@ -1,5 +1,10 @@
 package com.construsoft.visita_facil_api.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.construsoft.visita_facil_api.domain.RespuestaSolicitudAgenteDTO;
 import com.construsoft.visita_facil_api.domain.SolicitudAgenteDTO;
 import com.construsoft.visita_facil_api.enums.EstadoSolicitudAgente;
@@ -12,10 +17,6 @@ import com.construsoft.visita_facil_api.repository.AccountRepository;
 import com.construsoft.visita_facil_api.repository.DisponibilidadAgenteRepository;
 import com.construsoft.visita_facil_api.repository.SolicitudAgenteRepository;
 import com.construsoft.visita_facil_api.repository.SolicitudVisitaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class SolicitudAgenteService {
@@ -105,7 +106,7 @@ public class SolicitudAgenteService {
         SolicitudVisita visita = solicitudVisitaRepository.findById(visitaId)
                 .orElseThrow(() -> new RuntimeException("Solicitud de visita no encontrada"));
 
-        // Crear SolicitudAgente si no existe
+
         SolicitudAgente solicitudAgente = solicitudAgenteRepository
                 .findByAgenteAndSolicitudVisita(agente, visita)
                 .orElseGet(() -> {
@@ -116,7 +117,7 @@ public class SolicitudAgenteService {
                     return solicitudAgenteRepository.save(nueva);
                 });
 
-        // Actualizar estado
+
         solicitudAgente.setEstado(nuevoEstado);
         solicitudAgenteRepository.save(solicitudAgente);
 
@@ -140,7 +141,7 @@ public class SolicitudAgenteService {
 
         SolicitudVisita solicitudVisita = solicitudAgente.getSolicitudVisita();
         solicitudVisita.setEstado(EstadoSolicitudVisita.PENDIENTE);
-        solicitudVisita.setAgente(null); // Liberar asignación
+        solicitudVisita.setAgente(null); 
         solicitudVisitaRepository.save(solicitudVisita);
     }
 

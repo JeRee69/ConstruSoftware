@@ -2,14 +2,12 @@ package com.construsoft.visita_facil_api.config;
 
 import java.util.List;
 
-import com.construsoft.visita_facil_api.enums.Rol;
-import com.construsoft.visita_facil_api.model.Account;
-import com.construsoft.visita_facil_api.service.AccountService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.construsoft.visita_facil_api.model.Propiedad;
 import com.construsoft.visita_facil_api.repository.PropiedadRepository;
+import com.construsoft.visita_facil_api.service.AccountService;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -50,7 +48,7 @@ public class DataLoader implements CommandLineRunner {
             propiedad2.setDisponible(true);
             propiedad2.setUrlsImagenes(List.of(
                     "https://i.imgur.com/8Km9tLL.jpg",
-                    "https://i.imgur.com/XYZ1234.jpg" // Cambia por URLs reales
+                    "https://i.imgur.com/XYZ1234.jpg" 
             ));
             propiedadRepository.save(propiedad2);
 
@@ -62,7 +60,7 @@ public class DataLoader implements CommandLineRunner {
             propiedad3.setUbicacion("La Reina");
             propiedad3.setDisponible(true);
             propiedad3.setUrlsImagenes(List.of(
-                    "https://i.imgur.com/AbCdEfG.jpg" // Cambia por URLs reales
+                    "https://i.imgur.com/AbCdEfG.jpg" 
             ));
             propiedadRepository.save(propiedad3);
 
