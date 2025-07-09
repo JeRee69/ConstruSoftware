@@ -20,3 +20,5 @@ VisitaFacil/.env/
 *.iml
 *.swp
 Thumbs.db
+
+.env
