@@ -1,11 +1,14 @@
 package com.construsoft.visita_facil_api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.construsoft.visita_facil_api.domain.NotificacionDTO;
+
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class CorreoService {
@@ -14,11 +17,17 @@ public class CorreoService {
     private JavaMailSender mailSender;
 
     public void enviarCorreo(NotificacionDTO dto) {
-        SimpleMailMessage mensaje = new SimpleMailMessage();
-        mensaje.setTo(dto.getDestinatario());
-        mensaje.setSubject(dto.getAsunto());
-        mensaje.setText(dto.getMensaje());
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-        mailSender.send(mensaje);
+            helper.setTo(dto.getDestinatario());
+            helper.setSubject(dto.getAsunto());
+            helper.setText(dto.getMensaje(), true);
+
+            mailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error al enviar correo: " + e.getMessage());
+        }
     }
 }

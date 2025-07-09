@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
-import Agenda from "./components/Agenda";
+import React, { useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+
 import BarraNav from "./components/BarraNav/BarraNav.jsx";
+import Agenda from "./components/Agenda";
 import ConfirmarVisita from "./components/ConfirmarVisita.jsx";
 import HistorialVisitas from "./components/HistorialVisitas.jsx";
 import NuevaPropiedad from "./components/NuevaPropiedad.jsx";
@@ -13,10 +14,10 @@ import VistaPropiedad from "./components/VistaPropiedad";
 import Catalogo from "./views/Catalogo/Catalogo.jsx";
 import Login from "./views/Login/Login.jsx";
 import Registro from "./views/Registro/Registro.jsx";
-import Footer from "./components/Footer/Footer.jsx";
 
 function App() {
   const [temaOscuro, setTemaOscuro] = useState(false);
+
   useEffect(() => {
     const root = document.documentElement;
     if (temaOscuro) {
@@ -55,10 +56,6 @@ function App() {
         <Route path="/propiedad/:id" element={<VistaPropiedad />} />
         <Route path="/historial" element={<HistorialVisitas />} />
         <Route path="/confirmar-visita" element={<ConfirmarVisita />} />
-        <Route
-          path="*"
-          element={<h1 style={{ padding: "2rem" }}>Página no encontrada</h1>}
-        />
 
         {/* Rutas protegidas para AGENTE */}
         <Route
@@ -79,7 +76,6 @@ function App() {
         />
 
         {/* Rutas protegidas para ADMINISTRADOR */}
-
         <Route
           path="/admin/nueva-propiedad"
           element={
@@ -97,6 +93,7 @@ function App() {
           }
         />
 
+        {/* Ruta fallback */}
         <Route
           path="*"
           element={<h1 style={{ padding: "2rem" }}>Página no encontrada</h1>}

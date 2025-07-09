@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSweetAlert } from "../hooks/useSweetAlert";
+import GoogleCalendarButton from "../components/GoogleCalendarButton";
 import "../styles/sweetalert-custom.css";
 
 const ConfirmarVisita = () => {
@@ -12,12 +13,12 @@ const ConfirmarVisita = () => {
     telefono: "",
   });
   const [enviando, setEnviando] = useState(false);
+  const [mostrarBotonCalendar, setMostrarBotonCalendar] = useState(false);
   const navigate = useNavigate();
   const { showSuccess, showError, showWarning, showLoading, close } =
     useSweetAlert();
-
   const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const yaMostrado = useRef(false); // para evitar múltiples ejecuciones
+  const yaMostrado = useRef(false);
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("visitaPendiente"));
@@ -35,10 +36,8 @@ const ConfirmarVisita = () => {
 
     setVisita(data);
 
-    // Si hay usuario logueado y no hemos mostrado confirmación, prellenar y preguntar
     if (usuario && !yaMostrado.current) {
       yaMostrado.current = true;
-
       setFormulario({
         nombre: usuario.nombre || "",
         correo: usuario.correo || usuario.email || "",
@@ -51,23 +50,51 @@ const ConfirmarVisita = () => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
   };
 
-  // Enviar correo al agente
+  const generarBotonGoogleCalendarHTML = (titulo, direccion, fecha, hora) => {
+    const start = new Date(`${fecha}T${hora}`);
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+
+    const format = (date) => date.toISOString().replace(/[-:]|\.\d{3}/g, "");
+
+    const startFormatted = format(start);
+    const endFormatted = format(end);
+
+    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
+      `Visita a: ${titulo}`
+    )}&dates=${startFormatted}/${endFormatted}&details=${encodeURIComponent(
+      "Visita programada con VisitaFácil"
+    )}&location=${encodeURIComponent(direccion)}&sf=true&output=xml`;
+
+    return `
+<a href="${calendarUrl}" target="_blank" style="
+  display: inline-block;
+  background-color: #4285F4;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+">
+📅 Agregar a Google Calendar
+</a>`;
+  };
+
   const enviarCorreoAgente = async (datosCliente) => {
     try {
       await axios.post("http://localhost:8080/api/notificacion", {
-        destinatario: "crunchyconjunto@gmail.com", // Cambiar al correo real del agente
+        destinatario: "crunchyconjunto@gmail.com",
         asunto: "Nueva Visita Agendada",
         mensaje: `
-          Se ha registrado una nueva visita.
+Se ha registrado una nueva visita.
 
-          📌 Propiedad: ${visita.titulo}
-          📍 Ubicación: ${visita.ubicacion}
-          📅 Fecha: ${visita.fecha}
-          🕒 Hora: ${visita.hora}
+📌 Propiedad: ${visita.titulo}
+📍 Ubicación: ${visita.ubicacion}
+📅 Fecha: ${visita.fecha}
+🕒 Hora: ${visita.hora}
 
-          👤 Cliente: ${datosCliente.nombre}
-          📧 Correo: ${datosCliente.correo}
-          📞 Teléfono: ${datosCliente.telefono}
+👤 Cliente: ${datosCliente.nombre}
+📧 Correo: ${datosCliente.correo}
+📞 Teléfono: ${datosCliente.telefono}
         `,
       });
     } catch (error) {
@@ -75,25 +102,35 @@ const ConfirmarVisita = () => {
     }
   };
 
-  // Enviar correo al usuario
   const enviarCorreoUsuario = async (datosCliente) => {
     try {
+      const botonHTML = generarBotonGoogleCalendarHTML(
+        visita.titulo,
+        visita.ubicacion,
+        visita.fecha,
+        visita.hora
+      );
+
       await axios.post("http://localhost:8080/api/notificacion", {
         destinatario: datosCliente.correo,
         asunto: "Confirmación de Solicitud de Visita",
         mensaje: `
-          Hola ${datosCliente.nombre},
+Hola ${datosCliente.nombre},
 
-          ✅ Hemos recibido tu solicitud de visita para la siguiente propiedad:
+✅ Hemos recibido tu solicitud de visita para la siguiente propiedad:
 
-          📌 Propiedad: ${visita.titulo}
-          📍 Ubicación: ${visita.ubicacion}
-          📅 Fecha: ${visita.fecha}
-          🕒 Hora: ${visita.hora}
+📌 Propiedad: ${visita.titulo}
+📍 Ubicación: ${visita.ubicacion}
+📅 Fecha: ${visita.fecha}
+🕒 Hora: ${visita.hora}
 
-          Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
+Puedes agregar esta visita a tu Google Calendar haciendo clic en el siguiente botón:
 
-          ¡Gracias por confiar en nosotros!
+${botonHTML}
+
+Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
+
+¡Gracias por confiar en nosotros!
         `,
       });
     } catch (error) {
@@ -101,7 +138,6 @@ const ConfirmarVisita = () => {
     }
   };
 
-  // handleSubmit con parámetro que indica si usar datos guardados o formulario
   const handleSubmit = async (usarDatosGuardados = false) => {
     const datosAEnviar =
       usarDatosGuardados && usuario
@@ -149,18 +185,18 @@ const ConfirmarVisita = () => {
       if (res.ok) {
         await enviarCorreoAgente(datosAEnviar);
         await enviarCorreoUsuario(datosAEnviar);
+
         showSuccess(
           "¡Solicitud enviada!",
-          "Tu solicitud de visita ha sido enviada correctamente. Te contactaremos pronto.",
-          "Continuar"
+          "Tu solicitud ha sido enviada correctamente. Puedes agregarla a tu calendario si lo deseas.",
+          "Agregar a Google Calendar"
         ).then(() => {
-          localStorage.removeItem("visitaPendiente");
-          navigate("/catalogo");
+          setMostrarBotonCalendar(true);
         });
       } else {
         showError(
           "Error al enviar",
-          "Hubo un problema al enviar tu solicitud. Por favor, inténtalo de nuevo.",
+          "Hubo un problema al enviar tu solicitud. Inténtalo de nuevo.",
           "Intentar de nuevo"
         );
       }
@@ -169,7 +205,7 @@ const ConfirmarVisita = () => {
       close();
       showError(
         "Error de conexión",
-        "No se pudo conectar con el servidor. Revisa tu conexión a internet e inténtalo de nuevo.",
+        "No se pudo conectar con el servidor. Intenta nuevamente.",
         "Reintentar"
       );
     } finally {
@@ -180,21 +216,10 @@ const ConfirmarVisita = () => {
   if (!visita) return <p>Cargando...</p>;
 
   return (
-    <div
-      style={{
-        maxWidth: "600px",
-        margin: "2rem auto",
-        padding: "2rem",
-        background: "var(--color-fondo-card)",
-        borderRadius: "8px",
-        boxShadow: "0 2px 8px var(--color-sombra)",
-        color: "var(--color-texto)",
-      }}
-    >
+    <div style={containerStyle}>
       <h2 style={{ color: "var(--color-texto)", marginBottom: "1rem" }}>
         Confirmar Visita
       </h2>
-
       <p>
         <strong>Propiedad:</strong> {visita.titulo}
       </p>
@@ -208,7 +233,6 @@ const ConfirmarVisita = () => {
         <strong>Hora:</strong> {visita.hora}
       </p>
 
-      {/* Mostrar formulario solo si no hay usuario logueado */}
       {!usuario && (
         <div style={{ marginTop: "2rem" }}>
           <label style={labelStyle}>Nombre</label>
@@ -218,7 +242,6 @@ const ConfirmarVisita = () => {
             onChange={handleChange}
             style={inputStyle}
           />
-
           <label style={labelStyle}>Correo</label>
           <input
             type="email"
@@ -227,7 +250,6 @@ const ConfirmarVisita = () => {
             onChange={handleChange}
             style={inputStyle}
           />
-
           <label style={labelStyle}>Teléfono</label>
           <input
             name="telefono"
@@ -235,7 +257,6 @@ const ConfirmarVisita = () => {
             onChange={handleChange}
             style={inputStyle}
           />
-
           <button
             onClick={() => handleSubmit(false)}
             disabled={enviando}
@@ -246,7 +267,6 @@ const ConfirmarVisita = () => {
         </div>
       )}
 
-      {/* Si hay usuario logueado, mostrar botón para confirmar con sus datos */}
       {usuario && (
         <button
           onClick={() => handleSubmit(true)}
@@ -256,8 +276,21 @@ const ConfirmarVisita = () => {
           {enviando ? "Enviando..." : "Confirmar visita con mis datos"}
         </button>
       )}
+
+      {mostrarBotonCalendar && <GoogleCalendarButton visita={visita} />}
     </div>
   );
+};
+
+// Estilos
+const containerStyle = {
+  maxWidth: "600px",
+  margin: "2rem auto",
+  padding: "2rem",
+  background: "var(--color-fondo-card)",
+  borderRadius: "8px",
+  boxShadow: "0 2px 8px var(--color-sombra)",
+  color: "var(--color-texto)",
 };
 
 const labelStyle = {
