@@ -8,7 +8,7 @@ import {
     TitleWrapper,
     BotonIcono
 } from "./Catalogo.styles";
-import TarjetaPropiedad from "../../components/TarjetaPropiedad/TarjetaPropiedad";
+import TarjetaPropiedad from "../../components/Catalogo/TarjetaPropiedad.jsx";
 import Cargando from "../../components/Cargando/Cargando";
 import { FiPlus } from "react-icons/fi";
 
@@ -20,7 +20,7 @@ const Catalogo = () => {
     const usuario = JSON.parse(localStorage.getItem("usuario"));
 
     useEffect(() => {
-        fetch("http://localhost:8080/propiedades/disponibles")
+        fetch(`${import.meta.env.VITE_API_URL}/propiedades/disponibles`)
             .then((res) => {
                 if (!res.ok) throw new Error("Error al cargar propiedades");
                 return res.json();
@@ -37,7 +37,7 @@ const Catalogo = () => {
 
     const handleEliminar = (id) => {
         if (window.confirm("¿Eliminar esta propiedad?")) {
-            fetch(`http://localhost:8080/propiedades/${id}`, {
+            fetch(`${import.meta.env.VITE_API_URL}/propiedades/${id}`, {
                 method: "DELETE",
             })
                 .then((res) => {

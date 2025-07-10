@@ -1,5 +1,18 @@
 package com.construsoft.visita_facil_api.service;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.construsoft.visita_facil_api.domain.ObtencionDisponibilidadPropiedadDTO;
 import com.construsoft.visita_facil_api.domain.RegistroDisponibilidadPropiedadDTO;
 import com.construsoft.visita_facil_api.model.DisponibilidadPropiedad;
@@ -8,14 +21,6 @@ import com.construsoft.visita_facil_api.model.SolicitudVisita;
 import com.construsoft.visita_facil_api.repository.DisponibilidadPropiedadRepository;
 import com.construsoft.visita_facil_api.repository.PropiedadRepository;
 import com.construsoft.visita_facil_api.repository.SolicitudVisitaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
 
 @Service
 public class DisponibilidadPropiedadService {
@@ -67,11 +72,10 @@ public class DisponibilidadPropiedadService {
 
         Propiedad propiedadAct = propiedad.get();
 
-        // 1. Traer disponibilidad general
         List<DisponibilidadPropiedad> disponibilidades = disponibilidadRepo
                 .findByPropiedadAndDiaSemana(propiedadAct, dia);
 
-        // 2. Traer visitas agendadas para ese día
+
         List<SolicitudVisita> horariosOcupados = solicitudVisitaRepo
                 .findByPropiedadIdAndFecha(Math.toIntExact(propiedadId), fecha);
 
@@ -84,7 +88,7 @@ public class DisponibilidadPropiedadService {
 
         List<ObtencionDisponibilidadPropiedadDTO> resultado = new ArrayList<>();
 
-        // 3. Dividir bloques y filtrar
+
         for (DisponibilidadPropiedad disp : disponibilidades) {
             LocalTime hora = disp.getHoraInicio();
 

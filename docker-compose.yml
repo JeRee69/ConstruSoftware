@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./visita-facil-api
+    expose:
+      - "8080"
+    env_file:
+      - .env
+    networks:
+      - proxy
+
+  frontend:
+    build: ./VisitaFacil
+    expose:
+      - "80"
+    depends_on:
+      - backend
+    networks:
+      - proxy
+
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: npm
+    restart: always
+    ports:
+      - "80:80"       # HTTP público
+      - "81:81"       # Interfaz web
+      - "443:443"     # HTTPS
+    volumes:
+      - ./npm/data:/data
+      - ./npm/letsencrypt:/etc/letsencrypt
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    driver: bridge
+

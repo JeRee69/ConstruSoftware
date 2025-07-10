@@ -1,27 +1,26 @@
-/* Contenedor del carrusel */
+
 .slick-slider {
   width: 100%;
-  max-width: 800px; /* o lo que necesites */
+  max-width: 800px; 
   margin: 0 auto;
   overflow: hidden;
 }
 
-/* Pista del carrusel */
+
 .slick-track {
   display: flex !important;
   align-items: center;
 }
 
-/* Cada slide */
+
 .slick-slide {
   display: flex !important;
   justify-content: center;
   align-items: center;
   height: 500px; /* altura estándar para todos los slides */
-  background-color: aqua;
 }
 
-/* Imagen dentro del slide */
+
 .slick-slide img {
   max-height: 100%;
   max-width: 100%;

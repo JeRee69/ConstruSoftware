@@ -19,13 +19,18 @@ public class DisponibilidadAgenteController {
 
     @PostMapping("/registrar")
     public ResponseEntity<DisponibilidadAgente> registrar(@RequestBody DisponibilidadAgenteDTO dto) {
+        System.out.println(dto.getFecha());
         DisponibilidadAgente disponibilidad = disponibilidadAgenteService.registrar(dto);
+        System.out.println(disponibilidad.getFecha());
         return ResponseEntity.ok(disponibilidad);
     }
 
     @GetMapping("/{accountId}")
     public ResponseEntity<List<DisponibilidadAgente>> obtenerDisponibilidades(@PathVariable Long accountId) {
         List<DisponibilidadAgente> lista = disponibilidadAgenteService.obtenerPorAgente(accountId);
+        for (DisponibilidadAgente disponibilidad : lista) {
+            System.out.println(disponibilidad.getFecha());
+        }
         return ResponseEntity.ok(lista);
     }
 

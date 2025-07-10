@@ -3,9 +3,12 @@ package com.construsoft.visita_facil_api.domain;
 import com.construsoft.visita_facil_api.enums.Rol;
 
 public class RespuestaLoginDTO {
+
     private Long accountId;
     private Rol rol;
     private String nombre;
+    private String email;
+    private String telefono;
 
     public RespuestaLoginDTO() {
     }
@@ -37,5 +40,21 @@ public class RespuestaLoginDTO {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 }

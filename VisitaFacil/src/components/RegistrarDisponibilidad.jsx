@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
-// Estilos
+
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100%;
@@ -148,7 +148,7 @@ const RegistrarDisponibilidad = () => {
     const minutos = ["00", "15", "30", "45"];
 
     const fetchDisponibilidades = async () => {
-        const res = await fetch(`http://localhost:8080/disponibilidad/propiedades/${id}/listar`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/propiedades/${id}/listar`);
         if (res.ok) {
             const data = await res.json();
             setDisponibilidades(data);
@@ -202,7 +202,7 @@ const RegistrarDisponibilidad = () => {
             horaFin: `${finHora}:${finMinutos}`,
         };
 
-        const res = await fetch("http://localhost:8080/disponibilidad/propiedades/registrar", {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/propiedades/registrar`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
@@ -220,7 +220,7 @@ const RegistrarDisponibilidad = () => {
     const handleEliminar = async (disponibilidadId) => {
         if (!window.confirm("¿Eliminar esta disponibilidad?")) return;
 
-        const res = await fetch(`http://localhost:8080/disponibilidad/propiedades/${disponibilidadId}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/propiedades/${disponibilidadId}`, {
             method: "DELETE",
         });
 

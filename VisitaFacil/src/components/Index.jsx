@@ -1,6 +1,5 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
-import heroImg from "../assets/visitafacil.png"; // Asegúrate que esta imagen exista
+import heroImg from "../assets/visitafacil.png";
 
 export default function Index() {
   const navigate = useNavigate();

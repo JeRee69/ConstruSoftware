@@ -21,7 +21,7 @@ public class SolicitudAgente {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EstadoSolicitudAgente estado = EstadoSolicitudAgente.PENDIENTE;
+    private EstadoSolicitudAgente estado = EstadoSolicitudAgente.ACEPTADA;
 
     public SolicitudAgente() {}
 

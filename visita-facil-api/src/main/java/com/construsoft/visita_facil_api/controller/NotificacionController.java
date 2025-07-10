@@ -13,7 +13,10 @@ import com.construsoft.visita_facil_api.service.CorreoService;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000") // Permite solicitudes desde React
+@CrossOrigin(origins = {
+    "http://localhost:3000/",
+    "https://visitafacil.mooo.com/"
+})
 public class NotificacionController {
 
     @Autowired

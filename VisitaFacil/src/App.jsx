@@ -4,7 +4,6 @@ import Agenda from "./components/Agenda";
 import BarraNav from "./components/BarraNav/BarraNav.jsx";
 import ConfirmarVisita from "./components/ConfirmarVisita.jsx";
 import HistorialVisitas from "./components/HistorialVisitas.jsx";
-import NotificacionEmail from "./components/NotificacionEmail.jsx";
 import NuevaPropiedad from "./components/NuevaPropiedad.jsx";
 import RegistrarDisponibilidad from "./components/RegistrarDisponibilidad.jsx";
 import RegistrarDisponibilidadAgente from "./components/RegistrarDisponibilidadAgente.jsx";
@@ -14,6 +13,7 @@ import VistaPropiedad from "./components/VistaPropiedad";
 import Catalogo from "./views/Catalogo/Catalogo.jsx";
 import Login from "./views/Login/Login.jsx";
 import Registro from "./views/Registro/Registro.jsx";
+import Footer from "./components/Footer/Footer.jsx";
 
 function App() {
   const [temaOscuro, setTemaOscuro] = useState(false);
@@ -55,7 +55,6 @@ function App() {
         <Route path="/propiedad/:id" element={<VistaPropiedad />} />
         <Route path="/historial" element={<HistorialVisitas />} />
         <Route path="/confirmar-visita" element={<ConfirmarVisita />} />
-        <Route path="/notificacion-email" element={<NotificacionEmail />} />
         <Route
           path="*"
           element={<h1 style={{ padding: "2rem" }}>Página no encontrada</h1>}
@@ -71,7 +70,8 @@ function App() {
           }
         />
         <Route
-          path="/visitas-agente"          element={
+          path="/visitas-agente"
+          element={
             <RutaProtegida rolRequerido="AGENTE">
               <VisitasAgente />
             </RutaProtegida>

@@ -76,7 +76,7 @@ const NuevaPropiedad = () => {
 
         try {
             // 1. Crear propiedad
-            const response = await fetch("http://localhost:8080/propiedades", {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/propiedades`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -102,7 +102,7 @@ const NuevaPropiedad = () => {
                 imagenes.forEach((img) => formData.append("imagenes", img));
 
                 const uploadResp = await fetch(
-                    `http://localhost:8080/propiedades/${propiedad.id}/imagenes`,
+                    `${import.meta.env.VITE_API_URL}/propiedades/${propiedad.id}/imagenes`,
                     {
                         method: "POST",
                         body: formData,

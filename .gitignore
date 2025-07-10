@@ -13,9 +13,15 @@ VisitaFacil/build/
 VisitaFacil/.cache/
 VisitaFacil/coverage/
 VisitaFacil/dist/
+VisitaFacil/.env/
 
 .idea/
 .vscode/
 *.iml
 *.swp
 Thumbs.db
+
+.env
+!VisitaFacil/.env.production
+
+npm/
