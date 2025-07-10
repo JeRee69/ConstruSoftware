@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { useSweetAlert } from "../hooks/useSweetAlert";
+import "../styles/sweetalert-custom.css";
 
 
 const PageWrapper = styled.div`
@@ -131,6 +133,7 @@ const RegistrarDisponibilidad = () => {
     const [finMinutos, setFinMinutos] = useState("00");
     const [disponibilidades, setDisponibilidades] = useState([]);
     const [error, setError] = useState("");
+    const { showConfirm, showSuccess, showError, showLoading, close } = useSweetAlert();
 
     const dias = [
         { label: "Lunes", value: "MONDAY" },
@@ -218,18 +221,48 @@ const RegistrarDisponibilidad = () => {
     };
 
     const handleEliminar = async (disponibilidadId) => {
-        if (!window.confirm("¿Eliminar esta disponibilidad?")) return;
+        const result = await showConfirm(
+            "¿Eliminar disponibilidad?",
+            "Esta acción eliminará este horario de disponibilidad permanentemente.",
+            "Sí, eliminar",
+            "Cancelar"
+        );
 
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/propiedades/${disponibilidadId}`, {
-            method: "DELETE",
-        });
+        if (result.isConfirmed) {
+            showLoading("Eliminando disponibilidad", "Por favor espera...");
 
-        if (res.ok) {
-            setDisponibilidades((prev) =>
-                prev.filter((d) => d.id !== disponibilidadId)
-            );
-        } else {
-            alert("No se pudo eliminar");
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/propiedades/${disponibilidadId}`, {
+                    method: "DELETE",
+                });
+
+                close();
+
+                if (res.ok) {
+                    setDisponibilidades((prev) =>
+                        prev.filter((d) => d.id !== disponibilidadId)
+                    );
+                    
+                    showSuccess(
+                        "¡Disponibilidad eliminada!",
+                        "El horario de disponibilidad ha sido eliminado correctamente.",
+                        "Continuar"
+                    );
+                } else {
+                    showError(
+                        "Error al eliminar",
+                        "No se pudo eliminar la disponibilidad. Por favor, inténtalo de nuevo.",
+                        "Reintentar"
+                    );
+                }
+            } catch (error) {
+                close();
+                showError(
+                    "Error de conexión",
+                    "No se pudo conectar con el servidor para eliminar la disponibilidad.",
+                    "Reintentar"
+                );
+            }
         }
     };
 

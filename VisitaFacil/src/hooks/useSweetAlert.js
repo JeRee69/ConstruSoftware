@@ -1,11 +1,11 @@
 import Swal from 'sweetalert2';
 
-// Función para obtener el tema actual
+
 const getCurrentTheme = () => {
     return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
 };
 
-// Configuración de colores para cada tema
+
 const themeConfig = {
     light: {
         background: '#ffffff',
@@ -21,14 +21,14 @@ const themeConfig = {
     }
 };
 
-// Función para obtener configuración del tema actual
+
 const getThemeConfig = () => {
     const currentTheme = getCurrentTheme();
     return themeConfig[currentTheme];
 };
 
 export const useSweetAlert = () => {
-  // Alerta de éxito
+
   const showSuccess = (title, text = '', confirmButtonText = 'OK') => {
     const config = getThemeConfig();
     return Swal.fire({
@@ -47,7 +47,7 @@ export const useSweetAlert = () => {
     });
   };
 
-  // Alerta de error
+
   const showError = (title, text = '', confirmButtonText = 'OK') => {
     const config = getThemeConfig();
     return Swal.fire({
@@ -66,7 +66,7 @@ export const useSweetAlert = () => {
     });
   };
 
-  // Alerta de advertencia
+
   const showWarning = (title, text = '', confirmButtonText = 'OK') => {
     const config = getThemeConfig();
     return Swal.fire({
@@ -85,7 +85,7 @@ export const useSweetAlert = () => {
     });
   };
 
-  // Alerta de confirmación
+
   const showConfirm = (title, text = '', confirmButtonText = 'Sí', cancelButtonText = 'No') => {
     const config = getThemeConfig();
     return Swal.fire({
@@ -107,7 +107,7 @@ export const useSweetAlert = () => {
     });
   };
 
-  // Alerta de carga
+
   const showLoading = (title = 'Cargando...', text = 'Por favor espera') => {
     const config = getThemeConfig();
     return Swal.fire({
@@ -129,7 +129,7 @@ export const useSweetAlert = () => {
     });
   };
 
-  // Alerta de información
+ 
   const showInfo = (title, text = '', confirmButtonText = 'OK') => {
     const config = getThemeConfig();
     return Swal.fire({
@@ -148,7 +148,7 @@ export const useSweetAlert = () => {
     });
   };
 
-  // Cerrar cualquier alerta activa
+
   const close = () => {
     Swal.close();
   };
