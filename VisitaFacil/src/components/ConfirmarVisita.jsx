@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSweetAlert } from "../hooks/useSweetAlert";
-import GoogleCalendarButton from "../components/GoogleCalendarButton";
 import "../styles/sweetalert-custom.css";
 
 const ConfirmarVisita = () => {
@@ -13,7 +12,6 @@ const ConfirmarVisita = () => {
     telefono: "",
   });
   const [enviando, setEnviando] = useState(false);
-  const [mostrarBotonCalendar, setMostrarBotonCalendar] = useState(false);
   const navigate = useNavigate();
   const { showSuccess, showError, showWarning, showLoading, close } =
     useSweetAlert();
@@ -23,14 +21,16 @@ const ConfirmarVisita = () => {
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("visitaPendiente"));
 
-    if (!data) {
-      showWarning(
-        "Sin datos de visita",
-        "No hay información de visita para confirmar. Te redirigiremos al catálogo.",
-        "Ir al catálogo"
-      ).then(() => {
-        navigate("/catalogo");
-      });
+    // Si no hay datos completos, redirigir sin alerta (para no molestar al usuario)
+    if (
+      !data ||
+      !data.titulo ||
+      !data.fecha ||
+      !data.hora ||
+      !data.ubicacion ||
+      !data.propiedadId
+    ) {
+      navigate("/catalogo");
       return;
     }
 
@@ -44,39 +44,10 @@ const ConfirmarVisita = () => {
         telefono: usuario.telefono || "",
       });
     }
-  }, [navigate, showWarning, usuario]);
+  }, [navigate, usuario]);
 
   const handleChange = (e) => {
     setFormulario({ ...formulario, [e.target.name]: e.target.value });
-  };
-
-  const generarBotonGoogleCalendarHTML = (titulo, direccion, fecha, hora) => {
-    const start = new Date(`${fecha}T${hora}`);
-    const end = new Date(start.getTime() + 60 * 60 * 1000);
-
-    const format = (date) => date.toISOString().replace(/[-:]|\.\d{3}/g, "");
-
-    const startFormatted = format(start);
-    const endFormatted = format(end);
-
-    const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-      `Visita a: ${titulo}`
-    )}&dates=${startFormatted}/${endFormatted}&details=${encodeURIComponent(
-      "Visita programada con VisitaFácil"
-    )}&location=${encodeURIComponent(direccion)}&sf=true&output=xml`;
-
-    return `
-<a href="${calendarUrl}" target="_blank" style="
-  display: inline-block;
-  background-color: #4285F4;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 4px;
-  font-weight: bold;
-  text-decoration: none;
-">
-📅 Agregar a Google Calendar
-</a>`;
   };
 
   const enviarCorreoAgente = async (datosCliente) => {
@@ -85,17 +56,57 @@ const ConfirmarVisita = () => {
         destinatario: "crunchyconjunto@gmail.com",
         asunto: "Nueva Visita Agendada",
         mensaje: `
-Se ha registrado una nueva visita.
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Nueva Visita Agendada</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #333;">
+  <h2 style="color: #d32f2f;">Nueva Solicitud de Visita</h2>
+  <p>Hola equipo,</p>
+  <p>Se ha registrado una nueva solicitud de visita con los siguientes detalles:</p>
 
-📌 Propiedad: ${visita.titulo}
-📍 Ubicación: ${visita.ubicacion}
-📅 Fecha: ${visita.fecha}
-🕒 Hora: ${visita.hora}
+  <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">🏠 Propiedad:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${visita.titulo}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">📍 Ubicación:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${visita.ubicacion}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">📅 Fecha:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${visita.fecha}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">⏰ Hora:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${visita.hora}</td>
+    </tr>
+  </table>
 
-👤 Cliente: ${datosCliente.nombre}
-📧 Correo: ${datosCliente.correo}
-📞 Teléfono: ${datosCliente.telefono}
-        `,
+  <h3>Datos del cliente</h3>
+  <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">👤 Nombre:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${datosCliente.nombre}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">📧 Correo:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${datosCliente.correo}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">📞 Teléfono:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${datosCliente.telefono}</td>
+    </tr>
+  </table>
+
+  <p>Por favor, procedan con la gestión correspondiente.</p>
+  <p>Saludos,<br /><strong>Sistema VisitaFácil</strong></p>
+</body>
+</html>
+      `,
       });
     } catch (error) {
       console.error("Error al enviar correo al agente:", error);
@@ -104,34 +115,48 @@ Se ha registrado una nueva visita.
 
   const enviarCorreoUsuario = async (datosCliente) => {
     try {
-      const botonHTML = generarBotonGoogleCalendarHTML(
-        visita.titulo,
-        visita.ubicacion,
-        visita.fecha,
-        visita.hora
-      );
-
       await axios.post(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
         destinatario: datosCliente.correo,
         asunto: "Confirmación de Solicitud de Visita",
         mensaje: `
-Hola ${datosCliente.nombre},
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Confirmación de Visita</title>
+</head>
+<body style="font-family: Arial, sans-serif; color: #333;">
+  <h2 style="color: #d32f2f;">¡Solicitud Recibida!</h2>
+  <p>Hola <strong>${datosCliente.nombre}</strong>,</p>
+  <p>Gracias por confiar en <strong>VisitaFácil</strong>.</p>
+  <p>Hemos recibido tu solicitud de visita para la siguiente propiedad:</p>
 
-✅ Hemos recibido tu solicitud de visita para la siguiente propiedad:
+  <table style="border-collapse: collapse; width: 100%; max-width: 600px;">
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">🏠 Propiedad:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${visita.titulo}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">📍 Ubicación:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${visita.ubicacion}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">📅 Fecha:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${visita.fecha}</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">⏰ Hora:</td>
+      <td style="padding: 8px; border: 1px solid #ddd;">${visita.hora}</td>
+    </tr>
+  </table>
 
-📌 Propiedad: ${visita.titulo}
-📍 Ubicación: ${visita.ubicacion}
-📅 Fecha: ${visita.fecha}
-🕒 Hora: ${visita.hora}
+  <p>Un agente se pondrá en contacto contigo pronto para confirmar los detalles.</p>
+  <p>Si tienes alguna pregunta, responde a este correo.</p>
 
-Puedes agregar esta visita a tu Google Calendar haciendo clic en el siguiente botón:
-
-${botonHTML}
-
-Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
-
-¡Gracias por confiar en nosotros!
-        `,
+  <p>¡Saludos cordiales!<br /><strong>Equipo VisitaFácil</strong></p>
+</body>
+</html>
+      `,
       });
     } catch (error) {
       console.error("Error al enviar correo al usuario:", error);
@@ -149,9 +174,9 @@ Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
         : formulario;
 
     if (
-      !datosAEnviar.nombre ||
-      !datosAEnviar.correo ||
-      !datosAEnviar.telefono
+      !datosAEnviar.nombre.trim() ||
+      !datosAEnviar.correo.trim() ||
+      !datosAEnviar.telefono.trim()
     ) {
       showWarning(
         "Campos incompletos",
@@ -183,20 +208,24 @@ Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
         }
       );
 
-      close();
-
       if (res.ok) {
         await enviarCorreoAgente(datosAEnviar);
         await enviarCorreoUsuario(datosAEnviar);
 
-        showSuccess(
-          "¡Solicitud enviada!",
-          "Tu solicitud ha sido enviada correctamente. Puedes agregarla a tu calendario si lo deseas.",
-          "Agregar a Google Calendar"
-        ).then(() => {
-          setMostrarBotonCalendar(true);
-        });
+        // Borro visitaPendiente ANTES de cerrar y mostrar alerta
+        localStorage.removeItem("visitaPendiente");
+
+        close(); // Cierro el loading
+
+        await showSuccess(
+          "Agendamiento exitoso",
+          "Por favor, revise su correo para más detalles.",
+          "Aceptar"
+        );
+
+        navigate("/catalogo");
       } else {
+        close();
         showError(
           "Error al enviar",
           "Hubo un problema al enviar tu solicitud. Inténtalo de nuevo.",
@@ -216,7 +245,19 @@ Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
     }
   };
 
-  if (!visita) return <p>Cargando...</p>;
+  if (!visita)
+    return (
+      <p
+        style={{
+          textAlign: "center",
+          marginTop: "2rem",
+          color: "var(--color-texto)",
+          fontWeight: "bold",
+        }}
+      >
+        Cargando visita...
+      </p>
+    );
 
   return (
     <div style={containerStyle}>
@@ -244,6 +285,7 @@ Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
             value={formulario.nombre}
             onChange={handleChange}
             style={inputStyle}
+            disabled={enviando}
           />
           <label style={labelStyle}>Correo</label>
           <input
@@ -252,6 +294,7 @@ Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
             value={formulario.correo}
             onChange={handleChange}
             style={inputStyle}
+            disabled={enviando}
           />
           <label style={labelStyle}>Teléfono</label>
           <input
@@ -259,6 +302,7 @@ Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
             value={formulario.telefono}
             onChange={handleChange}
             style={inputStyle}
+            disabled={enviando}
           />
           <button
             onClick={() => handleSubmit(false)}
@@ -279,8 +323,6 @@ Un agente revisará tu solicitud y se pondrá en contacto contigo pronto.
           {enviando ? "Enviando..." : "Confirmar visita con mis datos"}
         </button>
       )}
-
-      {mostrarBotonCalendar && <GoogleCalendarButton visita={visita} />}
     </div>
   );
 };
