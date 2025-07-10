@@ -256,7 +256,7 @@ const VisitasAgente = () => {
       )}&sf=true&output=xml`;
 
       // URL para cancelar la visita
-      const cancelarUrl = `http://localhost:5173/cancelar-visita?id=${visita.id}`;
+      const cancelarUrl = `https://visitafacil.mooo.com/cancelar-visita?id=${visita.id}`;
 
       // Cuerpo del mensaje con enlace incluido
       const mensaje = `
