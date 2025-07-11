@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { useSweetAlert } from "../hooks/useSweetAlert";
 import "../styles/sweetalert-custom.css";
 
-
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100%;
@@ -122,6 +121,15 @@ const ErrorMsg = styled.p`
   font-weight: bold;
 `;
 
+const diasSemanaTraducidos = {
+    MONDAY: "Lunes",
+    TUESDAY: "Martes",
+    WEDNESDAY: "Miércoles",
+    THURSDAY: "Jueves",
+    FRIDAY: "Viernes",
+    SATURDAY: "Sábado",
+    SUNDAY: "Domingo",
+};
 
 const RegistrarDisponibilidad = () => {
     const navigate = useNavigate();
@@ -135,19 +143,9 @@ const RegistrarDisponibilidad = () => {
     const [error, setError] = useState("");
     const { showConfirm, showSuccess, showError, showLoading, close } = useSweetAlert();
 
-    const dias = [
-        { label: "Lunes", value: "MONDAY" },
-        { label: "Martes", value: "TUESDAY" },
-        { label: "Miércoles", value: "WEDNESDAY" },
-        { label: "Jueves", value: "THURSDAY" },
-        { label: "Viernes", value: "FRIDAY" },
-        { label: "Sábado", value: "SATURDAY" },
-        { label: "Domingo", value: "SUNDAY" },
-    ];
+    const dias = Object.entries(diasSemanaTraducidos).map(([value, label]) => ({ value, label }));
 
-    const horas = Array.from({ length: 12 }, (_, i) =>
-        String(i + 8).padStart(2, "0")
-    );
+    const horas = Array.from({ length: 12 }, (_, i) => String(i + 8).padStart(2, "0"));
     const minutos = ["00", "15", "30", "45"];
 
     const fetchDisponibilidades = async () => {
@@ -239,10 +237,8 @@ const RegistrarDisponibilidad = () => {
                 close();
 
                 if (res.ok) {
-                    setDisponibilidades((prev) =>
-                        prev.filter((d) => d.id !== disponibilidadId)
-                    );
-                    
+                    setDisponibilidades((prev) => prev.filter((d) => d.id !== disponibilidadId));
+
                     showSuccess(
                         "¡Disponibilidad eliminada!",
                         "El horario de disponibilidad ha sido eliminado correctamente.",
@@ -272,7 +268,7 @@ const RegistrarDisponibilidad = () => {
                 <ButtonVolver onClick={() => navigate("/catalogo")}>
                     ← Volver al Catálogo
                 </ButtonVolver>
-                <Title>Agregar Disponibilidad</Title>
+                <Title>Agregar Disponibilidad Manual</Title>
                 <form onSubmit={handleSubmit}>
                     <Label>Día de la semana</Label>
                     <Select value={dia} onChange={(e) => setDia(e.target.value)}>
@@ -319,37 +315,59 @@ const RegistrarDisponibilidad = () => {
             <Right>
                 <Title>Disponibilidades Registradas</Title>
                 {disponibilidades.length === 0 ? (
-                    <p style={{ textAlign: "center" }}>No hay disponibilidades registradas.</p>
+                    <>
+                        <p style={{ textAlign: "center" }}>
+                            No hay disponibilidades registradas.
+                        </p>
+                        <Button
+                            style={{ marginTop: "1rem" }}
+                            onClick={async () => {
+                                const diasTodos = Object.keys(diasSemanaTraducidos);
+                                const payloads = diasTodos.map((d) => ({
+                                    idPropiedad: parseInt(id),
+                                    dia: d,
+                                    horaInicio: "08:00",
+                                    horaFin: "19:00",
+                                }));
+
+                                showLoading("Registrando disponibilidad", "Por favor espera...");
+
+                                try {
+                                    for (const payload of payloads) {
+                                        await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/propiedades/registrar`, {
+                                            method: "POST",
+                                            headers: { "Content-Type": "application/json" },
+                                            body: JSON.stringify(payload),
+                                        });
+                                    }
+                                    await fetchDisponibilidades();
+                                    close();
+                                    showSuccess("¡Disponibilidades agregadas!", "Se registraron todos los días de 08:00 a 19:00.");
+                                } catch (err) {
+                                    close();
+                                    showError("Error", "No se pudieron registrar las disponibilidades.");
+                                }
+                            }}
+                        >
+                            Agregar disponibilidad automática (todos los días)
+                        </Button>
+                    </>
                 ) : (
                     [...disponibilidades]
                         .sort((a, b) => {
-                            const ordenDias = [
-                                "MONDAY",
-                                "TUESDAY",
-                                "WEDNESDAY",
-                                "THURSDAY",
-                                "FRIDAY",
-                                "SATURDAY",
-                                "SUNDAY",
-                            ];
-
+                            const ordenDias = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
                             const diaA = ordenDias.indexOf(a.diaSemana);
                             const diaB = ordenDias.indexOf(b.diaSemana);
-
                             if (diaA !== diaB) return diaA - diaB;
 
-                            // Si es el mismo día, ordenar por hora de inicio
                             const [hA, mA] = a.horaInicio.split(":").map(Number);
                             const [hB, mB] = b.horaInicio.split(":").map(Number);
-                            const minutosA = hA * 60 + mA;
-                            const minutosB = hB * 60 + mB;
-
-                            return minutosA - minutosB;
+                            return (hA * 60 + mA) - (hB * 60 + mB);
                         })
                         .map((d) => (
                             <DisponibilidadItem key={d.id}>
                                 <div>
-                                    <strong>{d.diaSemana}</strong><br />
+                                    <strong>{diasSemanaTraducidos[d.diaSemana]}</strong><br />
                                     {d.horaInicio.slice(0, 5)} – {d.horaFin.slice(0, 5)}
                                 </div>
                                 <DeleteBtn onClick={() => handleEliminar(d.id)}>Eliminar</DeleteBtn>
