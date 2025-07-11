@@ -73,7 +73,7 @@ const Registro = () => {
     return (
         <RegisterContainer>
             <RegisterForm>
-                <Logo>PropiedadesPlus</Logo>
+                <Logo>VisitaFácil</Logo>
                 <form onSubmit={handleSubmit}>
                     <InputField>
                         <Label htmlFor="nombre">Nombre</Label>
