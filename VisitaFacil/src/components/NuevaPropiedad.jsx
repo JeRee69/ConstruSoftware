@@ -227,7 +227,7 @@ const NuevaPropiedad = () => {
 
                 if (!uploadResp.ok) {
                     showError("Propiedad creada", "Error al subir imágenes. Puedes agregarlas luego.", "Continuar").then(() =>
-                        navigate("/admin/catalogo")
+                        navigate("/catalogo")
                     );
                     return;
                 }
@@ -236,7 +236,7 @@ const NuevaPropiedad = () => {
             }
 
             showSuccess("¡Propiedad creada!", "Se agregó correctamente al catálogo.", "Ver catálogo").then(() => {
-                navigate("/admin/catalogo");
+                navigate("/catalogo");
             });
         } catch (error) {
             close();
@@ -246,7 +246,7 @@ const NuevaPropiedad = () => {
 
     return (
         <Container>
-            <BackButton type="button" onClick={() => navigate("/admin/catalogo")}>← Volver al Catálogo</BackButton>
+            <BackButton type="button" onClick={() => navigate("/catalogo")}>← Volver al Catálogo</BackButton>
             <Titulo>Agregar Nueva Propiedad</Titulo>
             <form onSubmit={handleSubmit}>
                 <Label>Título</Label>
