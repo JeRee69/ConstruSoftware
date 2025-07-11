@@ -3,16 +3,37 @@ version: '3.8'
 services:
   backend:
     build: ./visita-facil-api
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://34.176.71.63:3306/visita_facil
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: visitafacil2025#
+    expose:
+      - "8080"
+    env_file:
+      - .env
+    networks:
+      - proxy
 
   frontend:
     build: ./VisitaFacil
-    ports:
-      - "5173:80"
+    expose:
+      - "80"
     depends_on:
       - backend
+    networks:
+      - proxy
+
+  npm:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: npm
+    restart: always
+    ports:
+      - "80:80"       # HTTP público
+      - "81:81"       # Interfaz web
+      - "443:443"     # HTTPS
+    volumes:
+      - ./npm/data:/data
+      - ./npm/letsencrypt:/etc/letsencrypt
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    driver: bridge
+

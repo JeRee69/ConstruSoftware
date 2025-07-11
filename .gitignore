@@ -22,3 +22,6 @@ VisitaFacil/.env/
 Thumbs.db
 
 .env
+!VisitaFacil/.env.production
+
+npm/

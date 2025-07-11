@@ -1,4 +1,4 @@
-/* Estilos personalizados para SweetAlert2 */
+
 .sweet-alert-popup {
   border-radius: 12px !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12) !important;
@@ -17,7 +17,7 @@
   opacity: 0.8 !important;
 }
 
-/* Personalizar los iconos */
+
 .swal2-icon.swal2-success [class^='swal2-success-line'] {
   background-color: #4caf50 !important;
 }
@@ -45,7 +45,7 @@
   color: #9c27b0 !important;
 }
 
-/* Personalizar los botones */
+
 .swal2-styled.swal2-confirm {
   background-color: #d32f2f !important;
   border: none !important;
@@ -75,7 +75,7 @@
   transform: translateY(-1px) !important;
 }
 
-/* Animaciones personalizadas */
+
 .swal2-popup.swal2-show {
   animation: swal2-show 0.3s ease-out !important;
 }
@@ -91,13 +91,13 @@
   }
 }
 
-/* Overlay personalizado */
+
 .swal2-backdrop-show {
   background-color: rgba(0, 0, 0, 0.5) !important;
   backdrop-filter: blur(3px) !important;
 }
 
-/* Loading spinner personalizado */
+
 .swal2-loader {
   border-color: #d32f2f transparent #d32f2f transparent !important;
 }

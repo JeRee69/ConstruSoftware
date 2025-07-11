@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-// 🎨 Estilos
+
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100%;

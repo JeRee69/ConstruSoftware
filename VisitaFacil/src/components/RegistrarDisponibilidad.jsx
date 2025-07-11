@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 
-// Estilos
+
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100%;

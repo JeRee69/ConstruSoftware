@@ -1,5 +1,5 @@
-import { Link as RouterLink } from 'react-router-dom';
-import styled from 'styled-components';
+import { Link as RouterLink } from "react-router-dom";
+import styled from "styled-components";
 
 export const NavContainer = styled.nav`
   display: flex;
@@ -8,7 +8,7 @@ export const NavContainer = styled.nav`
   padding: 0.8rem 2rem;
   background-color: var(--color-fondo-card);
   box-shadow: 0 2px 10px var(--color-sombra);
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
 `;
 
 export const Logo = styled.div`
@@ -56,9 +56,9 @@ export const NavButton = styled(RouterLink)`
   text-decoration: none;
   cursor: pointer;
   display: inline-flex;
-  align-items: center;   /* 👈 alinea verticalmente */
+  align-items: center;
   justify-content: center;
-  line-height: 1;        /* 👈 asegura altura consistente */
+  line-height: 1;
 
   &:hover {
     opacity: 0.85;
@@ -78,3 +78,56 @@ export const Saludo = styled.div`
   }
 `;
 
+export const Dropdown = styled.div`
+  position: relative;
+  display: inline-block;
+
+  .dropdown-title {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    color: ${({ theme }) => theme.text};
+    transition: color 0.2s;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: ${({ theme }) => theme.background};
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 160px;
+    z-index: 1000;
+    border-radius: 0.5rem;
+  }
+
+  .dropdown-content a {
+    color: ${({ theme }) => theme.text};
+    padding: 0.75rem 1rem;
+    display: block;
+    text-decoration: none;
+  }
+
+  .dropdown-content a:hover {
+    background-color: ${({ theme }) => theme.hover};
+  }
+
+  &:hover .dropdown-content {
+    display: block;
+  }
+
+  .dropdown-content button {
+    background: none;
+    border: none;
+    color: ${({ theme }) => theme.text};
+    padding: 0.75rem 1rem;
+    display: block;
+    text-align: left;
+    width: 100%;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .dropdown-content button:hover {
+    background-color: ${({ theme }) => theme.hover};
+  }
+`;

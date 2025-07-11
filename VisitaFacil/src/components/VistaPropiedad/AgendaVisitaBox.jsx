@@ -1,4 +1,4 @@
-// AgendaVisitaBox.jsx con contenedor de calendario ajustado
+
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-// Estilos CSS para el calendario que se apliquen globalmente
+
 const CalendarStyles = styled.div`
   /* Estilos base del calendario */
   .MuiDateCalendar-root {
@@ -167,7 +167,7 @@ const AgendaVisitaBox = ({ propiedad }) => {
     const [temaOscuro, setTemaOscuro] = useState(false);
     const [forceUpdate, setForceUpdate] = useState(0);
 
-    // Detectar cambios en el tema
+ 
     useEffect(() => {
         const detectarTema = () => {
             const root = document.documentElement;
@@ -177,29 +177,29 @@ const AgendaVisitaBox = ({ propiedad }) => {
             if (esOscuro !== temaOscuro) {
                 console.log('Cambio de tema detectado:', esOscuro ? 'Oscuro' : 'Claro');
                 setTemaOscuro(esOscuro);
-                setForceUpdate(prev => prev + 1); // Forzar re-render
+                setForceUpdate(prev => prev + 1); 
                 
-                // Forzar recalculo de estilos CSS del calendario
+   
                 setTimeout(() => {
                     const calendarios = document.querySelectorAll('.MuiDateCalendar-root');
                     calendarios.forEach(cal => {
                         cal.style.display = 'none';
-                        cal.offsetHeight; // Trigger reflow
+                        cal.offsetHeight; 
                         cal.style.display = '';
                     });
                 }, 100);
             }
         };
 
-        // Detectar tema inicial
+        
         detectarTema();
 
-        // Observar cambios en el style del root
+       
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 if (mutation.type === 'attributes' && 
                     (mutation.attributeName === 'style' || mutation.attributeName === 'data-theme')) {
-                    setTimeout(detectarTema, 50); // Pequeño delay para asegurar que los cambios se apliquen
+                    setTimeout(detectarTema, 50); 
                 }
             });
         });
@@ -209,13 +209,13 @@ const AgendaVisitaBox = ({ propiedad }) => {
             attributeFilter: ['style', 'data-theme']
         });
 
-        // También observar cambios en el body
+      
         observer.observe(document.body, {
             attributes: true,
             attributeFilter: ['style']
         });
 
-        // Verificar cada segundo como respaldo
+        
         const interval = setInterval(detectarTema, 1000);
 
         return () => {
