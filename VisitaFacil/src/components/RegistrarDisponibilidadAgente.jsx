@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useSweetAlert } from "../hooks/useSweetAlert";
+import "../styles/sweetalert-custom.css";
 
 
 const PageWrapper = styled.div`
@@ -105,6 +107,7 @@ const RegistrarDisponibilidadAgente = () => {
     const [finMinutos, setFinMinutos] = useState("00");
     const [error, setError] = useState("");
     const [disponibilidades, setDisponibilidades] = useState([]);
+    const { showConfirm, showSuccess, showError, showLoading, close } = useSweetAlert();
 
     const agente = JSON.parse(localStorage.getItem("usuario"));
     const accountId = agente?.accountId;
@@ -178,11 +181,45 @@ const RegistrarDisponibilidadAgente = () => {
     };
 
     const handleEliminar = async (id) => {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/agentes/${id}`, {
-            method: "DELETE",
-        });
-        if (res.ok) {
-            fetchDisponibilidades();
+        const result = await showConfirm(
+            "¿Eliminar disponibilidad?",
+            "Esta acción eliminará tu disponibilidad para esta fecha y hora.",
+            "Sí, eliminar",
+            "Cancelar"
+        );
+
+        if (result.isConfirmed) {
+            showLoading("Eliminando disponibilidad", "Por favor espera...");
+
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/agentes/${id}`, {
+                    method: "DELETE",
+                });
+
+                close();
+
+                if (res.ok) {
+                    fetchDisponibilidades();
+                    showSuccess(
+                        "¡Disponibilidad eliminada!",
+                        "Tu disponibilidad ha sido eliminada correctamente.",
+                        "Continuar"
+                    );
+                } else {
+                    showError(
+                        "Error al eliminar",
+                        "No se pudo eliminar la disponibilidad. Por favor, inténtalo de nuevo.",
+                        "Reintentar"
+                    );
+                }
+            } catch (error) {
+                close();
+                showError(
+                    "Error de conexión",
+                    "No se pudo conectar con el servidor para eliminar la disponibilidad.",
+                    "Reintentar"
+                );
+            }
         }
     };
 

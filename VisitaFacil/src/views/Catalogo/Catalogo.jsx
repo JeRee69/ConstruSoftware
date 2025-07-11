@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import {
-  PageWrapper,
-  Container,
-  Title,
-  Grid,
-  TitleWrapper,
-  BotonIcono,
-} from "./Catalogo.styles";
-import TarjetaPropiedad from "../../components/Catalogo/TarjetaPropiedad.jsx";
-import Cargando from "../../components/Cargando/Cargando";
+import { useEffect, useState } from "react";
 import { FiPlus } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import Cargando from "../../components/Cargando/Cargando";
+import TarjetaPropiedad from "../../components/Catalogo/TarjetaPropiedad.jsx";
+import { useSweetAlert } from "../../hooks/useSweetAlert";
+import "../../styles/sweetalert-custom.css";
+import {
+    BotonIcono,
+    Container,
+    Grid,
+    PageWrapper,
+    Title,
+    TitleWrapper
+} from "./Catalogo.styles";
 
 const SeccionPropiedades = ({
   titulo,
@@ -56,12 +58,12 @@ const SeccionPropiedades = ({
 };
 
 const Catalogo = () => {
-  const [propiedades, setPropiedades] = useState([]);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-  const location = useLocation();
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const [propiedades, setPropiedades] = useState([]);
+    const [cargando, setCargando] = useState(true);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const { showConfirm, showSuccess, showError, showLoading, close } = useSweetAlert();
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/propiedades/disponibles`)
@@ -79,31 +81,43 @@ const Catalogo = () => {
       });
   }, []);
 
-  // Hacer scroll automático si hay un hash en la URL
-  useEffect(() => {
-    const hash = location.hash;
-    if (hash) {
-      const elemento = document.querySelector(hash);
-      if (elemento) {
-        setTimeout(() => {
-          elemento.scrollIntoView({ behavior: "smooth" });
-        }, 200);
-      }
-    }
-  }, [location]);
+    const handleEliminar = async (id) => {
+        const result = await showConfirm(
+            "¿Eliminar propiedad?",
+            "Esta acción no se puede deshacer. La propiedad será eliminada permanentemente.",
+            "Sí, eliminar",
+            "Cancelar"
+        );
 
-  const handleEliminar = (id) => {
-    if (window.confirm("¿Eliminar esta propiedad?")) {
-      fetch(`${import.meta.env.VITE_API_URL}/propiedades/${id}`, {
-        method: "DELETE",
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Error al eliminar");
-          setPropiedades((prev) => prev.filter((p) => p.id !== id));
-        })
-        .catch((err) => alert(err.message));
-    }
-  };
+        if (result.isConfirmed) {
+            showLoading("Eliminando propiedad", "Por favor espera...");
+
+            try {
+                const res = await fetch(`${import.meta.env.VITE_API_URL}/propiedades/${id}`, {
+                    method: "DELETE",
+                });
+
+                close();
+
+                if (!res.ok) throw new Error("Error al eliminar la propiedad");
+
+                setPropiedades((prev) => prev.filter((p) => p.id !== id));
+                
+                showSuccess(
+                    "¡Propiedad eliminada!",
+                    "La propiedad ha sido eliminada correctamente del catálogo.",
+                    "Continuar"
+                );
+            } catch (err) {
+                close();
+                showError(
+                    "Error al eliminar",
+                    `No se pudo eliminar la propiedad: ${err.message}`,
+                    "Reintentar"
+                );
+            }
+        }
+    };
 
   const filtrarPorTipo = (tipo) => propiedades.filter((p) => p.tipo === tipo);
 
