@@ -61,7 +61,7 @@ const BotonVolver = styled.button`
   transition: background-color 0.2s;
 
   &:hover {
-    background-color: #d32f2f;
+    background-color: #006e75;
     color: white;
   }
 `;
