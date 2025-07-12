@@ -1,33 +1,50 @@
-// BloqueDescripcion.jsx
 import styled from "styled-components";
 
-const DescripcionWrapper = styled.div`
+const PanelWrapper = styled.div`
   background-color: var(--color-fondo-card);
   border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  margin-bottom: 2rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 1.5rem 0;
 `;
 
-const Titulo = styled.h2`
-  font-size: 1.4rem;
+const TituloPanel = styled.h2`
+  font-size: 1.3rem;
+  font-weight: 600;
   color: var(--color-texto);
   margin-bottom: 1rem;
 `;
 
-const Texto = styled.p`
-  color: var(--color-texto);
+const Valor = styled.p`
   font-size: 1rem;
-  line-height: 1.6;
+  color: var(--color-texto);
   white-space: pre-line;
 `;
 
-const BloqueDescripcion = ({ descripcion }) => {
+const TextArea = styled.textarea`
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+`;
+
+const BloqueDescripcion = ({ descripcion, modoEdicion, onChange }) => {
     return (
-        <DescripcionWrapper>
-            <Titulo>Descripción de la propiedad</Titulo>
-            <Texto>{descripcion}</Texto>
-        </DescripcionWrapper>
+        <PanelWrapper>
+            <TituloPanel>Descripción</TituloPanel>
+            {modoEdicion ? (
+                <TextArea
+                    value={descripcion}
+                    onChange={(e) => onChange("descripcion", e.target.value)}
+                />
+            ) : (
+                <Valor>{descripcion}</Valor>
+            )}
+        </PanelWrapper>
     );
 };
 

@@ -84,19 +84,19 @@ const CalendarStyles = styled.div`
   }
 `;
 
-
 const Box = styled.div`
   background-color: var(--color-fondo-card);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 1.25rem 2rem 2rem;
   box-shadow: 0 6px 18px var(--color-sombra);
   max-width: 360px;
   position: sticky;
-  top: 2rem;
+  top: 0;
   align-self: flex-start;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;
 `;
+
 
 const Seccion = styled.div`
   margin-bottom: 1.8rem;
@@ -167,39 +167,39 @@ const AgendaVisitaBox = ({ propiedad }) => {
     const [temaOscuro, setTemaOscuro] = useState(false);
     const [forceUpdate, setForceUpdate] = useState(0);
 
- 
+
     useEffect(() => {
         const detectarTema = () => {
             const root = document.documentElement;
             const colorSecundario = getComputedStyle(root).getPropertyValue('--color-secundario').trim();
             const esOscuro = colorSecundario === '#121212' || colorSecundario === 'rgb(18, 18, 18)';
-            
+
             if (esOscuro !== temaOscuro) {
                 console.log('Cambio de tema detectado:', esOscuro ? 'Oscuro' : 'Claro');
                 setTemaOscuro(esOscuro);
-                setForceUpdate(prev => prev + 1); 
-                
-   
+                setForceUpdate(prev => prev + 1);
+
+
                 setTimeout(() => {
                     const calendarios = document.querySelectorAll('.MuiDateCalendar-root');
                     calendarios.forEach(cal => {
                         cal.style.display = 'none';
-                        cal.offsetHeight; 
+                        cal.offsetHeight;
                         cal.style.display = '';
                     });
                 }, 100);
             }
         };
 
-        
+
         detectarTema();
 
-       
+
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && 
+                if (mutation.type === 'attributes' &&
                     (mutation.attributeName === 'style' || mutation.attributeName === 'data-theme')) {
-                    setTimeout(detectarTema, 50); 
+                    setTimeout(detectarTema, 50);
                 }
             });
         });
@@ -209,13 +209,13 @@ const AgendaVisitaBox = ({ propiedad }) => {
             attributeFilter: ['style', 'data-theme']
         });
 
-      
+
         observer.observe(document.body, {
             attributes: true,
             attributeFilter: ['style']
         });
 
-        
+
         const interval = setInterval(detectarTema, 1000);
 
         return () => {
