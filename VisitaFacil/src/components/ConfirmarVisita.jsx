@@ -41,7 +41,7 @@ const ConfirmarVisita = () => {
       setFormulario({
         nombre: usuario.nombre || "",
         correo: usuario.correo || usuario.email || "",
-        telefono: usuario.telefono || "",
+        telefono: (usuario.telefono || "").replace(/^\+569/, ""), // <-- solo los 8 dígitos
       });
     }
   }, [navigate, usuario]);
@@ -169,7 +169,7 @@ const ConfirmarVisita = () => {
         ? {
             nombre: usuario.nombre || "",
             correo: usuario.correo || usuario.email || "",
-            telefono: usuario.telefono || "",
+            telefono: (usuario.telefono || "").replace(/^\+569/, ""), // <-- solo los 8 dígitos
           }
         : formulario;
 
@@ -322,7 +322,6 @@ const ConfirmarVisita = () => {
             <span
               style={{
                 marginRight: "8px",
-                fontWeight: "bold",
                 fontSize: "1rem",
                 lineHeight: "2.2", 
                 height: "40px", 
