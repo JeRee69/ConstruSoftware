@@ -41,7 +41,7 @@ const ConfirmarVisita = () => {
       setFormulario({
         nombre: usuario.nombre || "",
         correo: usuario.correo || usuario.email || "",
-        telefono: usuario.telefono || "",
+        telefono: (usuario.telefono || "").replace(/^\+569/, ""), 
       });
     }
   }, [navigate, usuario]);
@@ -53,7 +53,7 @@ const ConfirmarVisita = () => {
   const enviarCorreoAgente = async (datosCliente) => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
-        destinatario: "crunchyconjunto@gmail.com",
+        destinatario: "pawearprimero@gmail.com",
         asunto: "Nueva Visita Agendada",
         mensaje: `
 <!DOCTYPE html>
@@ -169,9 +169,30 @@ const ConfirmarVisita = () => {
         ? {
             nombre: usuario.nombre || "",
             correo: usuario.correo || usuario.email || "",
-            telefono: usuario.telefono || "",
+            telefono: (usuario.telefono || "").replace(/^\+569/, ""), // <-- solo los 8 dígitos
           }
         : formulario;
+
+    // Validación de formato de correo electrónico
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(datosAEnviar.correo)) {
+      showWarning(
+        "Correo inválido",
+        "Por favor ingresa un correo electrónico válido (ejemplo@algo.com).",
+        "Entendido"
+      );
+      return;
+    }
+
+    // Validación de formato de teléfono chileno +569XXXXXXXX
+    if (!/^\d{8}$/.test(datosAEnviar.telefono)) {
+      showWarning(
+        "Teléfono inválido",
+        "El número debe tener 8 dígitos después de +569.",
+        "Entendido"
+      );
+      return;
+    }
 
     if (
       !datosAEnviar.nombre.trim() ||
@@ -190,7 +211,7 @@ const ConfirmarVisita = () => {
       idPropiedad: visita.propiedadId,
       nombre: datosAEnviar.nombre,
       correo: datosAEnviar.correo,
-      telefono: datosAEnviar.telefono,
+      telefono: "+569" + datosAEnviar.telefono, // Envía el número completo
       fecha: visita.fecha,
       hora: visita.hora,
     };
@@ -297,13 +318,34 @@ const ConfirmarVisita = () => {
             disabled={enviando}
           />
           <label style={labelStyle}>Teléfono</label>
-          <input
-            name="telefono"
-            value={formulario.telefono}
-            onChange={handleChange}
-            style={inputStyle}
-            disabled={enviando}
-          />
+          <div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
+            <span
+              style={{
+                marginRight: "8px",
+                fontSize: "1rem",
+                lineHeight: "2.2", 
+                height: "40px", 
+                display: "flex",
+                alignItems: "center"
+              }}
+            >
+              +569
+            </span>
+            <input
+              name="telefono"
+              type="text"
+              maxLength={8}
+              pattern="\d{8}"
+              value={formulario.telefono}
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "").slice(0, 8);
+                setFormulario({ ...formulario, telefono: value });
+              }}
+              style={{ ...inputStyle, width: "100%", marginBottom: 0 }}
+              disabled={enviando}
+              placeholder="12345678"
+            />
+          </div>
           <button
             onClick={() => handleSubmit(false)}
             disabled={enviando}

@@ -42,11 +42,17 @@ const Registro = () => {
             return;
         }
 
+        if (!/^\d{8}$/.test(formData.telefono)) {
+            setError('El número debe tener 8 dígitos después de +569.');
+            setIsLoading(false);
+            return;
+        }
+
         const payload = {
             email: formData.email,
             password: formData.password,
             name: `${formData.nombre} ${formData.apellido}`,
-            phone: formData.telefono
+            phone: "+569" + formData.telefono
         };
 
         try {
@@ -73,7 +79,7 @@ const Registro = () => {
     return (
         <RegisterContainer>
             <RegisterForm>
-                <Logo>PropiedadesPlus</Logo>
+                <Logo>VisitaFácil</Logo>
                 <form onSubmit={handleSubmit}>
                     <InputField>
                         <Label htmlFor="nombre">Nombre</Label>
@@ -92,7 +98,32 @@ const Registro = () => {
 
                     <InputField>
                         <Label htmlFor="telefono">Teléfono</Label>
-                        <Input type="tel" id="telefono" name="telefono" value={formData.telefono} onChange={handleChange} required placeholder="+56 9 1234 5678" />
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                            <span style={{
+                                marginRight: "8px",
+                                
+                                fontSize: "1rem",
+                                lineHeight: "2.2",
+                                height: "38px",
+                                display: "flex",
+                                alignItems: "center"
+                            }}>+569</span>
+                            <Input
+                                type="text"
+                                id="telefono"
+                                name="telefono"
+                                value={formData.telefono}
+                                onChange={e => {
+                                    // Solo permite números y máximo 8 dígitos
+                                    const value = e.target.value.replace(/\D/g, "").slice(0, 8);
+                                    setFormData(prev => ({ ...prev, telefono: value }));
+                                }}
+                                required
+                                placeholder="12345678"
+                                maxLength={8}
+                                style={{ width: "100%", marginBottom: 0 }}
+                            />
+                        </div>
                     </InputField>
 
                     <InputField>
