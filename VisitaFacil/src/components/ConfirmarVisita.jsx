@@ -41,7 +41,7 @@ const ConfirmarVisita = () => {
       setFormulario({
         nombre: usuario.nombre || "",
         correo: usuario.correo || usuario.email || "",
-        telefono: (usuario.telefono || "").replace(/^\+569/, ""), // <-- solo los 8 dígitos
+        telefono: (usuario.telefono || "").replace(/^\+569/, ""), 
       });
     }
   }, [navigate, usuario]);
@@ -53,7 +53,7 @@ const ConfirmarVisita = () => {
   const enviarCorreoAgente = async (datosCliente) => {
     try {
       await axios.post(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
-        destinatario: "crunchyconjunto@gmail.com",
+        destinatario: "pawearprimero@gmail.com",
         asunto: "Nueva Visita Agendada",
         mensaje: `
 <!DOCTYPE html>
