@@ -23,7 +23,7 @@ const BarraNav = ({ temaOscuro, setTemaOscuro }) => {
 
   const irASeccionCatalogo = (hash) => {
     if (location.pathname !== "/") {
-      navigate("/");
+      navigate("/catalogo");
       setTimeout(() => {
         window.location.hash = hash;
       }, 200);
@@ -41,7 +41,7 @@ const BarraNav = ({ temaOscuro, setTemaOscuro }) => {
           <Dropdown>
             {/* El texto clickeable que va directo a catálogo */}
             <span
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/catalogo")}
               style={{ cursor: "pointer", userSelect: "none", fontWeight: 500 }}
             >
               Catálogo ▾

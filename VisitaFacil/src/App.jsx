@@ -15,6 +15,7 @@ import Catalogo from "./views/Catalogo/Catalogo.jsx";
 import Login from "./views/Login/Login.jsx";
 import Registro from "./views/Registro/Registro.jsx";
 import CancelarVisita from "./components/CancelarVisita";
+import IntroStats from "./components/IntroStats.jsx";
 
 function App() {
   const [temaOscuro, setTemaOscuro] = useState(false);
@@ -49,7 +50,7 @@ function App() {
       <BarraNav temaOscuro={temaOscuro} setTemaOscuro={setTemaOscuro} />
 
       <Routes>
-        <Route path="/" element={<Catalogo />} />
+        <Route path="/" element={<IntroStats />} />
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
         <Route path="/agenda" element={<Agenda />} />
