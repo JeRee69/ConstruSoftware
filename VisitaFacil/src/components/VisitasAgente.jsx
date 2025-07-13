@@ -386,7 +386,7 @@ const VisitasAgente = () => {
         <Texto>
           <strong>Propiedad:</strong>{" "}
           <LinkPropiedad
-            href={`${import.meta.env.VITE_API_URL}/propiedad/${
+            href={`https://visitafacil.mooo.com/propiedad/${
               visita.idPropiedad
             }`}
             target="_blank"
