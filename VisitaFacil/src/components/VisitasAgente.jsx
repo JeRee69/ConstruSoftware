@@ -8,6 +8,8 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Cargando from "./Cargando/Cargando.jsx";
 import ListaVisitasPorFecha from "./ListaVisitasPorFecha.jsx"; // NUEVO
+import Swal from "sweetalert2";
+import "../styles/sweetalert-custom.css"; // si tienes estilos custom
 
 const Pagina = styled.div`
   min-height: 100vh;
@@ -308,8 +310,22 @@ const VisitasAgente = () => {
         }
     };
 
-    const aceptarVisita = (visitaId) => {
+    const aceptarVisita = async (visitaId) => {
         const visita = pendientes.find((v) => v.id === visitaId);
+
+        const confirmacion = await Swal.fire({
+            title: "¿Aceptar esta visita?",
+            text: `¿Quieres aceptar la visita del cliente ${visita.nombreCliente}?`,
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Sí, aceptar",
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#388e3c",
+            cancelButtonColor: "#d33",
+        });
+
+        if (!confirmacion.isConfirmed) return;
+
         fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/accion`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -317,21 +333,29 @@ const VisitasAgente = () => {
         })
             .then((res) => {
                 if (!res.ok) throw new Error();
-                setMensaje("Visita aceptada con éxito");
-                setError(false);
                 enviarCorreoCliente(visita);
                 fetchVisitas();
-                setTimeout(() => setMensaje(null), 3000);
+                Swal.fire("¡Aceptada!", "La visita fue aceptada correctamente.", "success");
             })
             .catch(() => {
-                setMensaje("Error al aceptar visita");
-                setError(true);
+                Swal.fire("Error", "No se pudo aceptar la visita.", "error");
             });
     };
 
-    const cancelarVisita = (visitaId) => {
-        const confirmar = window.confirm("¿Estás seguro que deseas cancelar esta visita?");
-        if (!confirmar) return;
+
+    const cancelarVisita = async (visitaId) => {
+        const confirmacion = await Swal.fire({
+            title: "¿Cancelar visita?",
+            text: "Esta acción no se puede deshacer. ¿Estás seguro?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, cancelar",
+            cancelButtonText: "No",
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+        });
+
+        if (!confirmacion.isConfirmed) return;
 
         fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/cancelar`, {
             method: "PUT",
@@ -340,16 +364,14 @@ const VisitasAgente = () => {
         })
             .then((res) => {
                 if (!res.ok) throw new Error();
-                setMensaje("Visita cancelada con éxito");
-                setError(false);
                 fetchVisitas();
-                setTimeout(() => setMensaje(null), 3000);
+                Swal.fire("Cancelada", "La visita fue cancelada correctamente.", "success");
             })
             .catch(() => {
-                setMensaje("Error al cancelar la visita");
-                setError(true);
+                Swal.fire("Error", "No se pudo cancelar la visita.", "error");
             });
     };
+
 
     const renderVisita = (visita, mostrarAceptar = false, mostrarBotones = true) => {
         const fechaObj = new Date(visita.fecha);
