@@ -7,14 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.construsoft.visita_facil_api.domain.PropiedadDTO;
@@ -71,5 +64,35 @@ public class PropiedadController {
         propiedadService.eliminarPropiedad(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Propiedad> actualizarPropiedad(@PathVariable int id, @RequestBody Propiedad propiedadActualizada) {
+        Optional<Propiedad> optional = propiedadService.getById(id);
+        if (optional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Propiedad propiedadExistente = optional.get();
+
+        propiedadExistente.setTitulo(propiedadActualizada.getTitulo());
+        propiedadExistente.setDescripcion(propiedadActualizada.getDescripcion());
+        propiedadExistente.setPrecio(propiedadActualizada.getPrecio());
+        propiedadExistente.setTipo(propiedadActualizada.getTipo());
+        propiedadExistente.setUbicacion(propiedadActualizada.getUbicacion());
+        propiedadExistente.setDisponible(propiedadActualizada.isDisponible());
+
+        Propiedad actualizada = propiedadService.save(propiedadExistente);
+        return ResponseEntity.ok(actualizada);
+    }
+
+    @DeleteMapping("/{id}/imagenes")
+    public ResponseEntity<Void> eliminarImagen(
+            @PathVariable int id,
+            @RequestParam("url") String urlImagen) {
+        propiedadService.eliminarImagen(id, urlImagen);
+        return ResponseEntity.noContent().build();
+    }
+
+
 
 }

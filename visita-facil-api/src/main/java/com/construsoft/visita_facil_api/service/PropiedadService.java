@@ -76,4 +76,19 @@ public class PropiedadService {
     }
 
 
+    public Propiedad save(Propiedad propiedadExistente) {
+        return propiedadRepository.save(propiedadExistente);
+    }
+
+    public void eliminarImagen(int id, String url) {
+        Optional<Propiedad> optional = getById(id);
+        if (optional.isEmpty()) return;
+
+        Propiedad propiedad = optional.get();
+        List<String> imagenes = propiedad.getUrlsImagenes();
+        imagenes.removeIf(img -> img.equals(url));
+        propiedad.setUrlsImagenes(imagenes);
+        save(propiedad);
+    }
+
 }
