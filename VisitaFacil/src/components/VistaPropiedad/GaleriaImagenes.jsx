@@ -160,7 +160,7 @@ const GaleriaImagenes = ({ imagenes = [], imagenesNuevas = [], modoEdicion = fal
                                         : onEliminarImagenNueva(index - imagenes.length)
                                 }
                             >
-                                🗑️
+                                ×
                             </BotonEliminar>
                         )}
                     </MiniaturaWrapper>

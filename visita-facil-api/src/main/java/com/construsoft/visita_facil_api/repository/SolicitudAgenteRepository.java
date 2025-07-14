@@ -13,5 +13,7 @@ public interface SolicitudAgenteRepository extends JpaRepository<SolicitudAgente
     List<SolicitudAgente> findByAgenteIdAndEstado(Long agenteId, EstadoSolicitudAgente estado);
     Optional<SolicitudAgente> findByAgenteAndSolicitudVisita(Account agente, SolicitudVisita visita);
     Optional<SolicitudAgente> findBySolicitudVisitaIdAndAgenteId(Long solicitudVisitaId, Long agenteId);
+
+    void deleteBySolicitudVisita(SolicitudVisita visita);
 }
 

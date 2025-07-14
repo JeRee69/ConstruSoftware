@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { useSweetAlert } from "../hooks/useSweetAlert";
 import "../styles/sweetalert-custom.css";
 
-
 const PageWrapper = styled.div`
   min-height: 100vh;
   width: 100%;
@@ -115,6 +114,8 @@ const RegistrarDisponibilidadAgente = () => {
     const horas = Array.from({ length: 12 }, (_, i) => (8 + i).toString().padStart(2, "0"));
     const minutos = ["00", "15", "30", "45"];
 
+    const hoyStr = new Date().toISOString().split("T")[0];
+
     const fetchDisponibilidades = async () => {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/disponibilidad/agentes/${accountId}`);
         if (res.ok) {
@@ -137,6 +138,14 @@ const RegistrarDisponibilidadAgente = () => {
 
         const inicio = parseInt(inicioHora) * 60 + parseInt(inicioMinutos);
         const fin = parseInt(finHora) * 60 + parseInt(finMinutos);
+
+        const hoy = new Date();
+        const fechaSeleccionada = new Date(`${fecha}T00:00`);
+
+        if (fechaSeleccionada < new Date(hoy.toDateString())) {
+            setError("No puedes registrar disponibilidades en fechas pasadas.");
+            return;
+        }
 
         if (fin - inicio < 30) {
             setError("La disponibilidad debe durar al menos 30 minutos.");
@@ -223,6 +232,17 @@ const RegistrarDisponibilidadAgente = () => {
         }
     };
 
+    const formatearFecha = (fechaISO) => {
+        const fecha = new Date(fechaISO);
+        return fecha
+            .toLocaleDateString("es-CL", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+            })
+            .replace(/^./, (c) => c.toUpperCase());
+    };
+
     return (
         <PageWrapper>
             <Content>
@@ -230,7 +250,13 @@ const RegistrarDisponibilidadAgente = () => {
                     <Title>Registrar Disponibilidad</Title>
                     <form onSubmit={handleSubmit}>
                         <Label>Fecha</Label>
-                        <Input type="date" value={fecha} onChange={(e) => setFecha(e.target.value)} required />
+                        <Input
+                            type="date"
+                            value={fecha}
+                            onChange={(e) => setFecha(e.target.value)}
+                            required
+                            min={hoyStr}
+                        />
 
                         <Label>Hora de inicio</Label>
                         <TimeRow>
@@ -267,7 +293,7 @@ const RegistrarDisponibilidadAgente = () => {
                             .map((d) => (
                                 <DisponibilidadItem key={d.id}>
                                     <div>
-                                        <strong>{d.fecha}</strong><br />
+                                        <strong>{formatearFecha(d.fecha)}</strong><br />
                                         {d.horaInicio.slice(0, 5)} – {d.horaFin.slice(0, 5)}
                                     </div>
                                     <DeleteBtn onClick={() => handleEliminar(d.id)}>Eliminar</DeleteBtn>

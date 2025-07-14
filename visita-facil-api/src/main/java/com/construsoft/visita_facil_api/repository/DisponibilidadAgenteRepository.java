@@ -10,4 +10,6 @@ public interface DisponibilidadAgenteRepository extends JpaRepository<Disponibil
     List<DisponibilidadAgente> findByAgenteIdAndFecha(Long agenteId, LocalDate fecha);
     List<DisponibilidadAgente> findByFecha(LocalDate fecha);
     List<DisponibilidadAgente> findByAgenteId(Long accountId);
+    List<DisponibilidadAgente> findByAgenteIdAndFechaGreaterThanEqual(Long agenteId, LocalDate fecha);
+
 }

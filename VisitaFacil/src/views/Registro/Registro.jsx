@@ -1,4 +1,3 @@
-// src/vistas/registro/registro.jsx
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -12,6 +11,7 @@ import {
     ErrorMessage,
     LoginLink
 } from './Registro.styles.js';
+import Swal from 'sweetalert2';
 
 const Registro = () => {
     const [formData, setFormData] = useState({
@@ -25,6 +25,9 @@ const Registro = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const esModoAgente = usuario?.rol === "ADMINISTRADOR";
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -52,11 +55,14 @@ const Registro = () => {
             email: formData.email,
             password: formData.password,
             name: `${formData.nombre} ${formData.apellido}`,
-            phone: "+569" + formData.telefono
+            phone: "+569" + formData.telefono,
+            rol: esModoAgente ? "AGENTE" : null
         };
 
+        const url = `${import.meta.env.VITE_API_URL}/account/register`;
+
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/account/register`, {
+            const response = await fetch(url, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
@@ -64,13 +70,42 @@ const Registro = () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                setError(errorData.message || 'Error al registrar el usuario.');
+
+                if (esModoAgente) {
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Error al crear el agente',
+                        text: errorData.message || 'Hubo un problema. Intenta nuevamente.',
+                        confirmButtonText: 'Volver a intentar'
+                    });
+                } else {
+                    setError(errorData.message || 'Error al registrar el usuario.');
+                }
                 return;
             }
 
-            navigate('/', { state: { registrationSuccess: true } });
+            if (esModoAgente) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Agente creado exitosamente',
+                    confirmButtonText: 'Volver al catálogo'
+                });
+                navigate("/catalogo");
+            } else {
+                navigate('/', { state: { registrationSuccess: true } });
+            }
+
         } catch (err) {
-            setError('Ocurrió un error al registrar. Por favor, intente más tarde.');
+            if (esModoAgente) {
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Error al crear el agente',
+                    text: 'Ocurrió un error inesperado.',
+                    confirmButtonText: 'Volver a intentar'
+                });
+            } else {
+                setError('Ocurrió un error al registrar. Por favor, intente más tarde.');
+            }
         } finally {
             setIsLoading(false);
         }
@@ -79,21 +114,43 @@ const Registro = () => {
     return (
         <RegisterContainer>
             <RegisterForm>
-                <Logo>VisitaFácil</Logo>
+                <Logo>VisitaFácil {esModoAgente && "• Crear Agente"}</Logo>
                 <form onSubmit={handleSubmit}>
                     <InputField>
                         <Label htmlFor="nombre">Nombre</Label>
-                        <Input id="nombre" name="nombre" value={formData.nombre} onChange={handleChange} required placeholder="Ej: Juan" />
+                        <Input
+                            id="nombre"
+                            name="nombre"
+                            value={formData.nombre}
+                            onChange={handleChange}
+                            required
+                            placeholder="Ej: Juan"
+                        />
                     </InputField>
 
                     <InputField>
                         <Label htmlFor="apellido">Apellido</Label>
-                        <Input id="apellido" name="apellido" value={formData.apellido} onChange={handleChange} required placeholder="Ej: Pérez" />
+                        <Input
+                            id="apellido"
+                            name="apellido"
+                            value={formData.apellido}
+                            onChange={handleChange}
+                            required
+                            placeholder="Ej: Pérez"
+                        />
                     </InputField>
 
                     <InputField>
                         <Label htmlFor="email">Correo Electrónico</Label>
-                        <Input type="email" id="email" name="email" value={formData.email} onChange={handleChange} required placeholder="corredor@propiedades.com" />
+                        <Input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="correo@propiedades.com"
+                        />
                     </InputField>
 
                     <InputField>
@@ -101,7 +158,6 @@ const Registro = () => {
                         <div style={{ display: "flex", alignItems: "center" }}>
                             <span style={{
                                 marginRight: "8px",
-                                
                                 fontSize: "1rem",
                                 lineHeight: "2.2",
                                 height: "38px",
@@ -114,7 +170,6 @@ const Registro = () => {
                                 name="telefono"
                                 value={formData.telefono}
                                 onChange={e => {
-                                    // Solo permite números y máximo 8 dígitos
                                     const value = e.target.value.replace(/\D/g, "").slice(0, 8);
                                     setFormData(prev => ({ ...prev, telefono: value }));
                                 }}
@@ -128,23 +183,44 @@ const Registro = () => {
 
                     <InputField>
                         <Label htmlFor="password">Contraseña</Label>
-                        <Input type="password" id="password" name="password" value={formData.password} onChange={handleChange} required placeholder="••••••••" minLength="6" />
+                        <Input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                            placeholder="••••••••"
+                            minLength="6"
+                        />
                     </InputField>
 
                     <InputField>
                         <Label htmlFor="confirmPassword">Confirmar Contraseña</Label>
-                        <Input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} required placeholder="••••••••" />
+                        <Input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            required
+                            placeholder="••••••••"
+                        />
                     </InputField>
 
                     <Button type="submit" disabled={isLoading}>
-                        {isLoading ? 'Registrando...' : 'Registrarse'}
+                        {isLoading
+                            ? (esModoAgente ? 'Creando...' : 'Registrando...')
+                            : (esModoAgente ? 'Crear Agente' : 'Registrarse')}
                     </Button>
 
                     {error && <ErrorMessage>{error}</ErrorMessage>}
 
-                    <LoginLink>
-                        ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión aquí</Link>
-                    </LoginLink>
+                    {!esModoAgente && (
+                        <LoginLink>
+                            ¿Ya tienes una cuenta? <Link to="/login">Inicia sesión aquí</Link>
+                        </LoginLink>
+                    )}
                 </form>
             </RegisterForm>
         </RegisterContainer>

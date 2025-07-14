@@ -1,5 +1,7 @@
 package com.construsoft.visita_facil_api.service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +49,15 @@ public class SolicitudAgenteService {
             System.out.println(solicitudVisita.getFecha());
         }
 
+        LocalDate hoy = LocalDate.now();
+        LocalTime ahora = LocalTime.now();
+
         return visitasPendientes.stream()
+                .filter(solicitud ->
+                        // fecha posterior o igual a hoy, y si es hoy debe ser en el futuro
+                        solicitud.getFecha().isAfter(hoy) ||
+                                (solicitud.getFecha().isEqual(hoy) && solicitud.getHoraInicio().isAfter(ahora))
+                )
                 .filter(solicitud ->
                         disponibilidades.stream().anyMatch(disp ->
                                 disp.getFecha().equals(solicitud.getFecha()) &&
@@ -73,6 +83,20 @@ public class SolicitudAgenteService {
     public List<SolicitudAgenteDTO> obtenerSolicitudesPorAgenteYEstado(Long agenteId, EstadoSolicitudAgente estado) {
         List<SolicitudAgente> solicitudes = solicitudAgenteRepository.findByAgenteIdAndEstado(agenteId, estado);
 
+        LocalDate hoy = LocalDate.now();
+        LocalTime ahora = LocalTime.now();
+
+        // Si es estado ACEPTADA, filtrar solo las futuras
+        if (estado == EstadoSolicitudAgente.ACEPTADA) {
+            solicitudes = solicitudes.stream()
+                    .filter(sa -> {
+                        LocalDate fecha = sa.getSolicitudVisita().getFecha();
+                        LocalTime hora = sa.getSolicitudVisita().getHoraInicio();
+                        return fecha.isAfter(hoy) || (fecha.isEqual(hoy) && hora.isAfter(ahora));
+                    })
+                    .toList();
+        }
+
         return solicitudes.stream().map(solicitud -> {
             SolicitudVisita visita = solicitud.getSolicitudVisita();
             return new SolicitudAgenteDTO(
@@ -90,6 +114,39 @@ public class SolicitudAgenteService {
         }).toList();
     }
 
+    public List<SolicitudAgenteDTO> obtenerSolicitudesRealizadas(Long agenteId) {
+        List<SolicitudAgente> solicitudes = solicitudAgenteRepository.findByAgenteIdAndEstado(agenteId, EstadoSolicitudAgente.ACEPTADA);
+
+        LocalDate hoy = LocalDate.now();
+        LocalTime ahora = LocalTime.now();
+
+        return solicitudes.stream()
+                .filter(sa -> {
+                    SolicitudVisita visita = sa.getSolicitudVisita();
+                    // solo si NO está cancelada
+                    if (visita.getEstado() == EstadoSolicitudVisita.CANCELADA) return false;
+
+                    LocalDate fecha = visita.getFecha();
+                    LocalTime hora = visita.getHoraInicio();
+                    return fecha.isBefore(hoy) || (fecha.isEqual(hoy) && hora.isBefore(ahora));
+                })
+                .map(solicitud -> {
+                    SolicitudVisita visita = solicitud.getSolicitudVisita();
+                    return new SolicitudAgenteDTO(
+                            solicitud.getId(),
+                            visita.getPropiedad().getId(),
+                            visita.getPropiedad().getTitulo(),
+                            visita.getNombreCliente(),
+                            visita.getCorreoCliente(),
+                            visita.getTelefonoCliente(),
+                            visita.getPropiedad().getUbicacion(),
+                            visita.getFecha().toString(),
+                            visita.getHoraInicio().toString(),
+                            solicitud.getEstado().name()
+                    );
+                })
+                .toList();
+    }
 
     public void procesarAccion(RespuestaSolicitudAgenteDTO dto) {
         Long agenteId = dto.getAgenteId();

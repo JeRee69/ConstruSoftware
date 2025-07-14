@@ -46,4 +46,10 @@ public class SolicitudAgenteController {
         return ResponseEntity.ok("Acción procesada con éxito");
     }
 
+    @GetMapping("/{agenteId}/realizadas")
+    public List<SolicitudAgenteDTO> obtenerRealizadas(@PathVariable Long agenteId) {
+        return solicitudAgenteService.obtenerSolicitudesRealizadas(agenteId);
+    }
+
+
 }
