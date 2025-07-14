@@ -33,66 +33,65 @@ const BarraNav = ({ temaOscuro, setTemaOscuro }) => {
   };
 
   return (
-    <NavContainer>
-      <NavSectionLeft>
-        <Logo onClick={() => navigate("/")}>VisitaFácil</Logo>
-        <NavLinks>
-          {/* Contenedor para el texto clickeable y el dropdown */}
-          <Dropdown>
-            {/* El texto clickeable que va directo a catálogo */}
+      <NavContainer>
+        <NavSectionLeft>
+          <Logo onClick={() => navigate("/")}>VisitaFácil</Logo>
+          <NavLinks>
+            {/* Catálogo con dropdown */}
+            <Dropdown>
             <span
-              onClick={() => navigate("/catalogo")}
-              style={{ cursor: "pointer", userSelect: "none", fontWeight: 500 }}
+                onClick={() => navigate("/catalogo")}
+                style={{ cursor: "pointer", userSelect: "none", fontWeight: 500 }}
             >
               Catálogo ▾
             </span>
+              <div className="dropdown-content">
+                <button onClick={() => irASeccionCatalogo("#casas")}>Casas</button>
+                <button onClick={() => irASeccionCatalogo("#parcelas")}>Parcelas</button>
+                <button onClick={() => irASeccionCatalogo("#departamentos")}>Departamentos</button>
+              </div>
+            </Dropdown>
 
-            {/* El dropdown que se muestra al hover */}
-            <div className="dropdown-content">
-              <button onClick={() => irASeccionCatalogo("#casas")}>
-                Casas
-              </button>
-              <button onClick={() => irASeccionCatalogo("#parcelas")}>
-                Parcelas
-              </button>
-              <button onClick={() => irASeccionCatalogo("#departamentos")}>
-                Departamentos
-              </button>
-            </div>
-          </Dropdown>
+            {/* Crear Agente solo visible para administradores */}
+            {usuario?.rol === "ADMINISTRADOR" && (
+                <Link to="/registro">Crear Agente</Link>
+            )}
 
-          {usuario?.rol === "AGENTE" && (
-            <>
-              <Link to="/agente/disponibilidad">Disponibilidad</Link>
-              <Link to="/visitas-agente">Solicitudes</Link>
-            </>
+            <Link to="/historial">Ver Historial</Link>
+
+            {usuario?.rol === "AGENTE" && (
+                <>
+                  <Link to="/agente/disponibilidad">Disponibilidad</Link>
+                  <Link to="/visitas-agente">Solicitudes</Link>
+                </>
+            )}
+          </NavLinks>
+        </NavSectionLeft>
+
+        <NavSectionRight>
+          <ThemeToggle temaOscuro={temaOscuro} setTemaOscuro={setTemaOscuro} />
+
+          {usuario ? (
+              <>
+                <Saludo>
+                  Hola,
+                  <br />
+                  <strong>
+                    {usuario.rol === "ADMINISTRADOR" ? "Admin" : usuario.nombre}
+                  </strong>
+                </Saludo>
+
+                <NavButton as="button" onClick={logout}>
+                  Cerrar Sesión
+                </NavButton>
+              </>
+          ) : (
+              <NavButton to="/login">Iniciar Sesión</NavButton>
           )}
-
-          <Link to="/historial">Ver Historial</Link>
-        </NavLinks>
-      </NavSectionLeft>
-
-      <NavSectionRight>
-        <ThemeToggle temaOscuro={temaOscuro} setTemaOscuro={setTemaOscuro} />
-        {usuario ? (
-          <>
-            <Saludo>
-              Hola,
-              <br />
-              <strong>
-                {usuario.rol === "ADMINISTRADOR" ? "Admin" : usuario.nombre}
-              </strong>
-            </Saludo>
-            <NavButton as="button" onClick={logout}>
-              Cerrar Sesión
-            </NavButton>
-          </>
-        ) : (
-          <NavButton to="/login">Iniciar Sesión</NavButton>
-        )}
-      </NavSectionRight>
-    </NavContainer>
+        </NavSectionRight>
+      </NavContainer>
   );
 };
 
 export default BarraNav;
+
