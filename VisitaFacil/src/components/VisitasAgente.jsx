@@ -1,12 +1,13 @@
 import {
-  ChevronLeft,
-  ChevronRight,
-  CopyCheck,
-  MessageCircleMore,
+    ChevronLeft,
+    ChevronRight,
+    CopyCheck,
+    MessageCircleMore,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Cargando from "./Cargando/Cargando.jsx";
+import ListaVisitasPorFecha from "./ListaVisitasPorFecha.jsx"; // NUEVO
 
 const Pagina = styled.div`
   min-height: 100vh;
@@ -24,24 +25,6 @@ const Contenido = styled.div`
   border-radius: 16px;
   box-shadow: 0 6px 16px var(--color-sombra);
   padding: 2rem;
-`;
-
-const TituloSeccion = styled.h2`
-  color: var(--color-texto);
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--color-border);
-  padding-bottom: 0.5rem;
-`;
-
-const Subtitulo = styled.h3`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-  color: var(--color-texto);
 `;
 
 const Card = styled.div`
@@ -111,33 +94,7 @@ const Mensaje = styled.div`
   text-align: center;
   border: 1px solid
     ${({ error }) =>
-      error ? "rgba(244, 67, 54, 0.3)" : "rgba(76, 175, 80, 0.3)"};
-`;
-
-const FlechaIcono = styled.button`
-  background: none;
-  border: none;
-  padding: 0.4rem;
-  border-radius: 6px;
-  color: var(--color-texto);
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background-color: var(--color-border);
-  }
-
-  &:disabled {
-    color: var(--color-texto);
-    opacity: 0.4;
-    cursor: default;
-    background: none;
-  }
-
-  svg {
-    width: 28px;
-    height: 28px;
-  }
+    error ? "rgba(244, 67, 54, 0.3)" : "rgba(76, 175, 80, 0.3)"};
 `;
 
 const LinkPropiedad = styled.a`
@@ -179,87 +136,116 @@ const MensajeVacio = styled.p`
 `;
 
 const VisitasAgente = () => {
-  const usuario = JSON.parse(localStorage.getItem("usuario"));
-  const agenteId = usuario?.accountId;
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+    const agenteId = usuario?.accountId;
 
-  const [pendientes, setPendientes] = useState([]);
-  const [aceptadasPorFecha, setAceptadasPorFecha] = useState({});
-  const [fechasAceptadas, setFechasAceptadas] = useState([]);
-  const [fechaIndex, setFechaIndex] = useState(0);
+    const [pendientes, setPendientes] = useState([]);
+    const [pendientesAgrupadas, setPendientesAgrupadas] = useState({});
+    const [fechasPendientes, setFechasPendientes] = useState([]);
 
-  const [mensaje, setMensaje] = useState(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+    const [aceptadasPorFecha, setAceptadasPorFecha] = useState({});
+    const [fechasAceptadas, setFechasAceptadas] = useState([]);
 
-  const fechaActual = fechasAceptadas[fechaIndex];
+    const [realizadasPorFecha, setRealizadasPorFecha] = useState({});
+    const [fechasRealizadas, setFechasRealizadas] = useState([]);
 
-  const fetchVisitas = () => {
-    setLoading(true);
+    const [mensaje, setMensaje] = useState(null);
+    const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/${agenteId}`)
-      .then((res) => res.json())
-      .then((data) => setPendientes(data));
+    const fetchVisitas = () => {
+        setLoading(true);
 
-    fetch(
-      `${
-        import.meta.env.VITE_API_URL
-      }/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        const agrupado = {};
-        data.forEach((v) => {
-          if (!agrupado[v.fecha]) agrupado[v.fecha] = [];
-          agrupado[v.fecha].push(v);
-        });
+        // PENDIENTES
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/${agenteId}`)
+            .then((res) => res.json())
+            .then((data) => {
+                const agrupadas = {};
+                data.forEach((v) => {
+                    if (!agrupadas[v.fecha]) agrupadas[v.fecha] = [];
+                    agrupadas[v.fecha].push(v);
+                });
+                for (const fecha in agrupadas) {
+                    agrupadas[fecha].sort((a, b) => a.hora.localeCompare(b.hora));
+                }
+                const ordenadas = Object.keys(agrupadas).sort();
+                setPendientesAgrupadas(agrupadas);
+                setFechasPendientes(ordenadas);
+                setPendientes(data);
+            });
 
-        for (const fecha in agrupado) {
-          agrupado[fecha].sort((a, b) => a.hora.localeCompare(b.hora));
-        }
+        // ACEPTADAS FUTURAS
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/${agenteId}/estado?estado=ACEPTADA`)
+            .then((res) => res.json())
+            .then((data) => {
+                const agrupado = {};
+                data.forEach((v) => {
+                    if (!agrupado[v.fecha]) agrupado[v.fecha] = [];
+                    agrupado[v.fecha].push(v);
+                });
+                for (const fecha in agrupado) {
+                    agrupado[fecha].sort((a, b) => a.hora.localeCompare(b.hora));
+                }
+                const ordenadas = Object.keys(agrupado).sort();
+                setAceptadasPorFecha(agrupado);
+                setFechasAceptadas(ordenadas);
+            });
 
-        const ordenadas = Object.keys(agrupado).sort();
-        setAceptadasPorFecha(agrupado);
-        setFechasAceptadas(ordenadas);
-        setFechaIndex(0);
-        setLoading(false);
-      });
-  };
+        // REALIZADAS (aceptadas y ya pasadas)
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/${agenteId}/realizadas`)
+            .then((res) => res.json())
+            .then((data) => {
+                const agrupado = {};
+                data.forEach((v) => {
+                    if (!agrupado[v.fecha]) agrupado[v.fecha] = [];
+                    agrupado[v.fecha].push(v);
+                });
+                for (const fecha in agrupado) {
+                    agrupado[fecha].sort((a, b) => a.hora.localeCompare(b.hora));
+                }
+                const ordenadas = Object.keys(agrupado).sort();
+                setRealizadasPorFecha(agrupado);
+                setFechasRealizadas(ordenadas);
+                setLoading(false); // ✅ solo aquí para asegurarte que terminó todo
+            });
+    };
 
-  useEffect(() => {
-    if (agenteId) fetchVisitas();
-  }, [agenteId]);
 
-  const copiarCorreo = (correo) => {
-    navigator.clipboard.writeText(correo);
-    setMensaje("Correo copiado al portapapeles");
-    setError(false);
-    setTimeout(() => setMensaje(null), 2000);
-  };
+    useEffect(() => {
+        if (agenteId) fetchVisitas();
+    }, [agenteId]);
 
-  const enviarCorreoCliente = async (visita) => {
-    try {
-      // Crear fecha/hora inicio y fin en formato de Google Calendar
-      const start = new Date(`${visita.fecha}T${visita.hora}`);
-      const end = new Date(start.getTime() + 60 * 60 * 1000); // 1 hora de duración
+    const copiarCorreo = (correo) => {
+        navigator.clipboard.writeText(correo);
+        setMensaje("Correo copiado al portapapeles");
+        setError(false);
+        setTimeout(() => setMensaje(null), 2000);
+    };
 
-      const formatDate = (date) =>
-        date.toISOString().replace(/[-:]|\.\d{3}/g, ""); // formato: 20250626T150000Z
+    const enviarCorreoCliente = async (visita) => {
+        try {
+            // Crear fecha/hora inicio y fin en formato de Google Calendar
+            const start = new Date(`${visita.fecha}T${visita.hora}`);
+            const end = new Date(start.getTime() + 60 * 60 * 1000); // 1 hora de duración
 
-      const startFormatted = formatDate(start);
-      const endFormatted = formatDate(end);
+            const formatDate = (date) =>
+                date.toISOString().replace(/[-:]|\.\d{3}/g, ""); // formato: 20250626T150000Z
 
-      // Crear enlace a Google Calendar
-      const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Visita+Propiedad&dates=${startFormatted}/${endFormatted}&details=Visita+a+la+propiedad+en+${encodeURIComponent(
-        visita.direccionPropiedad
-      )}&location=${encodeURIComponent(
-        visita.direccionPropiedad
-      )}&sf=true&output=xml`;
+            const startFormatted = formatDate(start);
+            const endFormatted = formatDate(end);
 
-      // URL para cancelar la visita
-      const cancelarUrl = `https://visitafacil.mooo.com/cancelar-visita?id=${visita.id}`;
+            // Crear enlace a Google Calendar
+            const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Visita+Propiedad&dates=${startFormatted}/${endFormatted}&details=Visita+a+la+propiedad+en+${encodeURIComponent(
+                visita.direccionPropiedad
+            )}&location=${encodeURIComponent(
+                visita.direccionPropiedad
+            )}&sf=true&output=xml`;
 
-      // Cuerpo del mensaje con enlace incluido
-      const mensaje = `
+            // URL para cancelar la visita
+            const cancelarUrl = `https://visitafacil.mooo.com/cancelar-visita?id=${visita.id}`;
+
+            // Cuerpo del mensaje con enlace incluido
+            const mensaje = `
 <div style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; padding: 1rem;">
   <h2 style="color: #d32f2f;">¡Tu visita ha sido aceptada!</h2>
   <p>Hola <strong>${visita.nombreCliente}</strong>,</p>
@@ -308,211 +294,124 @@ const VisitasAgente = () => {
 </div>
 `;
 
-      await fetch(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          destinatario: visita.correoCliente,
-          asunto: "Visita Aceptada ✔️",
-          mensaje: mensaje,
-        }),
-      });
-    } catch (error) {
-      console.error("Error al enviar correo al cliente:", error);
-    }
-  };
+            await fetch(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    destinatario: visita.correoCliente,
+                    asunto: "Visita Aceptada ✔️",
+                    mensaje: mensaje,
+                }),
+            });
+        } catch (error) {
+            console.error("Error al enviar correo al cliente:", error);
+        }
+    };
 
-  const aceptarVisita = (visitaId) => {
-    const visita = pendientes.find((v) => v.id === visitaId);
-    fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/accion`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        solicitudVisitaId: visitaId,
-        agenteId: agenteId,
-        nuevoEstado: "ACEPTADA",
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error();
-        setMensaje("Visita aceptada con éxito");
-        setError(false);
-        enviarCorreoCliente(visita);
-        fetchVisitas();
-        setTimeout(() => setMensaje(null), 3000); // 🔥 aquí desaparece
-      })
-      .catch(() => {
-        setMensaje("Error al aceptar visita");
-        setError(true);
-      });
-  };
+    const aceptarVisita = (visitaId) => {
+        const visita = pendientes.find((v) => v.id === visitaId);
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/accion`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ solicitudVisitaId: visitaId, agenteId, nuevoEstado: "ACEPTADA" }),
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error();
+                setMensaje("Visita aceptada con éxito");
+                setError(false);
+                enviarCorreoCliente(visita);
+                fetchVisitas();
+                setTimeout(() => setMensaje(null), 3000);
+            })
+            .catch(() => {
+                setMensaje("Error al aceptar visita");
+                setError(true);
+            });
+    };
 
-  const cancelarVisita = (visitaId) => {
-    const confirmar = window.confirm(
-      "¿Estás seguro que deseas cancelar esta visita?"
-    );
-    if (!confirmar) return;
+    const cancelarVisita = (visitaId) => {
+        const confirmar = window.confirm("¿Estás seguro que deseas cancelar esta visita?");
+        if (!confirmar) return;
 
-    fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/cancelar`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        solicitudVisitaId: visitaId,
-        agenteId: agenteId,
-      }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error();
-        setMensaje("Visita cancelada con éxito");
-        setError(false);
-        fetchVisitas();
-        setTimeout(() => setMensaje(null), 3000); // 🔥 aquí desaparece
-      })
-      .catch(() => {
-        setMensaje("Error al cancelar la visita");
-        setError(true);
-      });
-  };
+        fetch(`${import.meta.env.VITE_API_URL}/solicitudes-agente/cancelar`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ solicitudVisitaId: visitaId, agenteId }),
+        })
+            .then((res) => {
+                if (!res.ok) throw new Error();
+                setMensaje("Visita cancelada con éxito");
+                setError(false);
+                fetchVisitas();
+                setTimeout(() => setMensaje(null), 3000);
+            })
+            .catch(() => {
+                setMensaje("Error al cancelar la visita");
+                setError(true);
+            });
+    };
 
-  const renderVisita = (visita, mostrarBoton = false) => {
-    const fechaObj = new Date(visita.fecha);
-    const diaSemana = new Intl.DateTimeFormat("es-CL", {
-      weekday: "long",
-    }).format(fechaObj);
-    const fechaFormateada = visita.fecha.split("-").reverse().join("-");
+    const renderVisita = (visita, mostrarAceptar = false, mostrarBotones = true) => {
+        const fechaObj = new Date(visita.fecha);
+        const diaSemana = new Intl.DateTimeFormat("es-CL", { weekday: "long" }).format(fechaObj);
+        const fechaFormateada = visita.fecha.split("-").reverse().join("-");
+
+        return (
+            <Card key={visita.id}>
+                <Texto><strong>Propiedad:</strong> <LinkPropiedad href={`https://visitafacil.mooo.com/propiedad/${visita.idPropiedad}`} target="_blank" rel="noopener noreferrer">{visita.tituloPropiedad}</LinkPropiedad></Texto>
+                <Texto><strong>Ubicación:</strong> {visita.direccionPropiedad}</Texto>
+                <Texto><strong>Cliente:</strong> {visita.nombreCliente}</Texto>
+                <Texto><strong>Teléfono:</strong> <LinkWhatsapp href={`https://wa.me/${visita.telefonoCliente}`} target="_blank">{visita.telefonoCliente}<MessageCircleMore size={18} style={{ marginLeft: "8px", verticalAlign: "middle" }} /></LinkWhatsapp></Texto>
+                <Texto><strong>Correo:</strong> <Copiable onClick={() => copiarCorreo(visita.correoCliente)}>{visita.correoCliente}<CopyCheck size={16} style={{ marginLeft: "8px", verticalAlign: "middle" }} /></Copiable></Texto>
+                <Texto><strong>Fecha:</strong> {diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)} {fechaFormateada} a las {visita.hora}</Texto>
+
+                {mostrarBotones && (
+                    mostrarAceptar ? (
+                        <BotonAceptar onClick={() => aceptarVisita(visita.id)}>Aceptar visita</BotonAceptar>
+                    ) : (
+                        <BotonCancelar onClick={() => cancelarVisita(visita.id)}>Cancelar visita</BotonCancelar>
+                    )
+                )}
+            </Card>
+        );
+    };
+
 
     return (
-      <Card key={visita.id}>
-        <Texto>
-          <strong>Propiedad:</strong>{" "}
-          <LinkPropiedad
-            href={`${import.meta.env.VITE_API_URL}/propiedad/${
-              visita.idPropiedad
-            }`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {visita.tituloPropiedad}
-          </LinkPropiedad>
-        </Texto>
+        <Pagina>
+            <Contenido>
+                {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
 
-        <Texto>
-          <strong>Ubicación:</strong> {visita.direccionPropiedad}
-        </Texto>
-        <Texto>
-          <strong>Cliente:</strong> {visita.nombreCliente}
-        </Texto>
+                {loading ? (
+                    <Cargando mensaje="Cargando visitas..." />
+                ) : (
+                    <>
+                        <ListaVisitasPorFecha
+                            titulo="Visitas pendientes"
+                            fechas={fechasPendientes}
+                            visitasPorFecha={pendientesAgrupadas}
+                            renderVisita={(visita) => renderVisita(visita, true, true)}
+                        />
 
-        <Texto>
-          <strong>Teléfono:</strong>{" "}
-          <LinkWhatsapp
-            href={`https://wa.me/${visita.telefonoCliente}`}
-            target="_blank"
-          >
-            {visita.telefonoCliente}
-            <MessageCircleMore
-              size={18}
-              style={{ marginLeft: "8px", verticalAlign: "middle" }}
-            />
-          </LinkWhatsapp>
-        </Texto>
+                        <ListaVisitasPorFecha
+                            titulo="Visitas aceptadas"
+                            fechas={fechasAceptadas}
+                            visitasPorFecha={aceptadasPorFecha}
+                            renderVisita={(visita) => renderVisita(visita, false, true)}
+                        />
 
-        <Texto>
-          <strong>Correo:</strong>{" "}
-          <Copiable onClick={() => copiarCorreo(visita.correoCliente)}>
-            {visita.correoCliente}
-            <CopyCheck
-              size={16}
-              style={{ marginLeft: "8px", verticalAlign: "middle" }}
-            />
-          </Copiable>
-        </Texto>
+                        <ListaVisitasPorFecha
+                            titulo="Visitas realizadas"
+                            fechas={fechasRealizadas}
+                            visitasPorFecha={realizadasPorFecha}
+                            renderVisita={(visita) => renderVisita(visita, false, false)}
+                        />
 
-        <Texto>
-          <strong>Fecha:</strong>{" "}
-          {diaSemana.charAt(0).toUpperCase() + diaSemana.slice(1)}{" "}
-          {fechaFormateada} a las {visita.hora}
-        </Texto>
-
-        {mostrarBoton ? (
-          <BotonAceptar onClick={() => aceptarVisita(visita.id)}>
-            Aceptar visita
-          </BotonAceptar>
-        ) : (
-          <BotonCancelar onClick={() => cancelarVisita(visita.id)}>
-            Cancelar visita
-          </BotonCancelar>
-        )}
-      </Card>
-    );
-  };
-
-  return (
-    <Pagina>
-      <Contenido>
-        {mensaje && <Mensaje error={error}>{mensaje}</Mensaje>}
-
-        {loading ? (
-          <Cargando mensaje={"Cargando visitas..."} />
-        ) : (
-          <>
-            <TituloSeccion>Visitas pendientes</TituloSeccion>
-            {pendientes.length === 0 ? (
-              <p>No hay visitas pendientes.</p>
-            ) : (
-              pendientes.map((visita) => renderVisita(visita, true))
-            )}
-
-            <TituloSeccion>Visitas aceptadas</TituloSeccion>
-            {fechasAceptadas.length === 0 ? (
-              <p>No hay visitas aceptadas.</p>
-            ) : (
-              <>
-                <Subtitulo>
-                  <FlechaIcono
-                    onClick={() =>
-                      setFechaIndex((prev) => Math.max(prev - 1, 0))
-                    }
-                    disabled={fechaIndex === 0}
-                    title="Día anterior"
-                  >
-                    <ChevronLeft />
-                  </FlechaIcono>
-
-                  {(() => {
-                    const fechaObj = new Date(fechaActual);
-                    const dia = new Intl.DateTimeFormat("es-CL", {
-                      weekday: "long",
-                    }).format(fechaObj);
-                    const [yyyy, mm, dd] = fechaActual.split("-");
-                    return `${
-                      dia.charAt(0).toUpperCase() + dia.slice(1)
-                    } ${dd}-${mm}-${yyyy}`;
-                  })()}
-
-                  <FlechaIcono
-                    onClick={() =>
-                      setFechaIndex((prev) =>
-                        Math.min(prev + 1, fechasAceptadas.length - 1)
-                      )
-                    }
-                    disabled={fechaIndex === fechasAceptadas.length - 1}
-                    title="Día siguiente"
-                  >
-                    <ChevronRight />
-                  </FlechaIcono>
-                </Subtitulo>
-
-                {aceptadasPorFecha[fechaActual].map((visita) =>
-                  renderVisita(visita)
+                    </>
                 )}
-              </>
-            )}
-          </>
-        )}
-      </Contenido>
-    </Pagina>
-  );
+            </Contenido>
+        </Pagina>
+    );
 };
 
 export default VisitasAgente;

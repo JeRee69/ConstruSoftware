@@ -8,6 +8,7 @@ import com.construsoft.visita_facil_api.repository.DisponibilidadAgenteRepositor
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,8 +34,9 @@ public class DisponibilidadAgenteService {
     }
 
     public List<DisponibilidadAgente> obtenerPorAgente(Long accountId) {
-        return disponibilidadRepo.findByAgenteId(accountId);
+        return disponibilidadRepo.findByAgenteIdAndFechaGreaterThanEqual(accountId, LocalDate.now());
     }
+
 
     public void eliminarPorId(Long id) {
         if (!disponibilidadRepo.existsById(id)) {

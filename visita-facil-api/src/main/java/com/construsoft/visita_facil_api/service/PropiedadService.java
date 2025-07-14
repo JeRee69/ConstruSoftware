@@ -1,8 +1,10 @@
 package com.construsoft.visita_facil_api.service;
 
 import com.construsoft.visita_facil_api.model.Propiedad;
+import com.construsoft.visita_facil_api.model.SolicitudVisita;
 import com.construsoft.visita_facil_api.repository.DisponibilidadPropiedadRepository;
 import com.construsoft.visita_facil_api.repository.PropiedadRepository;
+import com.construsoft.visita_facil_api.repository.SolicitudAgenteRepository;
 import com.construsoft.visita_facil_api.repository.SolicitudVisitaRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class PropiedadService {
     private DisponibilidadPropiedadRepository disponibilidadRepo;
     @Autowired
     private SolicitudVisitaRepository solicitudVisitaRepo;
+    @Autowired
+    private SolicitudAgenteRepository solicitudAgenteRepo;
 
     public Optional<Propiedad> getById(int id) {
         return propiedadRepository.findById(id);
@@ -66,14 +70,26 @@ public class PropiedadService {
         Propiedad propiedad = propiedadRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Propiedad no encontrada"));
 
+        // Borrar imágenes asociadas
         propiedad.getUrlsImagenes().clear();
         propiedadRepository.save(propiedad);
 
-        disponibilidadRepo.deleteByPropiedad(propiedad);
-        solicitudVisitaRepo.deleteByPropiedad(propiedad);
+        // Eliminar solicitudes de agentes por cada visita asociada
+        List<SolicitudVisita> visitas = solicitudVisitaRepo.findByPropiedad(propiedad);
+        for (SolicitudVisita visita : visitas) {
+            solicitudAgenteRepo.deleteBySolicitudVisita(visita);
+        }
 
+        // Luego eliminamos las visitas
+        solicitudVisitaRepo.deleteAll(visitas);
+
+        // Eliminar disponibilidades
+        disponibilidadRepo.deleteByPropiedad(propiedad);
+
+        // Finalmente eliminamos la propiedad
         propiedadRepository.delete(propiedad);
     }
+
 
 
     public Propiedad save(Propiedad propiedadExistente) {

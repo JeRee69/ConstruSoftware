@@ -18,4 +18,6 @@ public interface SolicitudVisitaRepository extends JpaRepository<SolicitudVisita
     List<SolicitudVisita> findByCorreoClienteAndEstado(String correoCliente, EstadoSolicitudVisita estado);
 
     List<SolicitudVisita> findByEstado(EstadoSolicitudVisita estadoSolicitudVisita);
+
+    List<SolicitudVisita> findByPropiedad(Propiedad propiedad);
 }
