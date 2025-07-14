@@ -233,7 +233,9 @@ const RegistrarDisponibilidadAgente = () => {
     };
 
     const formatearFecha = (fechaISO) => {
-        const fecha = new Date(fechaISO);
+        const [a, m, d] = fechaISO.split("-");
+        const fecha = new Date(parseInt(a), parseInt(m) - 1, parseInt(d));
+
         return fecha
             .toLocaleDateString("es-CL", {
                 weekday: "long",
