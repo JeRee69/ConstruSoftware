@@ -41,7 +41,7 @@ const ConfirmarVisita = () => {
       setFormulario({
         nombre: usuario.nombre || "",
         correo: usuario.correo || usuario.email || "",
-        telefono: (usuario.telefono || "").replace(/^\+569/, ""), 
+        telefono: (usuario.telefono || "").replace(/^\+569/, ""),
       });
     }
   }, [navigate, usuario]);
@@ -52,8 +52,20 @@ const ConfirmarVisita = () => {
 
   const enviarCorreoAgente = async (datosCliente) => {
     try {
+      // 1. Obtener los correos de los agentes desde el backend
+      const { data: correosAgentes } = await axios.get(
+        `${import.meta.env.VITE_API_URL}/account/agentes/correos`
+      );
+
+      // Verificar que hay correos para enviar
+      if (!correosAgentes || correosAgentes.length === 0) {
+        console.warn("No se encontraron agentes para enviar correo.");
+        return;
+      }
+
+      // 2. Enviar correo a los agentes
       await axios.post(`${import.meta.env.VITE_API_URL}/api/notificacion`, {
-        destinatario: "pawearprimero@gmail.com",
+        destinatario: correosAgentes.join(","), // Se envía como string separado por comas
         asunto: "Nueva Visita Agendada",
         mensaje: `
 <!DOCTYPE html>
@@ -318,15 +330,21 @@ const ConfirmarVisita = () => {
             disabled={enviando}
           />
           <label style={labelStyle}>Teléfono</label>
-          <div style={{ display: "flex", alignItems: "center", marginBottom: "1rem" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "1rem",
+            }}
+          >
             <span
               style={{
                 marginRight: "8px",
                 fontSize: "1rem",
-                lineHeight: "2.2", 
-                height: "40px", 
+                lineHeight: "2.2",
+                height: "40px",
                 display: "flex",
-                alignItems: "center"
+                alignItems: "center",
               }}
             >
               +569

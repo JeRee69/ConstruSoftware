@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSweetAlert } from "../hooks/useSweetAlert";
 import "../styles/sweetalert-custom.css";
@@ -132,14 +132,38 @@ const MensajeVacio = styled.p`
 `;
 
 const HistorialVisitas = () => {
-  const [correo, setCorreo] = useState("");
+  const [usuario, setUsuario] = useState(() =>
+    JSON.parse(localStorage.getItem("usuario"))
+  );
+  const [correo, setCorreo] = useState(usuario?.correo || "");
   const [visitas, setVisitas] = useState([]);
   const [loading, setLoading] = useState(false);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
-  const { showWarning, showError, showLoading, close, showInfo } = useSweetAlert();
+  const { showWarning, showError, showLoading, close, showInfo } =
+    useSweetAlert();
 
-  const handleBuscar = async () => {
-    if (!correo) {
+  // Detectar logout y limpiar estado
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("usuario"));
+    if (!storedUser && usuario) {
+      setUsuario(null);
+      setCorreo("");
+      setVisitas([]);
+      setMostrarHistorial(false);
+    }
+  }, [usuario]);
+
+  // Auto buscar historial si está logueado
+  useEffect(() => {
+    if (usuario) {
+      handleBuscar(usuario.correo);
+    }
+  }, [usuario]);
+
+  const handleBuscar = async (correoParametro) => {
+    const correoBusqueda = correoParametro || correo;
+
+    if (!correoBusqueda) {
       showWarning(
         "Correo requerido",
         "Por favor ingresa un correo electrónico válido para buscar tu historial.",
@@ -152,7 +176,11 @@ const HistorialVisitas = () => {
     showLoading("Buscando historial", "Consultando tus visitas programadas...");
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/visitas/historial?correo=${correo}`);
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_URL
+        }/visitas/historial?correo=${correoBusqueda}`
+      );
       const data = await response.json();
 
       close();
@@ -183,35 +211,42 @@ const HistorialVisitas = () => {
     <PageWrapper>
       <Titulo>Consultar Historial de Visitas</Titulo>
 
-      <FormContainer>
-        <InputCorreo
-          type="email"
-          value={correo}
-          onChange={(e) => setCorreo(e.target.value)}
-          placeholder="Ingresa tu correo electrónico"
-        />
-        <BotonBuscar 
-          onClick={handleBuscar}
-          disabled={loading}
-        >
-          Ver historial
-        </BotonBuscar>
-      </FormContainer>
+      {!usuario && (
+        <FormContainer>
+          <InputCorreo
+            type="email"
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
+            placeholder="Ingresa tu correo electrónico"
+          />
+          <BotonBuscar onClick={() => handleBuscar()} disabled={loading}>
+            Ver historial
+          </BotonBuscar>
+        </FormContainer>
+      )}
 
       {loading && <MensajeCarga>Cargando historial...</MensajeCarga>}
 
       {mostrarHistorial && (
         <>
           {visitas.length === 0 ? (
-            <MensajeVacio>No hay visitas registradas para este correo.</MensajeVacio>
+            <MensajeVacio>
+              No hay visitas registradas para este correo.
+            </MensajeVacio>
           ) : (
             <ListaVisitas>
               {visitas.map((visita) => (
                 <ItemVisita key={visita.id}>
                   <h3>{visita.propiedad.titulo}</h3>
-                  <p><strong>Fecha:</strong> {visita.fecha}</p>
-                  <p><strong>Hora:</strong> {visita.horaInicio}</p>
-                  <p><strong>Estado:</strong> {visita.estado}</p>
+                  <p>
+                    <strong>Fecha:</strong> {visita.fecha}
+                  </p>
+                  <p>
+                    <strong>Hora:</strong> {visita.horaInicio}
+                  </p>
+                  <p>
+                    <strong>Estado:</strong> {visita.estado}
+                  </p>
                   {visita.propiedad.urlsImagenes?.[0] && (
                     <ImagenPropiedad
                       src={visita.propiedad.urlsImagenes[0]}
